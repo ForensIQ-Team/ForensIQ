@@ -14,8 +14,12 @@ import {
   Settings,
   ShieldCheck,
   FileText,
+
 } from 'lucide-react';
 import { NavItem, UserRole } from '../types';
+
+
+
 
 interface HeaderProps {
   activeTab: NavItem;
@@ -107,24 +111,22 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    isActive
-                      ? 'text-white shadow-xs'
-                      : 'text-stone-800 hover:text-stone-950'
-                  }`}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${isActive
+                    ? 'text-white shadow-xs'
+                    : 'text-stone-800 hover:text-stone-950'
+                    }`}
                   style={
                     isActive
                       ? {
-                          background: 'rgba(20, 18, 15, 0.85)',
-                          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.15)',
-                        }
+                        background: 'rgba(20, 18, 15, 0.85)',
+                        boxShadow: '0 2px 10px rgba(0, 0, 0, 0.15)',
+                      }
                       : { background: 'transparent' }
                   }
                 >
                   <Icon
-                    className={`w-3.5 h-3.5 ${
-                      isActive ? 'text-red-400' : 'text-stone-600'
-                    }`}
+                    className={`w-3.5 h-3.5 ${isActive ? 'text-red-400' : 'text-stone-600'
+                      }`}
                   />
                   <span>{item.label}</span>
                 </button>
@@ -135,11 +137,10 @@ export const Header: React.FC<HeaderProps> = ({
             {userRole === 'investigator' && (
               <button
                 onClick={() => handleNavClick('professional-analysis')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                    ? 'text-white shadow-xs'
-                    : 'text-stone-800 hover:text-stone-950'
-                }`}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
+                  ? 'text-white shadow-xs'
+                  : 'text-stone-800 hover:text-stone-950'
+                  }`}
                 style={
                   activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
                     ? { background: 'rgba(20, 18, 15, 0.85)' }
@@ -177,15 +178,15 @@ export const Header: React.FC<HeaderProps> = ({
               style={
                 userRole === 'investigator'
                   ? {
-                      background: 'rgba(20, 18, 15, 0.85)',
-                      border: '1px solid rgba(80, 60, 40, 0.60)',
-                      color: '#fef3c7',
-                    }
+                    background: 'rgba(20, 18, 15, 0.85)',
+                    border: '1px solid rgba(80, 60, 40, 0.60)',
+                    color: '#fef3c7',
+                  }
                   : {
-                      background: 'rgba(237, 225, 200, 0.45)',
-                      border: '1px solid rgba(200, 180, 140, 0.50)',
-                      color: '#292524',
-                    }
+                    background: 'rgba(237, 225, 200, 0.45)',
+                    border: '1px solid rgba(200, 180, 140, 0.50)',
+                    color: '#292524',
+                  }
               }
               title="Click to toggle user role mode"
             >
@@ -215,9 +216,8 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Account Settings Button */}
             <button
               onClick={() => handleNavClick('settings')}
-              className={`p-2 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer ${
-                activeTab === 'settings' ? 'text-stone-950 font-bold' : ''
-              }`}
+              className={`p-2 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer ${activeTab === 'settings' ? 'text-stone-950 font-bold' : ''
+                }`}
               style={{
                 background: activeTab === 'settings' ? 'rgba(20, 18, 15, 0.85)' : 'rgba(230, 220, 200, 0.35)',
                 color: activeTab === 'settings' ? '#ffffff' : undefined,
@@ -271,17 +271,15 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    isActive ? 'text-white' : 'text-stone-800 hover:bg-[#ede4d4]/60'
-                  }`}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${isActive ? 'text-white' : 'text-stone-800 hover:bg-[#ede4d4]/60'
+                    }`}
                   style={
                     isActive ? { background: 'rgba(20, 18, 15, 0.85)' } : {}
                   }
                 >
                   <Icon
-                    className={`w-4 h-4 ${
-                      isActive ? 'text-red-400' : 'text-stone-600'
-                    }`}
+                    className={`w-4 h-4 ${isActive ? 'text-red-400' : 'text-stone-600'
+                      }`}
                   />
                   <span>{item.label}</span>
                 </button>
@@ -294,11 +292,10 @@ export const Header: React.FC<HeaderProps> = ({
                 if (userRole === 'normal') setUserRole('investigator');
                 handleNavClick('professional-analysis');
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                  ? 'text-white'
-                  : 'text-stone-800 hover:bg-[#ede4d4]/60'
-              }`}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
+                ? 'text-white'
+                : 'text-stone-800 hover:bg-[#ede4d4]/60'
+                }`}
               style={
                 activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
                   ? { background: 'rgba(20, 18, 15, 0.85)' }
@@ -312,9 +309,8 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Reports link */}
             <button
               onClick={() => handleNavClick('report')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'report' ? 'text-white' : 'text-stone-800 hover:bg-[#ede4d4]/60'
-              }`}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${activeTab === 'report' ? 'text-white' : 'text-stone-800 hover:bg-[#ede4d4]/60'
+                }`}
               style={activeTab === 'report' ? { background: 'rgba(20, 18, 15, 0.85)' } : {}}
             >
               <FileText className="w-4 h-4 text-amber-600" />
