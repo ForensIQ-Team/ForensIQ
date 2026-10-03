@@ -19,8 +19,6 @@ import {
 import { NavItem, UserRole } from '../types';
 
 
-
-
 interface HeaderProps {
   activeTab: NavItem;
   setActiveTab: (tab: NavItem) => void;
@@ -52,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
     { id: 'check-media', label: 'Check Media', icon: FileSearch },
     { id: 'protect-image', label: 'Protect Image', icon: Lock },
     { id: 'find-misuse', label: 'Find Misuse', icon: Search },
-    { id: 'history', label: 'History', icon: History },
+    { id: 'history', label: 'geography', icon: History },
   ];
 
   return (
