@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Portfolio</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #f5f3ec;
+            color: #30342f;
+            line-height: 1.6;
+        }
+
+        /* Navbar */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 8%;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+        }
+
+        nav h2 {
+            color: #5f7163;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #30342f;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            color: #c9795d;
+        }
+
+        /* Hero */
+        .hero {
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 70px 8%;
+        }
+
+        .hero-text {
+            max-width: 550px;
+        }
+
+        .hero-text h1 {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .hero-text h1 span {
+            color: #c9795d;
+        }
+
+        .hero-text p {
+            font-size: 18px;
+            margin-bottom: 25px;
+            color: #666;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: #5f7163;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-right: 10px;
+        }
+
+        .btn:hover {
+            background: #30342f;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: #5f7163;
+            border: 2px solid #5f7163;
+        }
+
+        .hero img {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 8px solid white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Sections */
+        section {
+            padding: 70px 8%;
+        }
+
+        section h2 {
+            text-align: center;
+            font-size: 32px;
+            margin-bottom: 40px;
+        }
+
+        /* Cards */
+        .cards {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            width: 300px;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            transition: 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+        }
+
+        .card h3 {
+            margin-bottom: 10px;
+            color: #5f7163;
+        }
+
+        .card p {
+            color: #666;
+        }
+
+        /* Skills */
+        .skills {
+            max-width: 800px;
+            margin: auto;
+        }
+
+        .skill {
+            margin-bottom: 20px;
+        }
+
+        .skill-name {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .bar {
+            height: 10px;
+            background: #ddd;
+            border-radius: 10px;
+        }
+
+        .progress {
+            height: 100%;
+            background: #c9795d;
+            border-radius: 10px;
+        }
+
+        /* Contact */
+        .contact-form {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        textarea {
+            height: 120px;
+            resize: none;
+        }
+
+        button {
+            border: none;
+            cursor: pointer;
+            padding: 12px 25px;
+            background: #5f7163;
+            color: white;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 25px;
+            background: #30342f;
+            color: white;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                gap: 40px;
+            }
+
+            .hero-text h1 {
+                font-size: 38px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav>
+        <h2>MyPortfolio</h2>
+
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#projects">Projects</a></li>
+            <li><a href="#skills">Skills</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+
+        <div class="hero-text">
+            <h1>Hello, I'm <span>Nishi</span></h1>
+
+            <p>
+                A passionate developer who loves building
+                beautiful websites and useful applications.
+            </p>
+
+            <a href="#projects" class="btn">View Projects</a>
+            <a href="#contact" class="btn btn-outline">Contact Me</a>
+        </div>
+
+        <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330" alt="Profile Image">
+
+    </section>
+
+
+    <!-- About Section -->
+    <section id="about">
+
+        <h2>About Me</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>👩‍💻 Developer</h3>
+                <p>
+                    I enjoy creating modern and responsive
+                    web applications using HTML, CSS and JavaScript.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🎨 Designer</h3>
+                <p>
+                    I like designing clean, simple and
+                    user-friendly interfaces.
+                </p>
+            </div>
+
+            <div class="card">
+                <h3>🚀 Learner</h3>
+                <p>
+                    I constantly explore new technologies
+                    and improve my development skills.
+                </p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Projects -->
+    <section id="projects">
+
+        <h2>My Projects</h2>
+
+        <div class="cards">
+
+            <div class="card">
+                <h3>🌐 Portfolio Website</h3>
+                <p>
+                    A personal portfolio website showcasing
+                    my skills, projects and experience.
+                </p>
+                <br>
+                <a href="#" class="btn">View Project</a>
+            </div>
+
+            <div class="card">
+                <h3>🔍 Image Search</h3>
+                <p>
+                    A semantic image search application
+                    powered by AI and vector search.
+                </p>
+                <br>
+                <a href="#" class="btn">View Project</a>
+            </div>
+
+            <div class="card">
+                <h3>🤖 AI Application</h3>
+                <p>
+                    An AI-powered application designed
+                    to solve real-world problems.
+                </p>
+                <br>
+                <a href="#" class="btn">View Project</a>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Skills -->
+    <section id="skills">
+
+        <h2>My Skills</h2>
+
+        <div class="skills">
+
+            <div class="skill">
+                <div class="skill-name">
+                    <span>HTML & CSS</span>
+                    <span>90%</span>
+                </div>
+
+                <div class="bar">
+                    <div class="progress" style="width: 90%;"></div>
+                </div>
+            </div>
+
+
+            <div class="skill">
+                <div class="skill-name">
+                    <span>JavaScript</span>
+                    <span>80%</span>
+                </div>
+
+                <div class="bar">
+                    <div class="progress" style="width: 80%;"></div>
+                </div>
+            </div>
+
+
+            <div class="skill">
+                <div class="skill-name">
+                    <span>React</span>
+                    <span>85%</span>
+                </div>
+
+                <div class="bar">
+                    <div class="progress" style="width: 85%;"></div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Contact -->
+    <section id="contact">
+
+        <h2>Contact Me</h2>
+
+        <form class="contact-form">
+
+            <label>Name</label>
+            <input type="text" placeholder="Enter your name">
+
+            <label>Email</label>
+            <input type="email" placeholder="Enter your email">
+
+            <label>Message</label>
+            <textarea placeholder="Write your message..."></textarea>
+
+            <button type="submit">
+                Send Message
+            </button>
+
+        </form>
+
+    </section>
+
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 MyPortfolio. All rights reserved.</p>
+        <p>Made with ❤️ using HTML & CSS</p>
+    </footer>
+
+</body>
+
+</html>
