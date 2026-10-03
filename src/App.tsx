@@ -14,6 +14,7 @@ import { ProfessionalAnalysisScreen } from './components/ProfessionalAnalysisScr
 import { ReportScreen } from './components/ReportScreen';
 import { HistoryScreen } from './components/HistoryScreen';
 import { AccountSettingsModal } from './components/AccountSettingsModal';
+import { MagnifyingCursor } from './components/landing/MagnifyingCursor';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<NavItem>('landing');
@@ -56,7 +57,9 @@ export default function App() {
     <div
       className="relative min-h-screen text-stone-950 font-sans flex flex-col antialiased selection:bg-red-900 selection:text-white"
       style={{ background: 'transparent' }}
-    >
+       >
+      <MagnifyingCursor />
+
       {/* Global ShaderGradient Background — fixed, lowest z-index, pointer-events none */}
       <ShaderBackground />
 

@@ -136,3 +136,10 @@ html, body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(140, 118, 78, 0.65);
 }
+
+* {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='none' stroke='%23111' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><circle cx='10' cy='10' r='7' fill='white' fill-opacity='0.3'/><line x1='21' y1='21' x2='15' y2='15'/></svg>") 13 13, auto;
+}
+*, *::before, *::after {
+  cursor: none !important;
+}
