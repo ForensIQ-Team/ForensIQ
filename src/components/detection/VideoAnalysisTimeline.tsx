@@ -28,7 +28,7 @@ export const VideoAnalysisTimeline: React.FC<VideoAnalysisTimelineProps> = ({
           </div>
           <div>
             <h4 className="font-bold text-slate-900 text-base">Video Deepfake Frame Inspector</h4>
-            <p className="text-xs text-slate-500 mt-0.5">
+            <p className="text-xs text-stone-950 mt-0.5">
               Inspecting temporal facial alignment & inter-frame continuity across sampled video frames
             </p>
           </div>
@@ -36,7 +36,7 @@ export const VideoAnalysisTimeline: React.FC<VideoAnalysisTimelineProps> = ({
 
         {/* Top Badges */}
         <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-          <div className="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-bold text-slate-800">
+          <div className="px-2.5 py-1 rounded bg-slate-100 border border-slate-200 font-bold text-stone-950">
             {videoData.sampledFrames} Sampled Frames
           </div>
           <div className="px-2.5 py-1 rounded bg-indigo-50 text-indigo-950 border border-indigo-200 font-bold">
@@ -50,9 +50,9 @@ export const VideoAnalysisTimeline: React.FC<VideoAnalysisTimelineProps> = ({
 
       {/* Frame Timeline Selector */}
       <div className="space-y-2">
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-700">
+        <div className="flex items-center justify-between text-xs font-semibold text-stone-950">
           <span>Frame Timeline ({videoData.durationSeconds}s Duration)</span>
-          <span className="font-mono text-slate-500">
+          <span className="font-mono text-stone-950">
             Selected Frame #{activeFrameData.frameNumber} ({activeFrameData.timestamp})
           </span>
         </div>
@@ -67,14 +67,14 @@ export const VideoAnalysisTimeline: React.FC<VideoAnalysisTimelineProps> = ({
                 key={frame.frameNumber}
                 onClick={() => setSelectedFrame(frame.frameNumber)}
                 title={`Frame #${frame.frameNumber} (${frame.timestamp}) - Fake Score: ${frame.fakeScore}%`}
-                className={`h-12 rounded transition-all cursor-pointer flex flex-col justify-between p-1 text-[9px] font-mono font-bold ${
+                className={`h-12 rounded transition-all cursor-pointer flex flex-col justify-between p-1 text-[11px] font-mono font-bold ${
                   frame.isSuspicious
                     ? 'bg-red-600 text-white hover:bg-red-500'
                     : 'bg-emerald-600/80 text-white hover:bg-emerald-500'
                 } ${isSelected ? 'ring-2 ring-white scale-105 z-10' : 'opacity-80 hover:opacity-100'}`}
               >
                 <span>{frame.frameNumber}</span>
-                <span className="text-[8px]">{frame.fakeScore}%</span>
+                <span className="text-[11px]">{frame.fakeScore}%</span>
               </button>
             );
           })}
@@ -100,7 +100,7 @@ export const VideoAnalysisTimeline: React.FC<VideoAnalysisTimelineProps> = ({
                 Frame #{activeFrameData.frameNumber} Analysis Detail
               </span>
               <span
-                className={`px-2 py-0.5 rounded font-mono font-bold text-[11px] ${
+                className={`px-2 py-0.5 rounded font-mono font-bold text-xs ${
                   activeFrameData.isSuspicious
                     ? 'bg-red-100 text-red-800 border border-red-200'
                     : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
@@ -112,11 +112,11 @@ export const VideoAnalysisTimeline: React.FC<VideoAnalysisTimelineProps> = ({
 
             <div className="grid grid-cols-2 gap-4 my-3 text-xs">
               <div>
-                <span className="text-slate-500 block">Timestamp:</span>
+                <span className="text-stone-950 block">Timestamp:</span>
                 <span className="font-mono font-bold text-slate-900">{activeFrameData.timestamp}</span>
               </div>
               <div>
-                <span className="text-slate-500 block">Manipulation Probability:</span>
+                <span className="text-stone-950 block">Manipulation Probability:</span>
                 <span className="font-mono font-bold text-red-600">{activeFrameData.fakeScore}%</span>
               </div>
             </div>
@@ -129,7 +129,7 @@ export const VideoAnalysisTimeline: React.FC<VideoAnalysisTimelineProps> = ({
             )}
           </div>
 
-          <p className="text-[11px] text-slate-500">
+          <p className="text-xs text-stone-950">
             Temporal inter-frame inconsistencies indicate neural autoencoder frame splicing during speech activity.
           </p>
         </div>

@@ -28,7 +28,7 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
             <Sparkles className="w-4 h-4 text-indigo-600" />
             <span>AI Explainability & Attention Visualizer</span>
           </h4>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-stone-950 mt-0.5">
             Inspecting Grad-CAM class activation maps and Vision Transformer (ViT) spatial attention matrices
           </p>
         </div>
@@ -40,7 +40,7 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
               viewMode === 'gradcam'
                 ? 'bg-indigo-950 text-white shadow-xs'
-                : 'text-slate-700 hover:text-slate-900'
+                : 'text-stone-950 hover:text-slate-900'
             }`}
           >
             Grad-CAM
@@ -51,7 +51,7 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
               viewMode === 'vit'
                 ? 'bg-indigo-950 text-white shadow-xs'
-                : 'text-slate-700 hover:text-slate-900'
+                : 'text-stone-950 hover:text-slate-900'
             }`}
           >
             ViT Attention
@@ -62,7 +62,7 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
               viewMode === 'overlay'
                 ? 'bg-indigo-950 text-white shadow-xs'
-                : 'text-slate-700 hover:text-slate-900'
+                : 'text-stone-950 hover:text-slate-900'
             }`}
           >
             Overlay
@@ -73,7 +73,7 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
             className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer ${
               viewMode === 'original'
                 ? 'bg-indigo-950 text-white shadow-xs'
-                : 'text-slate-700 hover:text-slate-900'
+                : 'text-stone-950 hover:text-slate-900'
             }`}
           >
             Original
@@ -113,12 +113,12 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
               }}
               className="absolute border-2 border-red-500 bg-red-500/20 rounded shadow-xs pointer-events-auto transition-all hover:bg-red-500/30 group"
             >
-              <span className="absolute -top-6 left-0 bg-red-950 text-white font-mono font-bold text-[10px] px-1.5 py-0.5 rounded shadow-xs whitespace-nowrap border border-red-800">
+              <span className="absolute -top-6 left-0 bg-red-950 text-white font-mono font-bold text-xs px-1.5 py-0.5 rounded shadow-xs whitespace-nowrap border border-red-800">
                 {region.label}
               </span>
 
               {/* Tooltip on hover */}
-              <div className="hidden group-hover:block absolute top-full mt-1 left-0 z-20 bg-slate-900 text-white text-[11px] p-2 rounded shadow-lg max-w-xs border border-slate-700">
+              <div className="hidden group-hover:block absolute top-full mt-1 left-0 z-20 bg-slate-900 text-white text-xs p-2 rounded shadow-lg max-w-xs border border-slate-700">
                 <p className="font-bold text-red-400 mb-0.5">{region.label}</p>
                 <p className="text-slate-300">{region.description}</p>
               </div>
@@ -126,7 +126,7 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
           ))}
 
         {/* Canvas Watermark Badge */}
-        <div className="absolute bottom-3 left-3 bg-slate-900/90 text-white text-[10px] font-mono px-2.5 py-1 rounded border border-slate-700 flex items-center gap-2">
+        <div className="absolute bottom-3 left-3 bg-slate-900/90 text-white text-xs font-mono px-2.5 py-1 rounded border border-slate-700 flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           <span>LAYER: {viewMode.toUpperCase()}</span>
         </div>
@@ -136,8 +136,8 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
       <div className="flex flex-wrap items-center justify-between gap-4 bg-slate-50 p-3.5 rounded-lg border border-slate-200 text-xs">
         {/* Opacity Slider */}
         <div className="flex items-center gap-3 min-w-[240px]">
-          <Sliders className="w-4 h-4 text-slate-500" />
-          <span className="font-semibold text-slate-700">Heatmap Opacity:</span>
+          <Sliders className="w-4 h-4 text-stone-950" />
+          <span className="font-semibold text-stone-950">Heatmap Opacity:</span>
           <input
             type="range"
             min="0.1"
@@ -154,7 +154,7 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
 
         {/* ROI Regions Toggle */}
         <div className="flex items-center gap-2">
-          <label className="flex items-center gap-2 text-slate-700 font-semibold cursor-pointer">
+          <label className="flex items-center gap-2 text-stone-950 font-semibold cursor-pointer">
             <input
               type="checkbox"
               checked={showRegions}
@@ -171,24 +171,24 @@ export const ExplainabilityPanel: React.FC<ExplainabilityPanelProps> = ({
         <div className="flex items-center gap-2 p-2.5 rounded bg-slate-50 border border-slate-200">
           <span className="w-3.5 h-3.5 rounded bg-red-600 shrink-0" />
           <div>
-            <p className="font-bold text-slate-900 text-[11px]">Red / Warm Regions</p>
-            <p className="text-[10px] text-slate-500">High neural network feature activation</p>
+            <p className="font-bold text-slate-900 text-xs">Red / Warm Regions</p>
+            <p className="text-xs text-stone-950">High neural network feature activation</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 p-2.5 rounded bg-slate-50 border border-slate-200">
           <span className="w-3.5 h-3.5 rounded bg-amber-500 shrink-0" />
           <div>
-            <p className="font-bold text-slate-900 text-[11px]">Yellow / Amber Regions</p>
-            <p className="text-[10px] text-slate-500">Moderate feature transition gradient</p>
+            <p className="font-bold text-slate-900 text-xs">Yellow / Amber Regions</p>
+            <p className="text-xs text-stone-950">Moderate feature transition gradient</p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 p-2.5 rounded bg-slate-50 border border-slate-200">
           <span className="w-3.5 h-3.5 rounded bg-indigo-600 shrink-0" />
           <div>
-            <p className="font-bold text-slate-900 text-[11px]">Blue / Dark Regions</p>
-            <p className="text-[10px] text-slate-500">Baseline authentic background texture</p>
+            <p className="font-bold text-slate-900 text-xs">Blue / Dark Regions</p>
+            <p className="text-xs text-stone-950">Baseline authentic background texture</p>
           </div>
         </div>
       </div>

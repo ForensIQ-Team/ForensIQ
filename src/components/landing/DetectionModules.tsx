@@ -83,7 +83,7 @@ export const DetectionModules: React.FC = () => {
         <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 tracking-tight">
           Forensic Detection Modules
         </h2>
-        <p className="text-stone-600 text-sm leading-relaxed">
+        <p className="text-stone-950 text-sm leading-relaxed">
           Hover over any evidence card to examine the specific detection methodology.
         </p>
       </div>
@@ -108,7 +108,7 @@ export const DetectionModules: React.FC = () => {
                 {/* FRONT FACE */}
                 <div className="absolute inset-0 h-full w-full p-6 [backface-visibility:hidden] flex flex-col justify-between rounded-sm">
                   <div className="flex items-center justify-between border-b border-stone-200 pb-3">
-                    <span className="font-mono text-[10px] font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded uppercase">
+                    <span className="font-mono text-xs font-bold text-red-700 bg-red-50 border border-red-200 px-2 py-0.5 rounded uppercase">
                       {mod.tag}
                     </span>
                     <div className="w-8 h-8 rounded bg-stone-900 text-stone-100 flex items-center justify-center">
@@ -118,10 +118,10 @@ export const DetectionModules: React.FC = () => {
 
                   <div className="my-auto space-y-2">
                     <h3 className="font-serif font-bold text-xl text-stone-900">{mod.title}</h3>
-                    <p className="text-xs text-stone-600 font-mono">{mod.frontDesc}</p>
+                    <p className="text-xs text-stone-950 font-mono">{mod.frontDesc}</p>
                   </div>
 
-                  <div className="pt-2 border-t border-stone-200 text-[10px] font-mono text-stone-400 flex items-center justify-between">
+                  <div className="pt-2 border-t border-stone-200 text-xs font-mono text-stone-950 flex items-center justify-between">
                     <span>STATUS: ACTIVE MODULE</span>
                     <span className="text-red-700 font-bold group-hover:underline">HOVER TO FLIP ➔</span>
                   </div>
@@ -130,7 +130,7 @@ export const DetectionModules: React.FC = () => {
                 {/* BACK FACE */}
                 <div className="absolute inset-0 h-full w-full p-6 [backface-visibility:hidden] [transform:rotateY(180deg)] bg-stone-900 text-stone-100 rounded-sm flex flex-col justify-between border border-red-900">
                   <div className="flex items-center justify-between border-b border-stone-800 pb-2">
-                    <span className="font-mono text-[10px] text-red-400 font-bold">METHODOLOGY SPEC</span>
+                    <span className="font-mono text-xs text-red-400 font-bold">METHODOLOGY SPEC</span>
                     <Icon className="w-4 h-4 text-red-500" />
                   </div>
 
@@ -139,7 +139,7 @@ export const DetectionModules: React.FC = () => {
                     <p className="text-xs text-stone-300 leading-relaxed font-sans">{mod.backDesc}</p>
                   </div>
 
-                  <div className="text-[9px] font-mono text-stone-500 pt-2 border-t border-stone-800">
+                  <div className="text-[11px] font-mono text-stone-950 pt-2 border-t border-stone-800">
                     FORENSIQ PARALLEL INFERENCE PIPELINE
                   </div>
                 </div>
@@ -162,7 +162,7 @@ export const DetectionModules: React.FC = () => {
           <Cpu className="w-5 h-5 text-red-500 animate-spin" />
           <div className="font-mono text-xs">
             <span className="font-bold text-stone-200">AUTHENTICITY ENGINE</span>
-            <span className="mx-2 text-stone-500">•</span>
+            <span className="mx-2 text-stone-950">•</span>
             <span className="text-red-400 font-bold">PARALLEL ENSEMBLE FUSION</span>
           </div>
           <ShieldCheck className="w-5 h-5 text-emerald-400" />

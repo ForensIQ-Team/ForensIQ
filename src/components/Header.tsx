@@ -36,7 +36,6 @@ export const Header: React.FC<HeaderProps> = ({
   setIsMobileOpen,
 }) => {
   const [showTrustModal, setShowTrustModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const handleNavClick = (tab: NavItem) => {
     setActiveTab(tab);
@@ -82,7 +81,7 @@ export const Header: React.FC<HeaderProps> = ({
                   FORENSIQ
                 </span>
                 <span
-                  className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase leading-none"
+                  className="text-[11px] font-mono font-bold px-1.5 py-0.5 rounded uppercase leading-none"
                   style={{
                     background: 'rgba(220, 200, 155, 0.40)',
                     border: '1px solid rgba(180, 155, 100, 0.35)',
@@ -92,14 +91,14 @@ export const Header: React.FC<HeaderProps> = ({
                   v2.4
                 </span>
               </div>
-              <p className="hidden sm:block text-[10px] text-stone-600 font-semibold leading-none mt-0.5">
+              <p className="hidden sm:block text-xs text-stone-950 font-semibold leading-none mt-0.5">
                 Forensic Workstation
               </p>
             </div>
           </div>
 
-          {/* Desktop Center Navigation Pills */}
-          <nav className="hidden lg:flex items-center gap-1">
+          {/* Center Navigation Pills - Centered with prominent spacing between boxes */}
+          <nav className="hidden lg:flex items-center justify-center gap-4 xl:gap-6 2xl:gap-8 flex-1 mx-4">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -107,26 +106,33 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`flex items-center justify-center gap-2 h-9 px-4 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                     isActive
-                      ? 'text-white shadow-xs'
-                      : 'text-stone-800 hover:text-stone-950'
+                      ? 'text-stone-950 font-black shadow-xs'
+                      : 'text-stone-950 font-bold hover:text-stone-950'
                   }`}
                   style={
                     isActive
                       ? {
-                          background: 'rgba(20, 18, 15, 0.85)',
-                          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.15)',
+                          background: 'rgba(255, 253, 247, 0.94)',
+                          border: '1.5px solid rgba(170, 130, 70, 0.65)',
+                          boxShadow: '0 2px 8px rgba(50, 35, 15, 0.10), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
                         }
-                      : { background: 'transparent' }
+                      : {
+                          background: 'rgba(240, 230, 212, 0.40)',
+                          border: '1px solid rgba(210, 195, 165, 0.45)',
+                        }
                   }
                 >
                   <Icon
-                    className={`w-3.5 h-3.5 ${
-                      isActive ? 'text-red-400' : 'text-stone-600'
+                    className={`w-3.5 h-3.5 shrink-0 ${
+                      isActive ? 'text-red-700' : 'text-stone-950'
                     }`}
                   />
                   <span>{item.label}</span>
+                  {isActive && (
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-600 shrink-0" />
+                  )}
                 </button>
               );
             })}
@@ -135,77 +141,39 @@ export const Header: React.FC<HeaderProps> = ({
             {userRole === 'investigator' && (
               <button
                 onClick={() => handleNavClick('professional-analysis')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center justify-center gap-2 h-9 px-3.5 rounded-xl text-xs font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                    ? 'text-white shadow-xs'
-                    : 'text-stone-800 hover:text-stone-950'
+                    ? 'text-stone-950 font-black shadow-xs'
+                    : 'text-stone-950 font-bold hover:text-stone-950'
                 }`}
                 style={
                   activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                    ? { background: 'rgba(20, 18, 15, 0.85)' }
-                    : { background: 'rgba(196, 30, 30, 0.12)', border: '1px solid rgba(196, 30, 30, 0.30)' }
+                    ? {
+                        background: 'rgba(255, 253, 247, 0.94)',
+                        border: '1.5px solid rgba(196, 30, 30, 0.65)',
+                        boxShadow: '0 2px 8px rgba(196, 30, 30, 0.12), inset 0 1px 0 rgba(255, 255, 255, 0.95)',
+                      }
+                    : {
+                        background: 'rgba(196, 30, 30, 0.10)',
+                        border: '1px solid rgba(196, 30, 30, 0.30)',
+                      }
                 }
               >
-                <Shield className="w-3.5 h-3.5 text-red-600" />
+                <Shield className="w-3.5 h-3.5 text-red-600 shrink-0" />
                 <span>Investigator Suite</span>
+                {(activeTab === 'professional-analysis' || activeTab === 'forensic-viewer') && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-600 shrink-0" />
+                )}
               </button>
             )}
           </nav>
 
-          {/* Right Utilities */}
-          <div className="flex items-center gap-2 sm:gap-2.5">
-            {/* Quick Search Input */}
-            <div className="hidden md:flex items-center relative w-64 lg:w-72">
-              <Search className="w-3.5 h-3.5 absolute left-3 text-stone-500 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Quick search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1 text-xs rounded-xl focus:outline-none text-stone-800 placeholder-stone-400"
-                style={{
-                  background: 'rgba(248, 242, 230, 0.45)',
-                  border: '1px solid rgba(210, 196, 170, 0.50)',
-                }}
-              />
-            </div>
-
-            {/* Role Switcher Badge */}
-            <button
-              onClick={() => setUserRole(userRole === 'normal' ? 'investigator' : 'normal')}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
-              style={
-                userRole === 'investigator'
-                  ? {
-                      background: 'rgba(20, 18, 15, 0.85)',
-                      border: '1px solid rgba(80, 60, 40, 0.60)',
-                      color: '#fef3c7',
-                    }
-                  : {
-                      background: 'rgba(237, 225, 200, 0.45)',
-                      border: '1px solid rgba(200, 180, 140, 0.50)',
-                      color: '#292524',
-                    }
-              }
-              title="Click to toggle user role mode"
-            >
-              {userRole === 'investigator' ? (
-                <>
-                  <Shield className="w-3.5 h-3.5 text-red-400" />
-                  <span className="hidden sm:inline">Investigator</span>
-                </>
-              ) : (
-                <>
-                  <UserCheck className="w-3.5 h-3.5 text-stone-600" />
-                  <span className="hidden sm:inline">Standard User</span>
-                </>
-              )}
-            </button>
-
+          {/* Right Utilities Section */}
+          <div className="flex items-center gap-2 shrink-0">
             {/* Notifications Button */}
             <button
-              className="p-2 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer relative"
-              style={{ background: 'rgba(230, 220, 200, 0.35)', border: '1px solid rgba(200, 185, 155, 0.30)' }}
+              className="h-8.5 w-8.5 flex items-center justify-center text-stone-950 hover:text-stone-950 rounded-xl transition-colors cursor-pointer relative shrink-0"
+              style={{ background: 'rgba(240, 230, 212, 0.40)', border: '1px solid rgba(210, 195, 165, 0.45)' }}
               title="Notifications"
             >
               <Bell className="w-4 h-4" />
@@ -215,13 +183,12 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Account Settings Button */}
             <button
               onClick={() => handleNavClick('settings')}
-              className={`p-2 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer ${
+              className={`h-8.5 w-8.5 flex items-center justify-center text-stone-950 hover:text-stone-950 rounded-xl transition-colors cursor-pointer shrink-0 ${
                 activeTab === 'settings' ? 'text-stone-950 font-bold' : ''
               }`}
               style={{
-                background: activeTab === 'settings' ? 'rgba(20, 18, 15, 0.85)' : 'rgba(230, 220, 200, 0.35)',
-                color: activeTab === 'settings' ? '#ffffff' : undefined,
-                border: '1px solid rgba(200, 185, 155, 0.30)',
+                background: activeTab === 'settings' ? 'rgba(255, 253, 247, 0.94)' : 'rgba(240, 230, 212, 0.40)',
+                border: activeTab === 'settings' ? '1.5px solid rgba(170, 130, 70, 0.65)' : '1px solid rgba(210, 195, 165, 0.45)',
               }}
               title="Account Settings"
             >
@@ -231,8 +198,8 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Trust Info Disclaimer Button */}
             <button
               onClick={() => setShowTrustModal(true)}
-              className="p-2 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer"
-              style={{ background: 'rgba(230, 220, 200, 0.35)', border: '1px solid rgba(200, 185, 155, 0.30)' }}
+              className="h-8.5 w-8.5 flex items-center justify-center text-stone-950 hover:text-stone-950 rounded-xl transition-colors cursor-pointer shrink-0"
+              style={{ background: 'rgba(240, 230, 212, 0.40)', border: '1px solid rgba(210, 195, 165, 0.45)' }}
               title="Trust & Forensic Principles"
             >
               <HelpCircle className="w-4 h-4" />
@@ -241,7 +208,7 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Navigation Toggle Button */}
             <button
               onClick={() => setIsMobileOpen(!isMobileOpen)}
-              className="p-2 rounded-xl text-stone-800 lg:hidden cursor-pointer"
+              className="p-2 rounded-xl text-stone-950 lg:hidden cursor-pointer"
               style={{ background: 'rgba(230, 220, 200, 0.45)', border: '1px solid rgba(200, 185, 155, 0.35)' }}
               aria-label="Toggle Mobile Menu"
             >
@@ -261,7 +228,7 @@ export const Header: React.FC<HeaderProps> = ({
               border: '1px solid rgba(255, 255, 255, 0.60)',
             }}
           >
-            <div className="px-2 py-1 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">
+            <div className="px-2 py-1 text-xs font-mono font-bold text-stone-950 uppercase tracking-wider">
               Navigation Menu
             </div>
             {navItems.map((item) => {
@@ -272,7 +239,7 @@ export const Header: React.FC<HeaderProps> = ({
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
                   className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    isActive ? 'text-white' : 'text-stone-800 hover:bg-[#ede4d4]/60'
+                    isActive ? 'text-white' : 'text-stone-950 hover:bg-[#ede4d4]/60'
                   }`}
                   style={
                     isActive ? { background: 'rgba(20, 18, 15, 0.85)' } : {}
@@ -280,7 +247,7 @@ export const Header: React.FC<HeaderProps> = ({
                 >
                   <Icon
                     className={`w-4 h-4 ${
-                      isActive ? 'text-red-400' : 'text-stone-600'
+                      isActive ? 'text-red-400' : 'text-stone-950'
                     }`}
                   />
                   <span>{item.label}</span>
@@ -297,7 +264,7 @@ export const Header: React.FC<HeaderProps> = ({
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
                   ? 'text-white'
-                  : 'text-stone-800 hover:bg-[#ede4d4]/60'
+                  : 'text-stone-950 hover:bg-[#ede4d4]/60'
               }`}
               style={
                 activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
@@ -313,7 +280,7 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={() => handleNavClick('report')}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'report' ? 'text-white' : 'text-stone-800 hover:bg-[#ede4d4]/60'
+                activeTab === 'report' ? 'text-white' : 'text-stone-950 hover:bg-[#ede4d4]/60'
               }`}
               style={activeTab === 'report' ? { background: 'rgba(20, 18, 15, 0.85)' } : {}}
             >
@@ -348,15 +315,15 @@ export const Header: React.FC<HeaderProps> = ({
               </div>
               <button
                 onClick={() => setShowTrustModal(false)}
-                className="text-stone-400 hover:text-stone-700 text-sm font-bold cursor-pointer"
+                className="text-stone-950 hover:text-stone-950 text-sm font-bold cursor-pointer"
               >
                 ✕
               </button>
             </div>
 
-            <div className="space-y-3 text-xs text-stone-700 leading-relaxed">
+            <div className="space-y-3 text-xs text-stone-950 leading-relaxed">
               <p
-                className="p-3 rounded-xl text-stone-800"
+                className="p-3 rounded-xl text-stone-950"
                 style={{
                   background: 'rgba(240, 228, 200, 0.45)',
                   border: '1px solid rgba(200, 180, 140, 0.35)',

@@ -143,7 +143,7 @@ export const EvidencePhoto: React.FC<EvidencePhotoProps> = ({
               <div className="absolute inset-0 opacity-40 bg-[linear-gradient(rgba(255,0,0,0.15)_1px,transparent_1px)] bg-[size:100%_4px]" />
 
               {/* Revealed Forensic Indicators inside lens */}
-              <div className="absolute inset-0 p-2.5 flex flex-col justify-between font-mono text-[9px] text-red-300 font-bold drop-shadow-md">
+              <div className="absolute inset-0 p-2.5 flex flex-col justify-between font-mono text-[11px] text-red-300 font-bold drop-shadow-md">
                 <div className="flex justify-between items-start bg-black/60 p-1 rounded backdrop-blur-xs">
                   <span className="text-red-400 font-extrabold animate-pulse">
                     ⚠️ {isFake ? 'MANIPULATION DETECTED' : 'AUTHENTIC CAPTURE'}
@@ -154,12 +154,12 @@ export const EvidencePhoto: React.FC<EvidencePhotoProps> = ({
                 </div>
 
                 {isCenter && (
-                  <div className="self-center bg-red-600/90 text-white px-2 py-0.5 rounded text-[10px] font-black tracking-widest border border-white/40 uppercase shadow-lg transform -rotate-6">
+                  <div className="self-center bg-red-600/90 text-white px-2 py-0.5 rounded text-xs font-black tracking-widest border border-white/40 uppercase shadow-lg transform -rotate-6">
                     🚨 STAMP VERIFIED FAKE
                   </div>
                 )}
 
-                <div className="flex justify-between items-end bg-black/60 p-1 rounded backdrop-blur-xs text-[8px]">
+                <div className="flex justify-between items-end bg-black/60 p-1 rounded backdrop-blur-xs text-[11px]">
                   <span className="text-teal-300">SPECTRAL ANOMALY</span>
                   <span className="text-slate-300">X:{Math.round(localPos.x)} Y:{Math.round(localPos.y)}</span>
                 </div>

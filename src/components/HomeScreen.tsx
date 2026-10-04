@@ -60,21 +60,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Metric 1 */}
         <div className="glass-card rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold text-stone-600 uppercase tracking-wider">
+            <span className="text-xs font-mono font-bold text-stone-950 uppercase tracking-wider">
               Total Media Analyzed
             </span>
             <div
               className="p-2 rounded-xl text-stone-900"
               style={{ background: 'rgba(230, 215, 185, 0.35)' }}
             >
-              <Activity className="w-4 h-4 text-stone-800" />
+              <Activity className="w-4 h-4 text-stone-950" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-serif font-black text-stone-950">{totalAnalyzed}</span>
-            <span className="text-[11px] font-medium text-stone-600">assets inspected</span>
+            <span className="text-xs font-medium text-stone-950">assets inspected</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-800 pt-1">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-800 pt-1">
             <TrendingUp className="w-3 h-3 text-emerald-700" />
             <span>Active Forensic Logging</span>
           </div>
@@ -83,7 +83,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Metric 2 */}
         <div className="glass-card rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold text-stone-600 uppercase tracking-wider">
+            <span className="text-xs font-mono font-bold text-stone-950 uppercase tracking-wider">
               Authentic Media
             </span>
             <div
@@ -95,9 +95,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-serif font-black text-stone-950">{authenticCount}</span>
-            <span className="text-[11px] font-medium text-stone-600">verified real</span>
+            <span className="text-xs font-medium text-stone-950">verified real</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-800 pt-1">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-emerald-800 pt-1">
             <CheckCircle2 className="w-3 h-3 text-emerald-700" />
             <span>{authenticPct}% Clean Verification</span>
           </div>
@@ -106,7 +106,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Metric 3 */}
         <div className="glass-card rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold text-stone-600 uppercase tracking-wider">
+            <span className="text-xs font-mono font-bold text-stone-950 uppercase tracking-wider">
               Suspicious / Fake Media
             </span>
             <div
@@ -118,9 +118,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-serif font-black text-stone-950">{fakeCount}</span>
-            <span className="text-[11px] font-medium text-stone-600">flagged deepfakes</span>
+            <span className="text-xs font-medium text-stone-950">flagged deepfakes</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-red-700 pt-1">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-red-700 pt-1">
             <span className="w-1.5 h-1.5 rounded-full bg-red-600" />
             <span>{fakePct}% Synthetic Artifacts</span>
           </div>
@@ -129,21 +129,21 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         {/* Metric 4 */}
         <div className="glass-card rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all">
           <div className="flex items-center justify-between">
-            <span className="text-[10px] font-mono font-bold text-stone-600 uppercase tracking-wider">
+            <span className="text-xs font-mono font-bold text-stone-950 uppercase tracking-wider">
               Protected Assets
             </span>
             <div
               className="p-2 rounded-xl text-stone-900"
               style={{ background: 'rgba(230, 215, 185, 0.35)' }}
             >
-              <Lock className="w-4 h-4 text-stone-800" />
+              <Lock className="w-4 h-4 text-stone-950" />
             </div>
           </div>
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-serif font-black text-stone-950">{protectedCount}</span>
-            <span className="text-[11px] font-medium text-stone-600">registered &amp; perturbed</span>
+            <span className="text-xs font-medium text-stone-950">registered &amp; perturbed</span>
           </div>
-          <div className="flex items-center gap-1.5 text-[10px] font-semibold text-stone-700 pt-1">
+          <div className="flex items-center gap-1.5 text-xs font-semibold text-stone-950 pt-1">
             <Shield className="w-3 h-3 text-red-700" />
             <span>EOT Watermark Active</span>
           </div>
@@ -161,7 +161,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 Media Detection Activity
               </h3>
             </div>
-            <span className="text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">
+            <span className="text-xs font-mono font-bold text-stone-950 uppercase tracking-wider">
               Real Time Logging
             </span>
           </div>
@@ -196,7 +196,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </svg>
             </div>
 
-            <div className="flex justify-between items-center text-[10px] font-mono text-stone-500 pt-3 border-t border-[#f0e6d6]/60">
+            <div className="flex justify-between items-center text-xs font-mono text-stone-950 pt-3 border-t border-[#f0e6d6]/60">
               <span>24 Hours Ago</span>
               <span>18 Hours Ago</span>
               <span>12 Hours Ago</span>
@@ -216,7 +216,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   Authenticity Distribution
                 </h3>
               </div>
-              <span className="text-[10px] font-mono font-bold text-stone-500 uppercase">
+              <span className="text-xs font-mono font-bold text-stone-950 uppercase">
                 Consensus
               </span>
             </div>
@@ -271,7 +271,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           <div className="pt-3 border-t border-[#f0e6d6]/60">
-            <p className="text-[11px] text-stone-600 leading-tight">
+            <p className="text-xs text-stone-950 leading-tight">
               Dual-model confidence score fusion combining Xception V2 &amp; EfficientNet-B4 V2.
             </p>
           </div>
@@ -282,7 +282,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-serif font-bold text-stone-950 text-base">Start an Investigation</h3>
-          <span className="text-[10px] font-mono font-bold text-stone-500 uppercase">
+          <span className="text-xs font-mono font-bold text-stone-950 uppercase">
             Workstation Modules
           </span>
         </div>
@@ -298,7 +298,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <h4 className="text-base font-serif font-bold text-stone-950">
                   Check Media
                 </h4>
-                <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
+                <p className="text-xs text-stone-950 mt-1.5 leading-relaxed">
                   Analyze images or video for synthetic face swaps, AI generation, or spatial manipulation using Xception V2 &amp; EfficientNet-B4 V2.
                 </p>
               </div>
@@ -325,7 +325,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <h4 className="text-base font-serif font-bold text-stone-950">
                   Protect Image
                 </h4>
-                <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
+                <p className="text-xs text-stone-950 mt-1.5 leading-relaxed">
                   Apply neural adversarial perturbation and embed ownership metadata to protect assets from AI cloning before public release.
                 </p>
               </div>
@@ -352,7 +352,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 <h4 className="text-base font-serif font-bold text-stone-950">
                   Find Misuse
                 </h4>
-                <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
+                <p className="text-xs text-stone-950 mt-1.5 leading-relaxed">
                   Search indexed public web sources and registered hash databases to locate unauthorized media copies or deepfake derivatives.
                 </p>
               </div>
@@ -375,12 +375,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       <div className="glass-panel rounded-2xl p-6 space-y-4">
         <div className="flex items-center justify-between border-b border-[#f0e6d6]/80 pb-4">
           <div className="flex items-center gap-2">
-            <History className="w-5 h-5 text-stone-800" />
+            <History className="w-5 h-5 text-stone-950" />
             <h3 className="font-serif font-bold text-stone-950 text-base">Recent Activity</h3>
           </div>
           <button
             onClick={() => setActiveTab('history')}
-            className="text-xs font-bold text-stone-700 hover:text-stone-950 flex items-center gap-1 cursor-pointer"
+            className="text-xs font-bold text-stone-950 hover:text-stone-950 flex items-center gap-1 cursor-pointer"
           >
             <span>VIEW ALL ACTIVITY</span>
             <ArrowRight className="w-3.5 h-3.5" />
@@ -391,7 +391,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-[#f0e6d6]/80 text-stone-500 font-mono font-bold uppercase">
+                <tr className="border-b border-[#f0e6d6]/80 text-stone-950 font-mono font-bold uppercase">
                   <th className="py-2.5 px-3">Media Item</th>
                   <th className="py-2.5 px-3">Action</th>
                   <th className="py-2.5 px-3">Result &amp; Status</th>
@@ -399,7 +399,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <th className="py-2.5 px-3 text-right">Report</th>
                 </tr>
               </thead>
-              <tbody className="divide-y text-stone-800" style={{ borderColor: 'rgba(200, 185, 155, 0.20)' }}>
+              <tbody className="divide-y text-stone-950" style={{ borderColor: 'rgba(200, 185, 155, 0.20)' }}>
                 {recentHistory.map((item) => (
                   <tr
                     key={item.id}
@@ -416,12 +416,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         />
                         <div>
                           <span className="font-bold text-stone-950 block">{item.mediaName}</span>
-                          <span className="font-mono text-[10px] text-stone-500">{item.id}</span>
+                          <span className="font-mono text-xs text-stone-950">{item.id}</span>
                         </div>
                       </div>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="px-2.5 py-1 rounded-md glass-input text-stone-900 font-semibold text-[11px]">
+                      <span className="px-2.5 py-1 rounded-md glass-input text-stone-900 font-semibold text-xs">
                         {item.action}
                       </span>
                     </td>
@@ -435,7 +435,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                         <span className="font-bold text-stone-900">{item.resultSummary}</span>
                       </div>
                     </td>
-                    <td className="py-3 px-3 text-stone-600 font-mono text-[11px]">{item.date}</td>
+                    <td className="py-3 px-3 text-stone-950 font-mono text-xs">{item.date}</td>
                     <td className="py-3 px-3 text-right">
                       <button
                         onClick={() => {
@@ -445,7 +445,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                             setActiveTab('report');
                           }
                         }}
-                        className="px-3 py-1.5 bg-[#1e1b18] hover:bg-stone-950 text-white rounded-lg text-[11px] font-bold inline-flex items-center gap-1 cursor-pointer transition-colors"
+                        className="px-3 py-1.5 bg-[#1e1b18] hover:bg-stone-950 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1 cursor-pointer transition-colors"
                         title="View Report"
                       >
                         <FileText className="w-3 h-3 text-amber-300" />
@@ -458,8 +458,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </table>
           </div>
         ) : (
-          <div className="text-center py-8 text-stone-600 text-xs">
-            <p className="font-bold text-stone-800">No media analyzed yet</p>
+          <div className="text-center py-8 text-stone-950 text-xs">
+            <p className="font-bold text-stone-950">No media analyzed yet</p>
             <p>Your recent forensic checks will appear here.</p>
           </div>
         )}

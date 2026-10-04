@@ -86,7 +86,7 @@ function SceneContents({ isVisible }: { isVisible: boolean }) {
 
             {/* Node HTML Label */}
             <Html distanceFactor={12} position={[0, node.size + 0.25, 0]} center>
-              <div className="bg-stone-900/90 text-stone-100 text-[10px] font-mono px-2 py-0.5 rounded border border-stone-700 whitespace-nowrap backdrop-blur-xs shadow-md pointer-events-none">
+              <div className="bg-stone-900/90 text-stone-100 text-xs font-mono px-2 py-0.5 rounded border border-stone-700 whitespace-nowrap backdrop-blur-xs shadow-md pointer-events-none">
                 <span className={isOrigin ? 'text-red-400 font-bold' : 'text-stone-300'}>
                   {node.label}
                 </span>
@@ -150,7 +150,7 @@ export const PropagationMap: React.FC = () => {
         <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 tracking-tight">
           3D Dissemination & Propagation Tracking
         </h2>
-        <p className="text-stone-600 text-sm leading-relaxed">
+        <p className="text-stone-950 text-sm leading-relaxed">
           Interactive 3D network visualizing how compromised media spreads from source origin across news hosts, social mirrors, and unverified forums.
         </p>
       </div>
@@ -163,7 +163,7 @@ export const PropagationMap: React.FC = () => {
             <Radio className="w-4 h-4 text-red-500 animate-pulse" />
             <span className="font-bold text-stone-100">LIVE GRAPH: 16 INDEXED NODES</span>
           </div>
-          <div className="flex items-center gap-4 text-[11px]">
+          <div className="flex items-center gap-4 text-xs">
             <span>ORIGIN SPREAD VELOCITY: <strong className="text-red-400">4.2x / hr</strong></span>
             <span>PROVENANCE RESIDUAL: <strong className="text-emerald-400">100% RECOVERED</strong></span>
           </div>
@@ -185,7 +185,7 @@ export const PropagationMap: React.FC = () => {
         </Suspense>
 
         {/* Bottom Legend Overlay */}
-        <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between text-[11px] font-mono text-stone-400 bg-stone-950/70 p-2.5 rounded-lg border border-stone-800/80 backdrop-blur-xs">
+        <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-wrap items-center justify-between text-xs font-mono text-stone-950 bg-stone-950/70 p-2.5 rounded-lg border border-stone-800/80 backdrop-blur-xs">
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-red-600 inline-block" /> Central Origin</span>
             <span className="flex items-center gap-1.5"><span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" /> Social Mirror</span>

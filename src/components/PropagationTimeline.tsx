@@ -20,13 +20,13 @@ export const PropagationTimeline: React.FC<PropagationTimelineProps> = ({
             <GitCommit className="w-5 h-5 text-indigo-600" />
             <span>Propagation Timeline & Lineage</span>
           </h3>
-          <p className="text-xs text-slate-500 mt-0.5">
+          <p className="text-xs text-stone-950 mt-0.5">
             Chronological dissemination path of registered media across public networks.
           </p>
         </div>
 
         {userRole === 'investigator' && (
-          <span className="px-2.5 py-1 bg-indigo-950 text-indigo-200 text-[11px] font-mono font-bold rounded border border-indigo-900">
+          <span className="px-2.5 py-1 bg-indigo-950 text-indigo-200 text-xs font-mono font-bold rounded border border-indigo-900">
             Source Lineage Graph Active
           </span>
         )}
@@ -38,7 +38,7 @@ export const PropagationTimeline: React.FC<PropagationTimelineProps> = ({
           <div key={node.id} className="relative flex items-start gap-4 group">
             {/* Dot Indicator */}
             <div
-              className={`absolute -left-6 top-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shadow-xs ${
+              className={`absolute -left-6 top-1 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold shadow-xs ${
                 node.type === 'original'
                   ? 'bg-indigo-600 text-white ring-4 ring-indigo-50'
                   : node.type === 'manipulated'
@@ -55,7 +55,7 @@ export const PropagationTimeline: React.FC<PropagationTimelineProps> = ({
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-slate-900 text-xs">{node.title}</span>
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase border ${
+                    className={`px-2 py-0.5 rounded text-xs font-extrabold uppercase border ${
                       node.classification === 'CONFIRMED MATCH'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                         : node.classification === 'AI MANIPULATED'
@@ -67,16 +67,16 @@ export const PropagationTimeline: React.FC<PropagationTimelineProps> = ({
                   </span>
                 </div>
 
-                <div className="flex items-center gap-1.5 text-[11px] text-slate-500 font-mono">
-                  <Clock className="w-3.5 h-3.5 text-slate-400" />
+                <div className="flex items-center gap-1.5 text-xs text-stone-950 font-mono">
+                  <Clock className="w-3.5 h-3.5 text-stone-950" />
                   <span>{node.timestamp}</span>
                 </div>
               </div>
 
               <div className="mt-2 text-xs space-y-1">
-                <p className="text-slate-700 font-semibold">Source Host: {node.source}</p>
-                <p className="text-slate-600">{node.notes}</p>
-                <div className="text-[11px] text-indigo-900 font-mono font-bold pt-1">
+                <p className="text-stone-950 font-semibold">Source Host: {node.source}</p>
+                <p className="text-stone-950">{node.notes}</p>
+                <div className="text-xs text-indigo-900 font-mono font-bold pt-1">
                   Vector Similarity: {node.similarity}%
                 </div>
               </div>

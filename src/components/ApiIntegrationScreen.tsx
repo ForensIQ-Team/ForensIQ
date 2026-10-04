@@ -65,7 +65,7 @@ print(f"Risk Assessment: {response.risk_level}")`,
       {/* Header */}
       <div>
         <h2 className="text-2xl font-bold text-stone-950 tracking-tight">API &amp; College Integration Hub</h2>
-        <p className="text-stone-600 text-xs sm:text-sm mt-1">
+        <p className="text-stone-950 text-xs sm:text-sm mt-1">
           Integrate ForensIQ media verification, watermarking, and document authentication directly into web platforms, university portals, or enterprise systems.
         </p>
       </div>
@@ -77,7 +77,7 @@ print(f"Risk Assessment: {response.risk_level}")`,
           <h3 className="font-bold text-stone-950 text-base">Educational Institution &amp; College Portal Integration</h3>
         </div>
 
-        <p className="text-xs text-stone-600 leading-relaxed max-w-3xl">
+        <p className="text-xs text-stone-950 leading-relaxed max-w-3xl">
           Universities and colleges embed ForensIQ REST APIs to safeguard academic integrity, prevent AI assignment generation fraud, register faculty research media ownership, and verify tuition payment receipts.
         </p>
 
@@ -85,25 +85,25 @@ print(f"Risk Assessment: {response.risk_level}")`,
         <div className="glass-card rounded-xl p-6 text-center">
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-xs font-bold">
             <div className="p-3 rounded-lg w-44" style={{ background: 'rgba(248, 242, 228, 0.42)', border: '1px solid rgba(200, 185, 155, 0.38)' }}>
-              <Building2 className="w-5 h-5 text-stone-800 mx-auto mb-1" />
+              <Building2 className="w-5 h-5 text-stone-950 mx-auto mb-1" />
               <span>College Portal</span>
-              <p className="text-[10px] text-stone-500 font-normal mt-0.5">Student Submissions</p>
+              <p className="text-xs text-stone-950 font-normal mt-0.5">Student Submissions</p>
             </div>
 
-            <ArrowRight className="w-5 h-5 text-stone-400 rotate-90 sm:rotate-0" />
+            <ArrowRight className="w-5 h-5 text-stone-950 rotate-90 sm:rotate-0" />
 
             <div className="p-3 rounded-lg border w-48" style={{ background: 'rgba(18, 16, 12, 0.78)', borderColor: 'rgba(80, 60, 40, 0.50)' }} >
               <ShieldCheck className="w-5 h-5 text-red-400 mx-auto mb-1" />
               <span className="text-white">ForensIQ REST API</span>
-              <p className="text-[10px] text-amber-200 font-normal mt-0.5">Automated Analysis</p>
+              <p className="text-xs text-amber-200 font-normal mt-0.5">Automated Analysis</p>
             </div>
 
-            <ArrowRight className="w-5 h-5 text-stone-400 rotate-90 sm:rotate-0" />
+            <ArrowRight className="w-5 h-5 text-stone-950 rotate-90 sm:rotate-0" />
 
             <div className="p-3 rounded-lg w-44" style={{ background: 'rgba(248, 242, 228, 0.42)', border: '1px solid rgba(200, 185, 155, 0.38)' }}>
               <FileCheck2 className="w-5 h-5 text-red-700 mx-auto mb-1" />
               <span>Verified Report</span>
-              <p className="text-[10px] text-stone-500 font-normal mt-0.5">Pass / Flagged Result</p>
+              <p className="text-xs text-stone-950 font-normal mt-0.5">Pass / Flagged Result</p>
             </div>
           </div>
         </div>
@@ -112,15 +112,15 @@ print(f"Risk Assessment: {response.risk_level}")`,
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs pt-2">
           <div className="p-3 glass-card rounded-lg space-y-1">
             <h4 className="font-bold text-stone-950">1. Experiment Submissions</h4>
-            <p className="text-stone-600">Detect duplicate image submissions or synthetic AI lab photo generation across student cohorts.</p>
+            <p className="text-stone-950">Detect duplicate image submissions or synthetic AI lab photo generation across student cohorts.</p>
           </div>
           <div className="p-3 glass-card rounded-lg space-y-1">
             <h4 className="font-bold text-stone-950">2. Research &amp; Notes</h4>
-            <p className="text-stone-600">Register faculty lecture notes and research diagrams with pHash watermarks prior to public distribution.</p>
+            <p className="text-stone-950">Register faculty lecture notes and research diagrams with pHash watermarks prior to public distribution.</p>
           </div>
           <div className="p-3 glass-card rounded-lg space-y-1">
             <h4 className="font-bold text-stone-950">3. Payment &amp; Receipts</h4>
-            <p className="text-stone-600">Perform Error-Level Analysis (ELA) on uploaded wire transfers and fee receipts to flag text modifications.</p>
+            <p className="text-stone-950">Perform Error-Level Analysis (ELA) on uploaded wire transfers and fee receipts to flag text modifications.</p>
           </div>
         </div>
       </div>
@@ -135,23 +135,23 @@ print(f"Risk Assessment: {response.risk_level}")`,
           </h4>
 
           <div className="space-y-2">
-            <label className="text-xs font-semibold text-stone-700">Sandbox Key:</label>
+            <label className="text-xs font-semibold text-stone-950">Sandbox Key:</label>
             <div className="p-2.5 glass-input rounded-lg flex items-center justify-between text-xs">
-              <span className="font-mono text-stone-800 text-[11px] truncate">{apiKey}</span>
+              <span className="font-mono text-stone-950 text-xs truncate">{apiKey}</span>
               <button
                 onClick={handleCopyKey}
-                className="p-1 text-stone-500 hover:text-stone-900 rounded cursor-pointer"
+                className="p-1 text-stone-950 hover:text-stone-900 rounded cursor-pointer"
                 title="Copy API Key"
               >
                 <Copy className="w-3.5 h-3.5" />
               </button>
             </div>
-            {copiedKey && <p className="text-[10px] text-emerald-700 font-semibold text-right">Key copied!</p>}
+            {copiedKey && <p className="text-xs text-emerald-700 font-semibold text-right">Key copied!</p>}
           </div>
 
           <div className="p-3 bg-red-50/70 border border-red-200 rounded-lg text-xs text-red-950 space-y-1">
             <p className="font-bold">Developer SLA:</p>
-            <p className="text-[11px] leading-relaxed">
+            <p className="text-xs leading-relaxed">
               Unlimited verification requests, sub-300ms neural inference latency, 99.9% uptime.
             </p>
           </div>
@@ -166,11 +166,11 @@ print(f"Risk Assessment: {response.risk_level}")`,
             </div>
 
             {/* Language Selector */}
-            <div className="flex items-center gap-1 bg-stone-900 p-0.5 rounded border border-stone-800 text-[11px]">
+            <div className="flex items-center gap-1 bg-stone-900 p-0.5 rounded border border-stone-800 text-xs">
               <button
                 onClick={() => setActiveLang('javascript')}
                 className={`px-2.5 py-1 rounded font-mono font-semibold cursor-pointer ${
-                  activeLang === 'javascript' ? 'bg-red-800 text-white' : 'text-stone-400 hover:text-white'
+                  activeLang === 'javascript' ? 'bg-red-800 text-white' : 'text-stone-950 hover:text-white'
                 }`}
               >
                 Node.js
@@ -178,7 +178,7 @@ print(f"Risk Assessment: {response.risk_level}")`,
               <button
                 onClick={() => setActiveLang('python')}
                 className={`px-2.5 py-1 rounded font-mono font-semibold cursor-pointer ${
-                  activeLang === 'python' ? 'bg-red-800 text-white' : 'text-stone-400 hover:text-white'
+                  activeLang === 'python' ? 'bg-red-800 text-white' : 'text-stone-950 hover:text-white'
                 }`}
               >
                 Python
@@ -186,7 +186,7 @@ print(f"Risk Assessment: {response.risk_level}")`,
               <button
                 onClick={() => setActiveLang('curl')}
                 className={`px-2.5 py-1 rounded font-mono font-semibold cursor-pointer ${
-                  activeLang === 'curl' ? 'bg-red-800 text-white' : 'text-stone-400 hover:text-white'
+                  activeLang === 'curl' ? 'bg-red-800 text-white' : 'text-stone-950 hover:text-white'
                 }`}
               >
                 cURL

@@ -15,7 +15,7 @@ export const AccountSettingsModal: React.FC<AccountSettingsProps> = ({
     <div className="space-y-8 max-w-4xl mx-auto pb-12">
       <div>
         <h2 className="text-2xl font-bold text-stone-950 tracking-tight">Account &amp; Security Settings</h2>
-        <p className="text-stone-600 text-xs sm:text-sm mt-1">
+        <p className="text-stone-950 text-xs sm:text-sm mt-1">
           Manage your account role, security credentials, and trust preferences.
         </p>
       </div>
@@ -27,7 +27,7 @@ export const AccountSettingsModal: React.FC<AccountSettingsProps> = ({
           <span>ACCOUNT ROLE &amp; ACCESS LEVEL</span>
         </h3>
 
-        <p className="text-xs text-stone-600 leading-relaxed">
+        <p className="text-xs text-stone-950 leading-relaxed">
           ForensIQ utilizes role-based access control within a unified platform architecture. You can toggle between Standard User and Verified Investigator modes below:
         </p>
 
@@ -38,27 +38,27 @@ export const AccountSettingsModal: React.FC<AccountSettingsProps> = ({
             className={`p-5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
               userRole === 'normal'
                 ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                : 'border-[#e2d8c3]/80 glass-card text-stone-950 hover:bg-[#faf7f2]/60'
             }`}
           >
             <div className="space-y-1">
               <div className="flex items-center justify-between">
                 <span className="font-bold text-sm">Standard User</span>
                 {userRole === 'normal' && (
-                  <span className="px-2 py-0.5 rounded bg-white/20 text-amber-200 text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded bg-white/20 text-amber-200 text-xs font-bold">
                     Active
                   </span>
                 )}
               </div>
               <p
                 className={`text-xs leading-relaxed ${
-                  userRole === 'normal' ? 'text-stone-300' : 'text-stone-500'
+                  userRole === 'normal' ? 'text-stone-300' : 'text-stone-950'
                 }`}
               >
                 Essential forensic suite: Check media authenticity, protect personal images, and search web misuse.
               </p>
             </div>
-            <div className="text-[11px] font-semibold text-amber-300">
+            <div className="text-xs font-semibold text-amber-300">
               ✓ Clean, simplified interface
             </div>
           </div>
@@ -69,7 +69,7 @@ export const AccountSettingsModal: React.FC<AccountSettingsProps> = ({
             className={`p-5 rounded-xl border transition-all cursor-pointer flex flex-col justify-between space-y-3 ${
               userRole === 'investigator'
                 ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                : 'border-[#e2d8c3]/80 glass-card text-stone-950 hover:bg-[#faf7f2]/60'
             }`}
           >
             <div className="space-y-1">
@@ -79,20 +79,20 @@ export const AccountSettingsModal: React.FC<AccountSettingsProps> = ({
                   <span>Verified Investigator</span>
                 </span>
                 {userRole === 'investigator' && (
-                  <span className="px-2 py-0.5 rounded bg-white/20 text-amber-200 text-[10px] font-bold">
+                  <span className="px-2 py-0.5 rounded bg-white/20 text-amber-200 text-xs font-bold">
                     Active
                   </span>
                 )}
               </div>
               <p
                 className={`text-xs leading-relaxed ${
-                  userRole === 'investigator' ? 'text-stone-300' : 'text-stone-500'
+                  userRole === 'investigator' ? 'text-stone-300' : 'text-stone-950'
                 }`}
               >
                 Full forensic suite: Interactive spectral viewer, ELA residual maps, compare workspace, and audit report generator.
               </p>
             </div>
-            <div className="text-[11px] font-semibold text-amber-300">
+            <div className="text-xs font-semibold text-amber-300">
               ✓ Advanced evidence &amp; diagnostic suite unlocked
             </div>
           </div>
@@ -107,7 +107,7 @@ export const AccountSettingsModal: React.FC<AccountSettingsProps> = ({
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
           <div>
-            <label className="font-semibold text-stone-700 block mb-1">Account Name:</label>
+            <label className="font-semibold text-stone-950 block mb-1">Account Name:</label>
             <input
               type="text"
               readOnly
@@ -117,7 +117,7 @@ export const AccountSettingsModal: React.FC<AccountSettingsProps> = ({
           </div>
 
           <div>
-            <label className="font-semibold text-stone-700 block mb-1">Email Address:</label>
+            <label className="font-semibold text-stone-950 block mb-1">Email Address:</label>
             <input
               type="text"
               readOnly

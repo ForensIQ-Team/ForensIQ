@@ -53,7 +53,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({
       {/* 4. 3D PROPAGATION MAP — REACT THREE FIBER (SUSPENSE LAZY LOADED) */}
       <Suspense
         fallback={
-          <div className="py-20 text-center font-mono text-xs text-stone-500">
+          <div className="py-20 text-center font-mono text-xs text-stone-950">
             Initializing 3D Propagation Canvas...
           </div>
         }

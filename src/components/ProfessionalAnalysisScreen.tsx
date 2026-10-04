@@ -82,7 +82,7 @@ export const ProfessionalAnalysisScreen: React.FC<ProfessionalAnalysisScreenProp
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[#e2d8c3]/80 pb-4">
           <div>
             <h3 className="font-bold text-stone-950 text-base">Dual-Asset Compare &amp; Splicing Inspector</h3>
-            <p className="text-xs text-stone-500">
+            <p className="text-xs text-stone-950">
               Compare baseline registered asset against suspicious derivative target.
             </p>
           </div>
@@ -103,7 +103,7 @@ export const ProfessionalAnalysisScreen: React.FC<ProfessionalAnalysisScreenProp
           <div className="space-y-3 p-4 glass-card rounded-xl">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-stone-950">ASSET A (Baseline Registered)</span>
-              <span className="px-2 py-0.5 rounded bg-emerald-50/80 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+              <span className="px-2 py-0.5 rounded bg-emerald-50/80 text-emerald-800 text-xs font-bold border border-emerald-200">
                 Score: 94% Authentic
               </span>
             </div>
@@ -116,9 +116,9 @@ export const ProfessionalAnalysisScreen: React.FC<ProfessionalAnalysisScreenProp
               />
             </div>
 
-            <div className="text-xs space-y-1 text-stone-700">
+            <div className="text-xs space-y-1 text-stone-950">
               <p className="font-bold text-stone-950">{activeAnalysis.mediaName}</p>
-              <p className="text-[11px] text-stone-500 font-mono">
+              <p className="text-xs text-stone-950 font-mono">
                 SHA256: {activeAnalysis.metadata.hashSHA256.substring(0, 32)}...
               </p>
             </div>
@@ -128,7 +128,7 @@ export const ProfessionalAnalysisScreen: React.FC<ProfessionalAnalysisScreenProp
           <div className="space-y-3 p-4 glass-card rounded-xl">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-stone-950">ASSET B (Suspicious Target)</span>
-              <span className="px-2 py-0.5 rounded bg-red-50/80 text-red-800 text-[10px] font-bold border border-red-200">
+              <span className="px-2 py-0.5 rounded bg-red-50/80 text-red-800 text-xs font-bold border border-red-200">
                 Score: 18% Synthetic
               </span>
             </div>
@@ -141,9 +141,9 @@ export const ProfessionalAnalysisScreen: React.FC<ProfessionalAnalysisScreenProp
               />
             </div>
 
-            <div className="text-xs space-y-1 text-stone-700">
+            <div className="text-xs space-y-1 text-stone-950">
               <p className="font-bold text-stone-950">{compareMedia.mediaName}</p>
-              <p className="text-[11px] text-stone-500 font-mono">
+              <p className="text-xs text-stone-950 font-mono">
                 SHA256: {compareMedia.metadata.hashSHA256.substring(0, 32)}...
               </p>
             </div>

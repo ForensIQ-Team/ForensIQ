@@ -33,8 +33,8 @@ export const HowItWorks: React.FC = () => {
           <div className="w-10 h-10 rounded-full bg-red-950/60 border border-red-700 flex items-center justify-center text-red-400 mb-2">
             <Upload className="w-5 h-5 animate-pulse" />
           </div>
-          <span className="text-[10px] font-mono text-stone-400">DROP MEDIA HERE (.JPG, .PNG)</span>
-          <span className="text-[9px] font-mono text-red-400 mt-1">SHA-256 HASH CALCULATING...</span>
+          <span className="text-xs font-mono text-stone-950">DROP MEDIA HERE (.JPG, .PNG)</span>
+          <span className="text-[11px] font-mono text-red-400 mt-1">SHA-256 HASH CALCULATING...</span>
         </div>
       ),
     },
@@ -56,7 +56,7 @@ export const HowItWorks: React.FC = () => {
               <Search className="w-6 h-6 text-red-300" />
             </div>
           </div>
-          <div className="absolute bottom-1 right-1 bg-black/80 text-red-400 text-[9px] font-mono px-1.5 py-0.5 rounded">
+          <div className="absolute bottom-1 right-1 bg-black/80 text-red-400 text-[11px] font-mono px-1.5 py-0.5 rounded">
             SCANNING... 88%
           </div>
         </div>
@@ -76,7 +76,7 @@ export const HowItWorks: React.FC = () => {
           <div className="w-full bg-stone-800 h-1.5 rounded-full mt-2 overflow-hidden">
             <div className="bg-emerald-500 h-full w-[94%]" />
           </div>
-          <span className="text-[9px] font-mono text-stone-400 mt-2">HIGH MODEL AGREEMENT</span>
+          <span className="text-[11px] font-mono text-stone-950 mt-2">HIGH MODEL AGREEMENT</span>
         </div>
       ),
     },
@@ -87,7 +87,7 @@ export const HowItWorks: React.FC = () => {
       description: 'Generate cryptographically signed forensic audit binder with metadata traces.',
       visual: (
         <div className="w-full h-32 bg-stone-900 rounded-sm p-3 border border-stone-700 flex flex-col justify-between relative overflow-hidden">
-          <div className="flex justify-between items-center text-[10px] font-mono text-stone-400">
+          <div className="flex justify-between items-center text-xs font-mono text-stone-950">
             <span>BINDER #FQ-2026</span>
             <span className="text-emerald-400">PASSED</span>
           </div>
@@ -97,7 +97,7 @@ export const HowItWorks: React.FC = () => {
             <div className="w-2/3 h-1.5 bg-stone-700 rounded" />
           </div>
           {/* Distressed Stamp Overlay */}
-          <div className="absolute bottom-2 right-2 border-2 border-dashed border-emerald-500 text-emerald-400 text-[10px] font-mono font-black px-1.5 py-0.5 transform -rotate-12 bg-emerald-950/40">
+          <div className="absolute bottom-2 right-2 border-2 border-dashed border-emerald-500 text-emerald-400 text-xs font-mono font-black px-1.5 py-0.5 transform -rotate-12 bg-emerald-950/40">
             VERIFIED
           </div>
         </div>
@@ -114,7 +114,7 @@ export const HowItWorks: React.FC = () => {
         <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 tracking-tight">
           How ForensIQ Authenticates Media
         </h2>
-        <p className="text-stone-600 text-sm leading-relaxed">
+        <p className="text-stone-950 text-sm leading-relaxed">
           Four interconnected forensic stages executed autonomously from initial upload to final cryptographic evidence sign-off.
         </p>
       </div>
@@ -161,7 +161,7 @@ export const HowItWorks: React.FC = () => {
                 </div>
 
                 <h3 className="font-serif font-bold text-stone-900 text-base mb-1">{item.title}</h3>
-                <p className="text-xs text-stone-600 mb-4 h-10 leading-snug">{item.description}</p>
+                <p className="text-xs text-stone-950 mb-4 h-10 leading-snug">{item.description}</p>
 
                 {/* Card Visual Stage */}
                 {item.visual}

@@ -185,7 +185,7 @@ export const DetectiveBoard: React.FC<DetectiveBoardProps> = ({
           </a>
 
           {/* Center: Evenly Spaced Navigation Links */}
-          <nav className="hidden md:flex items-center gap-6 lg:gap-8 font-sans font-semibold text-xs text-stone-800">
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8 font-sans font-semibold text-xs text-stone-950">
             <a href="#about" className="px-3 py-1 rounded-full hover:bg-stone-800/10 hover:text-slate-950 transition-all cursor-none">
               About
             </a>
@@ -226,11 +226,11 @@ export const DetectiveBoard: React.FC<DetectiveBoardProps> = ({
             FORENSIQ
           </h1>
 
-          <h2 className="text-base sm:text-lg lg:text-xl font-serif font-bold text-stone-800 leading-snug">
+          <h2 className="text-base sm:text-lg lg:text-xl font-serif font-bold text-stone-950 leading-snug">
             Digital Media Authenticity &amp; Forensic Investigation Platform
           </h2>
 
-          <p className="text-xs sm:text-sm text-stone-600 leading-relaxed font-sans max-w-md">
+          <p className="text-xs sm:text-sm text-stone-950 leading-relaxed font-sans max-w-md">
             AI-powered forensic analysis tracing digital media from origin to viral spread. Detect deepfakes, verify authenticity, protect truth.
           </p>
 
@@ -254,13 +254,13 @@ export const DetectiveBoard: React.FC<DetectiveBoardProps> = ({
               <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 z-30">
                 <div className="w-3.5 h-3.5 rounded-full bg-gradient-to-tr from-stone-800 to-stone-500 border border-stone-900 shadow-md" />
               </div>
-              <div className="border-b border-stone-800 pb-1 mb-1 text-[7px] font-sans font-bold tracking-widest uppercase text-stone-700">
+              <div className="border-b border-stone-800 pb-1 mb-1 text-[7px] font-sans font-bold tracking-widest uppercase text-stone-950">
                 DAILY GAZETTE • BREAKING
               </div>
               <h3 className="font-black text-xs uppercase leading-tight font-serif tracking-tighter">
                 DEEPFAKE SCANDAL IN OIL...
               </h3>
-              <p className="text-[8px] font-sans text-stone-700 leading-snug mt-1 opacity-90 line-clamp-3">
+              <p className="text-[11px] font-sans text-stone-950 leading-snug mt-1 opacity-90 line-clamp-3">
                 Synthesized facial composite bypasses biometric security systems across corporate networks...
               </p>
             </div>
@@ -274,7 +274,7 @@ export const DetectiveBoard: React.FC<DetectiveBoardProps> = ({
                 <div className="font-serif font-black text-xl tracking-tighter leading-none text-stone-900">
                   247
                 </div>
-                <div className="font-mono font-bold text-[9px] tracking-widest uppercase text-stone-700 mt-0.5">
+                <div className="font-mono font-bold text-[11px] tracking-widest uppercase text-stone-950 mt-0.5">
                   CASES SOLVED
                 </div>
               </div>
@@ -290,7 +290,7 @@ export const DetectiveBoard: React.FC<DetectiveBoardProps> = ({
                 <div className="font-serif font-black text-lg tracking-tighter text-stone-900">
                   98.2%
                 </div>
-                <div className="font-mono font-bold text-[8px] tracking-widest uppercase text-stone-700">
+                <div className="font-mono font-bold text-[11px] tracking-widest uppercase text-stone-950">
                   ACCURACY
                 </div>
               </div>
@@ -308,10 +308,10 @@ export const DetectiveBoard: React.FC<DetectiveBoardProps> = ({
 
             {/* Confidential Case-File Folder Tab Peeking in from Far Right Edge */}
             <div className="absolute -right-8 top-44 transform -rotate-2 bg-[#d8be92] p-3 pt-5 border-l-4 border-amber-900 rounded-l-md shadow-xl w-32 text-stone-900 font-sans">
-              <div className="border border-red-800/80 px-1.5 py-0.5 text-center font-mono font-black text-[9px] tracking-widest text-red-800 uppercase transform -rotate-6 bg-red-100/40 mb-1.5">
+              <div className="border border-red-800/80 px-1.5 py-0.5 text-center font-mono font-black text-[11px] tracking-widest text-red-800 uppercase transform -rotate-6 bg-red-100/40 mb-1.5">
                 CONFIDENTIAL
               </div>
-              <div className="text-[7px] font-mono text-stone-800 space-y-0.5">
+              <div className="text-[7px] font-mono text-stone-950 space-y-0.5">
                 <div>FILE: #FQ-2026-X</div>
                 <div>CLASSIFIED FORENSIC</div>
               </div>
