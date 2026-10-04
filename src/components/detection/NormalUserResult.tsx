@@ -44,7 +44,7 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
             <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-red-700 block">
+            <span className="text-xs font-mono font-bold uppercase tracking-wider text-red-700 block">
               FORENSIQ ANALYSIS COMPLETE
             </span>
             <h3 className="text-lg font-serif font-black text-stone-950 truncate max-w-md">
@@ -97,7 +97,7 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
           </div>
 
           <div className="space-y-1">
-            <span className={`text-[10px] font-mono font-bold uppercase tracking-wider opacity-75 ${
+            <span className={`text-xs font-mono font-bold uppercase tracking-wider opacity-75 ${
               isReal ? 'text-emerald-900' : isUncertain ? 'text-amber-900' : 'text-red-900'
             }`}>
               FINAL RESULT
@@ -107,7 +107,7 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
             }`}>
               {result.classification}
             </h3>
-            <p className="text-xs font-semibold opacity-90 leading-relaxed max-w-xl text-stone-800">
+            <p className="text-xs font-semibold opacity-90 leading-relaxed max-w-xl text-stone-950">
               {result.summaryText}
             </p>
           </div>
@@ -123,9 +123,9 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
             border: '1px solid rgba(200, 185, 155, 0.38)',
           }}
         >
-          <span className="text-[10px] font-mono font-bold uppercase text-stone-500 block">Confidence</span>
+          <span className="text-xs font-mono font-bold uppercase text-stone-950 block">Confidence</span>
           <span className="text-3xl font-serif font-black text-stone-950">{confValue.toFixed(1)}%</span>
-          <span className="text-[10px] font-semibold text-stone-600 block mt-0.5">
+          <span className="text-xs font-semibold text-stone-950 block mt-0.5">
             Authenticity: {result.authenticityScore}%
           </span>
         </div>
@@ -148,7 +148,7 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
                   {xFake >= 50 ? 'PREDICTION: FAKE' : 'PREDICTION: REAL'}
                 </span>
               </div>
-              <div className="flex justify-between font-mono text-[11px] text-stone-700">
+              <div className="flex justify-between font-mono text-xs text-stone-950">
                 <span>Fake: {xFake.toFixed(1)}%</span>
                 <span>Real: {xReal.toFixed(1)}%</span>
               </div>
@@ -162,7 +162,7 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
                   {eFake >= 50 ? 'PREDICTION: FAKE' : 'PREDICTION: REAL'}
                 </span>
               </div>
-              <div className="flex justify-between font-mono text-[11px] text-stone-700">
+              <div className="flex justify-between font-mono text-xs text-stone-950">
                 <span>Fake: {eFake.toFixed(1)}%</span>
                 <span>Real: {eReal.toFixed(1)}%</span>
               </div>
@@ -179,15 +179,15 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
           <div className="space-y-2 text-xs font-mono">
             <div className="p-3 rounded-lg space-y-1.5" style={{ background: 'rgba(248, 242, 228, 0.38)', border: '1px solid rgba(200, 185, 155, 0.30)' }}>
               <div className="flex justify-between">
-                <span className="text-stone-600">Fused Fake Score:</span>
+                <span className="text-stone-950">Fused Fake Score:</span>
                 <span className="font-bold text-red-700">{fusedFake.toFixed(1)}%</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-stone-600">Fused Real Score:</span>
+                <span className="text-stone-950">Fused Real Score:</span>
                 <span className="font-bold text-emerald-700">{fusedReal.toFixed(1)}%</span>
               </div>
               <div className="flex justify-between pt-1" style={{ borderTop: '1px solid rgba(200, 185, 155, 0.28)' }}>
-                <span className="text-stone-600">Model Agreement:</span>
+                <span className="text-stone-950">Model Agreement:</span>
                 <span className={`font-bold ${modelsAgree ? 'text-emerald-800' : 'text-amber-800'}`}>
                   {modelsAgree ? 'AGREE (High Consensus)' : 'DISAGREE (Score Discrepancy)'}
                 </span>

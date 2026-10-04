@@ -59,7 +59,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
           {onBack && (
             <button
               onClick={onBack}
-              className="p-1.5 rounded-lg text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-stone-950 hover:bg-slate-100 transition-colors cursor-pointer"
               title="Back"
             >
               <ArrowLeft className="w-5 h-5" />
@@ -68,10 +68,10 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
 
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-mono text-[11px] font-bold text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
+              <span className="font-mono text-xs font-bold text-indigo-900 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200">
                 ACTIVE MEDIA • FILE ID: {analysis.id}
               </span>
-              <span className="text-xs text-slate-500">• {analysis.mediaName}</span>
+              <span className="text-xs text-stone-950">• {analysis.mediaName}</span>
             </div>
             <h2 className="text-lg font-bold text-slate-900 mt-0.5">
               Interactive Forensic Workspace
@@ -86,7 +86,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
               onClick={() => {
                 if (onAddToInvestigation) onAddToInvestigation(analysis);
               }}
-              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-semibold rounded-lg border border-slate-300 transition-colors cursor-pointer"
+              className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-stone-950 text-xs font-semibold rounded-lg border border-slate-300 transition-colors cursor-pointer"
             >
               Add to Investigation
             </button>
@@ -108,7 +108,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
         <div className="lg:col-span-2 bg-slate-950 rounded-xl border border-slate-800 shadow-md flex flex-col justify-between overflow-hidden relative min-h-[520px]">
           {/* Top Viewer Control Bar */}
           <div className="bg-slate-900/90 border-b border-slate-800 p-3 flex flex-wrap items-center justify-between text-xs text-slate-300 gap-2 z-10">
-            <div className="flex items-center gap-2 font-mono text-[11px]">
+            <div className="flex items-center gap-2 font-mono text-xs">
               <span className="text-indigo-400 font-bold">VIEWPORT:</span>
               <span>{zoomLevel}% Zoom</span>
               <span>•</span>
@@ -141,7 +141,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
               <button
                 onClick={() => setShowGrid(!showGrid)}
                 className={`p-1.5 rounded text-xs font-medium cursor-pointer transition-colors ${
-                  showGrid ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 text-slate-400'
+                  showGrid ? 'bg-indigo-600 text-white' : 'hover:bg-slate-800 text-stone-950'
                 }`}
                 title="Toggle Forensic Grid"
               >
@@ -193,7 +193,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
                       alt="Original"
                       className="w-full h-64 object-cover"
                     />
-                    <span className="absolute bottom-1 left-1 px-2 py-0.5 bg-slate-900/90 text-white text-[10px] font-bold rounded">
+                    <span className="absolute bottom-1 left-1 px-2 py-0.5 bg-slate-900/90 text-white text-xs font-bold rounded">
                       Original
                     </span>
                   </div>
@@ -203,7 +203,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
                       alt="Analysis"
                       className="w-full h-64 object-cover"
                     />
-                    <span className="absolute bottom-1 left-1 px-2 py-0.5 bg-red-950/90 text-white text-[10px] font-bold rounded">
+                    <span className="absolute bottom-1 left-1 px-2 py-0.5 bg-red-950/90 text-white text-xs font-bold rounded">
                       ELA Residual
                     </span>
                   </div>
@@ -216,7 +216,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
           <div className="bg-slate-900/95 border-t border-slate-800 p-3 flex flex-wrap items-center justify-between gap-4 text-xs text-slate-300 z-10">
             {/* Opacity Slider */}
             <div className="flex items-center gap-3">
-              <span className="text-slate-400 font-medium">Overlay Opacity:</span>
+              <span className="text-stone-950 font-medium">Overlay Opacity:</span>
               <input
                 type="range"
                 min="0"
@@ -247,7 +247,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
                 className={`px-3 py-1 rounded text-xs font-semibold cursor-pointer border transition-colors ${
                   showRegions
                     ? 'bg-slate-800 border-slate-600 text-indigo-300'
-                    : 'bg-slate-800 border-slate-700 text-slate-400'
+                    : 'bg-slate-800 border-slate-700 text-stone-950'
                 }`}
               >
                 {showRegions ? 'Regions Active' : 'Hide Heatmap'}
@@ -261,11 +261,11 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
           {/* 1. AUTHENTICITY ASSESSMENT SCORE CARD */}
           <div className="border-b border-slate-100 pb-4 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              <span className="text-xs font-bold text-stone-950 uppercase tracking-wider">
                 AUTHENTICITY ASSESSMENT
               </span>
               <span
-                className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
+                className={`px-2 py-0.5 rounded text-xs font-bold uppercase border ${
                   analysis.riskLevel === 'low'
                     ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                     : 'bg-red-50 text-red-800 border-red-200'
@@ -278,15 +278,15 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
             <div className="flex items-center gap-4 bg-slate-50 p-3 rounded-lg border border-slate-200">
               <div className="w-16 h-16 rounded-full border-4 border-indigo-950 bg-white flex flex-col items-center justify-center font-black shadow-xs">
                 <span className="text-lg leading-none text-slate-900">{analysis.overallScore}%</span>
-                <span className="text-[8px] text-slate-500 uppercase font-semibold">Authentic</span>
+                <span className="text-[11px] text-stone-950 uppercase font-semibold">Authentic</span>
               </div>
 
               <div className="space-y-0.5">
                 <h4 className="font-extrabold text-slate-900 text-base capitalize">
                   {analysis.authenticityStatus.replace(/-/g, ' ')}
                 </h4>
-                <p className="text-xs text-slate-500 font-medium">
-                  Confidence Rating: <span className="font-bold text-slate-800">{analysis.confidence}%</span>
+                <p className="text-xs text-stone-950 font-medium">
+                  Confidence Rating: <span className="font-bold text-stone-950">{analysis.confidence}%</span>
                 </p>
               </div>
             </div>
@@ -296,10 +296,10 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
           <div className="space-y-2 border-b border-slate-100 pb-4">
             <div className="flex items-center justify-between text-xs">
               <span className="font-bold text-slate-900">AI Detection Heatmap</span>
-              <span className="text-[10px] text-indigo-700 font-semibold">Active Layer</span>
+              <span className="text-xs text-indigo-700 font-semibold">Active Layer</span>
             </div>
 
-            <div className="grid grid-cols-2 gap-2 text-center text-[10px] font-bold text-slate-600">
+            <div className="grid grid-cols-2 gap-2 text-center text-xs font-bold text-stone-950">
               <div className="p-1 bg-slate-50 border border-slate-200 rounded">
                 <img
                   src={analysis.mediaUrl}
@@ -326,26 +326,26 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
               className="w-full flex items-center justify-between font-bold text-xs text-slate-900 uppercase tracking-wider py-1 cursor-pointer"
             >
               <span>Metadata & EXIF</span>
-              {metaOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+              {metaOpen ? <ChevronUp className="w-4 h-4 text-stone-950" /> : <ChevronDown className="w-4 h-4 text-stone-950" />}
             </button>
 
             {metaOpen && (
               <div className="mt-2 divide-y divide-slate-100 text-xs">
                 <div className="py-1.5 flex justify-between">
-                  <span className="text-slate-500">Dimensions</span>
+                  <span className="text-stone-950">Dimensions</span>
                   <span className="font-mono font-semibold text-slate-900">{analysis.metadata.dimensions}</span>
                 </div>
                 <div className="py-1.5 flex justify-between">
-                  <span className="text-slate-500">Camera</span>
-                  <span className="font-medium text-slate-800">{analysis.metadata.cameraModel || 'None'}</span>
+                  <span className="text-stone-950">Camera</span>
+                  <span className="font-medium text-stone-950">{analysis.metadata.cameraModel || 'None'}</span>
                 </div>
                 <div className="py-1.5 flex justify-between">
-                  <span className="text-slate-500">Software</span>
-                  <span className="font-medium text-slate-800">{analysis.metadata.software}</span>
+                  <span className="text-stone-950">Software</span>
+                  <span className="font-medium text-stone-950">{analysis.metadata.software}</span>
                 </div>
                 <div className="py-1.5 flex justify-between">
-                  <span className="text-slate-500">pHash</span>
-                  <span className="font-mono text-[10px] text-slate-600">{analysis.metadata.pHash}</span>
+                  <span className="text-stone-950">pHash</span>
+                  <span className="font-mono text-xs text-stone-950">{analysis.metadata.pHash}</span>
                 </div>
               </div>
             )}
@@ -358,18 +358,18 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
               className="w-full flex items-center justify-between font-bold text-xs text-slate-900 uppercase tracking-wider py-1 cursor-pointer"
             >
               <span>Manipulation Signals</span>
-              {signalsOpen ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+              {signalsOpen ? <ChevronUp className="w-4 h-4 text-stone-950" /> : <ChevronDown className="w-4 h-4 text-stone-950" />}
             </button>
 
             {signalsOpen && (
               <div className="mt-2 space-y-2">
                 {analysis.manipulationSignals.map((sig) => (
                   <div key={sig.id} className="p-2 bg-slate-50 rounded border border-slate-200 text-xs">
-                    <div className="flex items-center justify-between font-bold text-slate-800">
+                    <div className="flex items-center justify-between font-bold text-stone-950">
                       <span>{sig.name}</span>
-                      <span className="text-[10px] text-slate-600 font-mono">{sig.score}</span>
+                      <span className="text-xs text-stone-950 font-mono">{sig.score}</span>
                     </div>
-                    <p className="text-[11px] text-slate-500 mt-0.5">{sig.description}</p>
+                    <p className="text-xs text-stone-950 mt-0.5">{sig.description}</p>
                   </div>
                 ))}
               </div>

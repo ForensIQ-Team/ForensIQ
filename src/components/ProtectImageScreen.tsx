@@ -61,7 +61,7 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
       {/* Title & Header */}
       <div>
         <h2 className="text-2xl font-bold text-stone-950 tracking-tight">Protect Your Image</h2>
-        <p className="text-stone-600 text-xs sm:text-sm mt-1">
+        <p className="text-stone-950 text-xs sm:text-sm mt-1">
           Add invisible protection and a media fingerprint before you share your image publicly.
         </p>
       </div>
@@ -84,9 +84,9 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
                 className="w-32 h-32 object-cover rounded-lg border border-[#d8ccb6] shadow-xs mb-3"
               />
               <p className="text-xs font-bold text-stone-950">{activeRecord.originalName}</p>
-              <p className="text-[11px] text-stone-500 mt-0.5">3.42 MB • 3840 x 2560 px</p>
+              <p className="text-xs text-stone-950 mt-0.5">3.42 MB • 3840 x 2560 px</p>
 
-              <label className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 glass-input text-stone-800 text-xs font-semibold rounded-lg transition-colors cursor-pointer">
+              <label className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 glass-input text-stone-950 text-xs font-semibold rounded-lg transition-colors cursor-pointer">
                 <span>Choose Different Image</span>
                 <input
                   type="file"
@@ -111,13 +111,13 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
                 className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
                   protectionLevel === 'EOT'
                     ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                    : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                    : 'border-[#e2d8c3]/80 glass-card text-stone-950 hover:bg-[#faf7f2]/60'
                 }`}
               >
                 <div className="font-bold text-xs">EOT Adversarial</div>
                 <p
-                  className={`text-[11px] mt-1 leading-snug ${
-                    protectionLevel === 'EOT' ? 'text-amber-200' : 'text-stone-500'
+                  className={`text-xs mt-1 leading-snug ${
+                    protectionLevel === 'EOT' ? 'text-amber-200' : 'text-stone-950'
                   }`}
                 >
                   Applies expectation-over-transformation perturbation to confuse generative AI models.
@@ -129,13 +129,13 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
                 className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
                   protectionLevel === 'Hybrid'
                     ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                    : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                    : 'border-[#e2d8c3]/80 glass-card text-stone-950 hover:bg-[#faf7f2]/60'
                 }`}
               >
                 <div className="font-bold text-xs">Robust Hybrid</div>
                 <p
-                  className={`text-[11px] mt-1 leading-snug ${
-                    protectionLevel === 'Hybrid' ? 'text-amber-200' : 'text-stone-500'
+                  className={`text-xs mt-1 leading-snug ${
+                    protectionLevel === 'Hybrid' ? 'text-amber-200' : 'text-stone-950'
                   }`}
                 >
                   Combines invisible pHash frequency watermarking with CLIP vector embedding.
@@ -147,13 +147,13 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
                 className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
                   protectionLevel === 'Metadata'
                     ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                    : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                    : 'border-[#e2d8c3]/80 glass-card text-stone-950 hover:bg-[#faf7f2]/60'
                 }`}
               >
                 <div className="font-bold text-xs">Provenance EXIF</div>
                 <p
-                  className={`text-[11px] mt-1 leading-snug ${
-                    protectionLevel === 'Metadata' ? 'text-amber-200' : 'text-stone-500'
+                  className={`text-xs mt-1 leading-snug ${
+                    protectionLevel === 'Metadata' ? 'text-amber-200' : 'text-stone-950'
                   }`}
                 >
                   Appends C2PA cryptographically signed ownership manifest to image headers.
@@ -189,11 +189,11 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
               PROTECTION SUMMARY
             </h4>
 
-            <p className="text-xs text-stone-600 leading-relaxed glass-input p-3 rounded-lg">
+            <p className="text-xs text-stone-950 leading-relaxed glass-input p-3 rounded-lg">
               ForensIQ applies transformation-robust adversarial protection, adds an invisible ownership signal, and creates a media fingerprint.
             </p>
 
-            <div className="space-y-2.5 text-xs text-stone-700">
+            <div className="space-y-2.5 text-xs text-stone-950">
               <div className="flex items-start gap-2">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
                 <span>EOT-based adversarial perturbation</span>
@@ -217,7 +217,7 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
             </div>
 
             {/* Responsible Transparency Disclaimer */}
-            <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-lg text-[11px] text-amber-900 space-y-1">
+            <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-lg text-xs text-amber-900 space-y-1">
               <div className="font-bold flex items-center gap-1.5">
                 <Info className="w-3.5 h-3.5 text-amber-700" />
                 <span>Responsible Protection Notice</span>
@@ -232,10 +232,10 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
           {processState === 'complete' && (
             <div className="glass-panel rounded-xl p-5 shadow-xs space-y-4">
               <div className="flex items-center justify-between border-b border-[#e2d8c3]/80 pb-2">
-                <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
+                <span className="text-xs font-bold text-stone-950 uppercase tracking-wider">
                   REGISTRATION RECORD
                 </span>
-                <span className="px-2 py-0.5 rounded bg-emerald-50/80 text-emerald-800 text-[10px] font-bold border border-emerald-200">
+                <span className="px-2 py-0.5 rounded bg-emerald-50/80 text-emerald-800 text-xs font-bold border border-emerald-200">
                   {activeRecord.status}
                 </span>
               </div>
@@ -243,32 +243,32 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
               <div className="space-y-2 text-xs">
                 <div className="p-2.5 glass-input rounded-lg flex items-center justify-between">
                   <div>
-                    <p className="text-[10px] text-stone-500 font-bold uppercase">Registration ID</p>
+                    <p className="text-xs text-stone-950 font-bold uppercase">Registration ID</p>
                     <p className="font-mono font-bold text-stone-900">{activeRecord.registrationId}</p>
                   </div>
                   <button
                     onClick={handleCopyRegistration}
-                    className="p-1.5 text-stone-500 hover:text-stone-900 hover:bg-[#e8decb]/60 rounded cursor-pointer"
+                    className="p-1.5 text-stone-950 hover:text-stone-900 hover:bg-[#e8decb]/60 rounded cursor-pointer"
                     title="Copy ID"
                   >
                     <Copy className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 {copiedId && (
-                  <p className="text-[10px] text-emerald-700 font-semibold text-right">Copied to clipboard!</p>
+                  <p className="text-xs text-emerald-700 font-semibold text-right">Copied to clipboard!</p>
                 )}
 
-                <div className="py-1 flex justify-between text-stone-600">
+                <div className="py-1 flex justify-between text-stone-950">
                   <span>Type:</span>
                   <span className="font-semibold text-stone-900">{activeRecord.protectionType}</span>
                 </div>
-                <div className="py-1 flex justify-between text-stone-600">
+                <div className="py-1 flex justify-between text-stone-950">
                   <span>Registered Date:</span>
-                  <span className="text-stone-800">{activeRecord.protectedDate}</span>
+                  <span className="text-stone-950">{activeRecord.protectedDate}</span>
                 </div>
-                <div className="py-1 flex justify-between text-stone-600">
+                <div className="py-1 flex justify-between text-stone-950">
                   <span>pHash Signal:</span>
-                  <span className="font-mono text-stone-800">{activeRecord.pHash}</span>
+                  <span className="font-mono text-stone-950">{activeRecord.pHash}</span>
                 </div>
               </div>
 
@@ -283,10 +283,10 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
 
                 <button
                   onClick={() => setActiveTab('find-misuse')}
-                  className="w-full py-2 glass-input hover:bg-[#e8decb]/60 text-stone-800 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  className="w-full py-2 glass-input hover:bg-[#e8decb]/60 text-stone-950 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
                 >
                   <span>Search Misuse for This Item</span>
-                  <ExternalLink className="w-3.5 h-3.5 text-stone-500" />
+                  <ExternalLink className="w-3.5 h-3.5 text-stone-950" />
                 </button>
               </div>
             </div>

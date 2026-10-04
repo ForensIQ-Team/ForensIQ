@@ -71,7 +71,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
       {/* Header Bar */}
       <div>
         <h2 className="text-2xl font-bold text-stone-950 tracking-tight">Find Misuse</h2>
-        <p className="text-stone-600 text-xs sm:text-sm mt-1">
+        <p className="text-stone-950 text-xs sm:text-sm mt-1">
           Look for public copies, modified versions, or possible deepfakes of your registered image.
         </p>
       </div>
@@ -89,7 +89,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
             className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
               selectedMethod === 'reverse'
                 ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                : 'border-[#e2d8c3]/80 glass-card text-stone-950 hover:bg-[#faf7f2]/60'
             }`}
           >
             <div className="flex items-center gap-2 font-bold text-xs mb-1">
@@ -97,8 +97,8 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
               <span>Reverse Vector Search</span>
             </div>
             <p
-              className={`text-[11px] leading-relaxed ${
-                selectedMethod === 'reverse' ? 'text-amber-200' : 'text-stone-500'
+              className={`text-xs leading-relaxed ${
+                selectedMethod === 'reverse' ? 'text-amber-200' : 'text-stone-950'
               }`}
             >
               Find visually similar copies across supported search services and perceptual registries.
@@ -111,7 +111,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
             className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
               selectedMethod === 'web'
                 ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                : 'border-[#e2d8c3]/80 glass-card text-stone-950 hover:bg-[#faf7f2]/60'
             }`}
           >
             <div className="flex items-center gap-2 font-bold text-xs mb-1">
@@ -119,8 +119,8 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
               <span>Public Web Search</span>
             </div>
             <p
-              className={`text-[11px] leading-relaxed ${
-                selectedMethod === 'web' ? 'text-amber-200' : 'text-stone-500'
+              className={`text-xs leading-relaxed ${
+                selectedMethod === 'web' ? 'text-amber-200' : 'text-stone-950'
               }`}
             >
               Scan selected publicly accessible websites, repositories, and forums for matching media.
@@ -133,7 +133,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
             className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
               selectedMethod === 'submission'
                 ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                : 'border-[#e2d8c3]/80 glass-card text-stone-950 hover:bg-[#faf7f2]/60'
             }`}
           >
             <div className="flex items-center gap-2 font-bold text-xs mb-1">
@@ -141,8 +141,8 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
               <span>User Submission Match</span>
             </div>
             <p
-              className={`text-[11px] leading-relaxed ${
-                selectedMethod === 'submission' ? 'text-amber-200' : 'text-stone-500'
+              className={`text-xs leading-relaxed ${
+                selectedMethod === 'submission' ? 'text-amber-200' : 'text-stone-950'
               }`}
             >
               Upload an image you found yourself and compare it with your registered media baseline.
@@ -160,7 +160,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
             />
             <div className="text-xs">
               <p className="font-bold text-stone-950">Portrait_Authentic_01.jpg</p>
-              <p className="text-[11px] text-stone-500">Registered Baseline • ID: REG-2026-884192</p>
+              <p className="text-xs text-stone-950">Registered Baseline • ID: REG-2026-884192</p>
             </div>
           </div>
 
@@ -207,7 +207,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                   3 With Watermark Signal
                 </span>
               </div>
-              <p className="text-xs text-stone-500 mt-0.5">
+              <p className="text-xs text-stone-950 mt-0.5">
                 Results depend on publicly accessible search services and registered index coverage.
               </p>
             </div>
@@ -224,9 +224,9 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
 
               <button
                 onClick={() => setActiveTab('report')}
-                className="px-3.5 py-2 glass-input hover:bg-[#e8decb]/60 text-stone-800 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3.5 py-2 glass-input hover:bg-[#e8decb]/60 text-stone-950 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
               >
-                <FileText className="w-4 h-4 text-stone-600" />
+                <FileText className="w-4 h-4 text-stone-950" />
                 <span>Generate Ready Report</span>
               </button>
             </div>
@@ -271,7 +271,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <span
-                        className={`px-2 py-0.5 rounded text-[10px] font-extrabold uppercase border ${
+                        className={`px-2 py-0.5 rounded text-xs font-extrabold uppercase border ${
                           item.classification === 'CONFIRMED MATCH'
                             ? 'bg-emerald-50/80 text-emerald-800 border-emerald-200'
                             : item.classification === 'AI MANIPULATED' || item.classification === 'TAMPERED'
@@ -282,7 +282,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                         {item.classification}
                       </span>
 
-                      <span className="text-[11px] font-bold text-stone-800 font-mono">
+                      <span className="text-xs font-bold text-stone-950 font-mono">
                         {item.similarity}% Similarity
                       </span>
                     </div>
@@ -299,12 +299,12 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                       <ExternalLink className="w-3 h-3" />
                     </a>
 
-                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-stone-500 pt-1">
+                    <div className="flex flex-wrap items-center gap-3 text-xs text-stone-950 pt-1">
                       <span>Found: {item.foundDate}</span>
                       <span>•</span>
                       <span>Category: {item.platformCategory}</span>
                       <span>•</span>
-                      <span className="font-semibold text-stone-700">
+                      <span className="font-semibold text-stone-950">
                         Watermark: {item.watermarkStatus}
                       </span>
                     </div>
@@ -318,7 +318,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
                       savedMatches[item.id]
                         ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
-                        : 'glass-input text-stone-700 hover:bg-[#e8decb]/60'
+                        : 'glass-input text-stone-950 hover:bg-[#e8decb]/60'
                     }`}
                   >
                     {savedMatches[item.id] ? '✓ Saved Evidence' : 'Save Evidence'}
@@ -340,8 +340,8 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
           </div>
 
           {/* DMCA / Platform Disclaimer Notice */}
-          <div className="p-4 glass-input rounded-xl text-xs text-stone-600 flex items-start gap-3">
-            <Info className="w-5 h-5 text-stone-500 shrink-0 mt-0.5" />
+          <div className="p-4 glass-input rounded-xl text-xs text-stone-950 flex items-start gap-3">
+            <Info className="w-5 h-5 text-stone-950 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               <strong>Notice:</strong> ForensIQ provides evidence gathering and provenance reports to assist media owners. ForensIQ does not directly modify or remove content hosted on third-party websites or platforms.
             </p>

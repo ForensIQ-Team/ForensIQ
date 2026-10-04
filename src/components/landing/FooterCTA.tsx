@@ -36,7 +36,7 @@ export const FooterCTA: React.FC<FooterCTAProps> = ({ onLaunchPlatform }) => {
         </div>
 
         {/* Forensic C2PA Compliance Badges */}
-        <div className="pt-8 flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-stone-400 border-t border-stone-800 max-w-2xl mx-auto">
+        <div className="pt-8 flex flex-wrap items-center justify-center gap-6 text-xs font-mono text-stone-950 border-t border-stone-800 max-w-2xl mx-auto">
           <div className="flex items-center gap-2">
             <Lock className="w-4 h-4 text-red-500" />
             <span>C2PA STANDARDS COMPLIANT</span>
@@ -49,7 +49,7 @@ export const FooterCTA: React.FC<FooterCTAProps> = ({ onLaunchPlatform }) => {
       </div>
 
       {/* Footer Navigation & Copyright */}
-      <footer className="mt-20 pt-8 border-t border-stone-800 text-xs font-mono text-stone-500 max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <footer className="mt-20 pt-8 border-t border-stone-800 text-xs font-mono text-stone-950 max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-2">
           <ShieldCheck className="w-4 h-4 text-red-500" />
           <span className="font-bold text-stone-300">FORENSIQ ENGINE</span>

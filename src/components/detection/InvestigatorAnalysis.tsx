@@ -38,15 +38,15 @@ export const InvestigatorAnalysis: React.FC<InvestigatorAnalysisProps> = ({
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-[10px] font-mono font-bold uppercase border border-indigo-500/30">
+              <span className="px-2.5 py-0.5 rounded bg-indigo-500/20 text-indigo-300 text-xs font-mono font-bold uppercase border border-indigo-500/30">
                 FORENSIQ INVESTIGATOR SUITE
               </span>
-              <span className="text-[11px] font-mono text-slate-400">ID: {result.id}</span>
+              <span className="text-xs font-mono text-stone-950">ID: {result.id}</span>
             </div>
             <h3 className="text-2xl font-black tracking-tight text-white flex items-center gap-2 mt-1">
               <span>Technical Forensic Analysis Panel</span>
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-stone-950">
               Timestamp: {result.uploadDate} • Inference Latency: {result.processingTimeMs}ms
             </p>
           </div>
@@ -79,27 +79,27 @@ export const InvestigatorAnalysis: React.FC<InvestigatorAnalysisProps> = ({
         {/* 4 Metrics Box Banner */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 text-xs">
           <div className="p-3 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
-            <span className="text-[10px] text-slate-400 uppercase font-bold">Classification</span>
+            <span className="text-xs text-stone-950 uppercase font-bold">Classification</span>
             <p className="text-lg font-black text-white">{result.classification}</p>
-            <span className="text-[10px] text-indigo-300">Confidence: {result.confidenceScore}%</span>
+            <span className="text-xs text-indigo-300">Confidence: {result.confidenceScore}%</span>
           </div>
 
           <div className="p-3 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
-            <span className="text-[10px] text-slate-400 uppercase font-bold">Authenticity Rating</span>
+            <span className="text-xs text-stone-950 uppercase font-bold">Authenticity Rating</span>
             <p className="text-lg font-black text-emerald-400">{result.authenticityScore}%</p>
-            <span className="text-[10px] text-slate-400">Risk Level: {result.riskLevel.toUpperCase()}</span>
+            <span className="text-xs text-stone-950">Risk Level: {result.riskLevel.toUpperCase()}</span>
           </div>
 
           <div className="p-3 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
-            <span className="text-[10px] text-slate-400 uppercase font-bold">Faces Tracked</span>
+            <span className="text-xs text-stone-950 uppercase font-bold">Faces Tracked</span>
             <p className="text-lg font-black text-white">{result.facesDetected} Face(s)</p>
-            <span className="text-[10px] text-slate-400">MTCNN Alignment</span>
+            <span className="text-xs text-stone-950">MTCNN Alignment</span>
           </div>
 
           <div className="p-3 bg-slate-900/90 rounded-lg border border-slate-800 space-y-1">
-            <span className="text-[10px] text-slate-400 uppercase font-bold">Model Agreement</span>
+            <span className="text-xs text-stone-950 uppercase font-bold">Model Agreement</span>
             <p className="text-sm font-bold text-amber-300 truncate">{result.modelAgreement}</p>
-            <span className="text-[10px] text-slate-400">Bayesian Fusion</span>
+            <span className="text-xs text-stone-950">Bayesian Fusion</span>
           </div>
         </div>
       </div>
@@ -142,28 +142,28 @@ export const InvestigatorAnalysis: React.FC<InvestigatorAnalysisProps> = ({
 
           <div className="divide-y divide-slate-100 text-xs">
             <div className="py-2 flex justify-between">
-              <span className="text-slate-500">File Identifier / Name:</span>
+              <span className="text-stone-950">File Identifier / Name:</span>
               <span className="font-mono font-semibold text-slate-900">{result.metadata.filename}</span>
             </div>
             <div className="py-2 flex justify-between">
-              <span className="text-slate-500">File Size & Format:</span>
-              <span className="font-mono text-slate-800">{result.metadata.filesize} ({result.metadata.filetype})</span>
+              <span className="text-stone-950">File Size & Format:</span>
+              <span className="font-mono text-stone-950">{result.metadata.filesize} ({result.metadata.filetype})</span>
             </div>
             <div className="py-2 flex justify-between">
-              <span className="text-slate-500">Dimensions / Resolution:</span>
-              <span className="font-mono text-slate-800">{result.metadata.dimensions}</span>
+              <span className="text-stone-950">Dimensions / Resolution:</span>
+              <span className="font-mono text-stone-950">{result.metadata.dimensions}</span>
             </div>
             <div className="py-2 flex justify-between">
-              <span className="text-slate-500">Camera / Hardware:</span>
-              <span className="font-medium text-slate-800">{result.metadata.cameraModel || 'None / Stripped'}</span>
+              <span className="text-stone-950">Camera / Hardware:</span>
+              <span className="font-medium text-stone-950">{result.metadata.cameraModel || 'None / Stripped'}</span>
             </div>
             <div className="py-2 flex justify-between">
-              <span className="text-slate-500">Software / Export String:</span>
-              <span className="font-medium text-slate-800">{result.metadata.software || 'None'}</span>
+              <span className="text-stone-950">Software / Export String:</span>
+              <span className="font-medium text-stone-950">{result.metadata.software || 'None'}</span>
             </div>
             <div className="py-2 flex justify-between">
-              <span className="text-slate-500">SHA-256 Hash:</span>
-              <span className="font-mono text-[10px] text-slate-600 truncate max-w-[200px]">{result.metadata.hashSHA256}</span>
+              <span className="text-stone-950">SHA-256 Hash:</span>
+              <span className="font-mono text-xs text-stone-950 truncate max-w-[200px]">{result.metadata.hashSHA256}</span>
             </div>
           </div>
         </div>
@@ -184,7 +184,7 @@ export const InvestigatorAnalysis: React.FC<InvestigatorAnalysisProps> = ({
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-bold text-slate-900">{signal.name}</span>
                   <span
-                    className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
+                    className={`px-2 py-0.5 rounded text-xs font-bold uppercase border ${
                       signal.status === 'passed'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                         : signal.status === 'warning'
@@ -195,7 +195,7 @@ export const InvestigatorAnalysis: React.FC<InvestigatorAnalysisProps> = ({
                     {signal.score}
                   </span>
                 </div>
-                <p className="text-xs text-slate-600 leading-snug">{signal.description}</p>
+                <p className="text-xs text-stone-950 leading-snug">{signal.description}</p>
               </div>
             ))}
           </div>

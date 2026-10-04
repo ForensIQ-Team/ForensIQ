@@ -98,19 +98,19 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-serif font-bold text-stone-950 tracking-tight">AI Media Detection Engine</h2>
-          <p className="text-stone-600 text-xs sm:text-sm mt-1">
+          <p className="text-stone-950 text-xs sm:text-sm mt-1">
             Detect deepfakes, synthetic AI media, and face swaps using multi-model score fusion &amp; explainability heatmaps.
           </p>
         </div>
 
         {/* View Mode Toggle (Normal vs Investigator) */}
         <div className="flex items-center gap-2 glass-panel rounded-xl p-1.5 shadow-xs">
-          <span className="text-xs font-semibold text-stone-500 pl-2">Presentation View:</span>
+          <span className="text-xs font-semibold text-stone-950 pl-2">Presentation View:</span>
           <div className="flex rounded-lg p-0.5" style={{ background: 'rgba(230, 220, 200, 0.28)' }}>
             <button
               onClick={() => setViewRole('normal')}
               className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                viewRole === 'normal' ? 'text-white shadow-xs' : 'text-stone-700 hover:text-stone-950'
+                viewRole === 'normal' ? 'text-white shadow-xs' : 'text-stone-950 hover:text-stone-950'
               }`}
               style={viewRole === 'normal' ? { background: 'rgba(20, 18, 15, 0.82)' } : {}}
             >
@@ -119,7 +119,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
             <button
               onClick={() => setViewRole('investigator')}
               className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                viewRole === 'investigator' ? 'text-white shadow-xs' : 'text-stone-700 hover:text-stone-950'
+                viewRole === 'investigator' ? 'text-white shadow-xs' : 'text-stone-950 hover:text-stone-950'
               }`}
               style={viewRole === 'investigator' ? { background: 'rgba(20, 18, 15, 0.82)' } : {}}
             >
@@ -135,7 +135,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
         <div className="lg:col-span-2 glass-panel rounded-xl p-6 shadow-xs space-y-4">
           <div className="glass-upload rounded-xl p-8 text-center flex flex-col items-center justify-center min-h-[220px]">
             <div className="w-12 h-12 rounded-full flex items-center justify-center text-stone-900 mb-3" style={{ background: 'rgba(230, 215, 185, 0.35)', border: '1px solid rgba(180, 158, 118, 0.40)' }}>
-              <Upload className="w-5 h-5 text-stone-800" />
+              <Upload className="w-5 h-5 text-stone-950" />
             </div>
 
             <p className="text-sm font-semibold text-stone-950">
@@ -151,7 +151,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
               </label>
             </p>
 
-            <p className="text-xs text-stone-500 mt-1">
+            <p className="text-xs text-stone-950 mt-1">
               Supports JPG, PNG, WEBP, MP4, MOV (up to 100 MB)
             </p>
 
@@ -171,7 +171,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
               <Sparkles className="w-4 h-4 text-red-700" />
               <span>Or Select Preset Demo Scenario</span>
             </div>
-            <p className="text-xs text-stone-600 mb-3">
+            <p className="text-xs text-stone-950 mb-3">
               Test detection pipeline accuracy across deterministic sample cases:
             </p>
 
@@ -191,7 +191,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
                 />
                 <div className="text-xs">
                   <p className="font-bold text-stone-950">1. Authentic Camera Portrait</p>
-                  <p className="text-[10px] text-emerald-800 font-semibold">Expected: Real (94% Score)</p>
+                  <p className="text-xs text-emerald-800 font-semibold">Expected: Real (94% Score)</p>
                 </div>
               </button>
 
@@ -210,7 +210,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
                 />
                 <div className="text-xs">
                   <p className="font-bold text-stone-950">2. Face-Swap Deepfake</p>
-                  <p className="text-[10px] text-red-700 font-semibold">Expected: Deepfake (95% Fake)</p>
+                  <p className="text-xs text-red-700 font-semibold">Expected: Deepfake (95% Fake)</p>
                 </div>
               </button>
 
@@ -229,7 +229,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
                 />
                 <div className="text-xs">
                   <p className="font-bold text-stone-950">3. GenAI Synthetic Profile</p>
-                  <p className="text-[10px] text-red-700 font-semibold">Expected: AI-Generated</p>
+                  <p className="text-xs text-red-700 font-semibold">Expected: AI-Generated</p>
                 </div>
               </button>
 
@@ -248,7 +248,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
                 />
                 <div className="text-xs">
                   <p className="font-bold text-stone-950">4. Low-Res Compressed Media</p>
-                  <p className="text-[10px] text-amber-800 font-semibold">Expected: Uncertain (Model Split)</p>
+                  <p className="text-xs text-amber-800 font-semibold">Expected: Uncertain (Model Split)</p>
                 </div>
               </button>
 
@@ -265,7 +265,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
                 </div>
                 <div className="text-xs">
                   <p className="font-bold text-stone-950">5. Video Deepfake (MP4)</p>
-                  <p className="text-[10px] text-red-700 font-semibold">Expected: Deepfake (24 Frames)</p>
+                  <p className="text-xs text-red-700 font-semibold">Expected: Deepfake (24 Frames)</p>
                 </div>
               </button>
             </div>

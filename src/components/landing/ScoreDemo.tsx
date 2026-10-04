@@ -26,7 +26,7 @@ export const ScoreDemo: React.FC = () => {
         <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 tracking-tight">
           Live Forensic Verification Sweep
         </h2>
-        <p className="text-stone-600 text-sm leading-relaxed">
+        <p className="text-stone-950 text-sm leading-relaxed">
           Watch the automated forensic scanner evaluate spatial noise residuals and stamp final authenticity verdict.
         </p>
       </div>
@@ -35,7 +35,7 @@ export const ScoreDemo: React.FC = () => {
       <div className="bg-[#f5f0e6] border-2 border-[#e6dfd1] rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden max-w-4xl mx-auto">
         {/* Header Bar inside Demo */}
         <div className="flex items-center justify-between border-b border-stone-300 pb-4 mb-6">
-          <div className="flex items-center gap-2 font-mono text-xs text-stone-700">
+          <div className="flex items-center gap-2 font-mono text-xs text-stone-950">
             <Cpu className="w-4 h-4 text-red-600 animate-spin" />
             <span className="font-bold">INSPECTION TARGET: DEMO_CANDIDATE_44.JPG</span>
           </div>
@@ -88,7 +88,7 @@ export const ScoreDemo: React.FC = () => {
                 {scanStep >= 3 && 'VERDICT: SCAN COMPLETE'}
               </span>
             </div>
-            <div className="text-[10px] text-stone-400">
+            <div className="text-xs text-stone-950">
               PRNU SENSOR MATCH: 98.4% | FREQUENCY VARIANCE: OK
             </div>
           </div>

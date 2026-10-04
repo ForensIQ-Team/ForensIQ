@@ -49,7 +49,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
       {/* Header */}
       <div>
         <h2 className="text-2xl font-serif font-bold text-stone-950 tracking-tight">Activity &amp; Media History</h2>
-        <p className="text-stone-600 text-xs sm:text-sm mt-1">
+        <p className="text-stone-950 text-xs sm:text-sm mt-1">
           Unified audit trail of checked media, protected assets, misuse searches, and dynamic forensic reports.
         </p>
       </div>
@@ -63,7 +63,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
             className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
               filter === 'all'
                 ? 'bg-[#1e1b18] text-white shadow-xs'
-                : 'glass-input text-stone-800 hover:bg-[#eae0d0]/60'
+                : 'glass-input text-stone-950 hover:bg-[#eae0d0]/60'
             }`}
           >
             All Activity
@@ -73,7 +73,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
             className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
               filter === 'checked'
                 ? 'bg-[#1e1b18] text-white shadow-xs'
-                : 'glass-input text-stone-800 hover:bg-[#eae0d0]/60'
+                : 'glass-input text-stone-950 hover:bg-[#eae0d0]/60'
             }`}
           >
             Checked Media
@@ -83,7 +83,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
             className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
               filter === 'protected'
                 ? 'bg-[#1e1b18] text-white shadow-xs'
-                : 'glass-input text-stone-800 hover:bg-[#eae0d0]/60'
+                : 'glass-input text-stone-950 hover:bg-[#eae0d0]/60'
             }`}
           >
             Protected Images
@@ -93,7 +93,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
             className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
               filter === 'misuse'
                 ? 'bg-[#1e1b18] text-white shadow-xs'
-                : 'glass-input text-stone-800 hover:bg-[#eae0d0]/60'
+                : 'glass-input text-stone-950 hover:bg-[#eae0d0]/60'
             }`}
           >
             Misuse Searches
@@ -102,13 +102,13 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
 
         {/* Search */}
         <div className="relative w-full md:w-64">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-stone-400" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-2.5 text-stone-950" />
           <input
             type="text"
             placeholder="Search analysis ID, filename..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 glass-input rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-stone-900 text-stone-800 placeholder-stone-400"
+            className="w-full pl-9 pr-3 py-1.5 glass-input rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-stone-900 text-stone-950 placeholder-stone-400"
           />
         </div>
       </div>
@@ -118,7 +118,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(200, 185, 155, 0.28)' }} className="text-stone-500 font-mono font-bold uppercase tracking-wider">
+              <tr style={{ borderBottom: '1px solid rgba(200, 185, 155, 0.28)' }} className="text-stone-950 font-mono font-bold uppercase tracking-wider">
                 <th className="py-3 px-4">Analysis ID &amp; Media</th>
                 <th className="py-3 px-4">Action</th>
                 <th className="py-3 px-4">Detection Result</th>
@@ -127,7 +127,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
                 <th className="py-3 px-4 text-right">Report</th>
               </tr>
             </thead>
-            <tbody className="divide-y text-stone-800" style={{ borderColor: 'rgba(200, 185, 155, 0.20)' }}>
+            <tbody className="divide-y text-stone-950" style={{ borderColor: 'rgba(200, 185, 155, 0.20)' }}>
               {filteredHistory.map((item) => (
                 <tr
                   key={item.id}
@@ -144,12 +144,12 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
                       />
                       <div>
                         <p className="font-bold text-stone-950">{item.mediaName}</p>
-                        <p className="text-[10px] font-mono text-red-700 font-bold">{item.id}</p>
+                        <p className="text-xs font-mono text-red-700 font-bold">{item.id}</p>
                       </div>
                     </div>
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className="px-2 py-1 rounded glass-input text-stone-900 font-semibold text-[11px]">
+                    <span className="px-2 py-1 rounded glass-input text-stone-900 font-semibold text-xs">
                       {item.action}
                     </span>
                   </td>
@@ -163,10 +163,10 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
                       <span className="font-bold text-stone-950">{item.resultSummary}</span>
                     </div>
                   </td>
-                  <td className="py-3.5 px-4 text-stone-600 font-mono text-[11px]">{item.date}</td>
+                  <td className="py-3.5 px-4 text-stone-950 font-mono text-xs">{item.date}</td>
                   <td className="py-3.5 px-4">
                     <span
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold border ${
+                      className={`px-2 py-0.5 rounded text-xs font-bold border ${
                         item.status === 'Completed'
                           ? 'bg-emerald-50/80 text-emerald-800 border-emerald-200'
                           : 'bg-red-50/80 text-red-800 border-red-200'

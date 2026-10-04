@@ -44,10 +44,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
           isActive
             ? 'nav-item-active'
-            : 'text-stone-800 nav-item-hover hover:text-stone-950'
+            : 'text-stone-950 nav-item-hover hover:text-stone-950'
         }`}
       >
-        <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-red-400' : accent ? 'text-red-700' : 'text-stone-600'}`} />
+        <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-red-400' : accent ? 'text-red-700' : 'text-stone-950'}`} />
         <span>{label}</span>
       </button>
     );
@@ -85,12 +85,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <div>
                 <div className="flex items-center gap-1.5">
                   <span className="font-serif font-black text-lg text-stone-950 tracking-tight">ForensIQ</span>
-                  <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded uppercase"
+                  <span className="text-xs font-mono font-bold px-1.5 py-0.5 rounded uppercase"
                     style={{ background: 'rgba(220, 200, 155, 0.40)', border: '1px solid rgba(180, 155, 100, 0.35)', color: '#4a3a20' }}>
                     v2.4
                   </span>
                 </div>
-                <p className="text-[11px] text-stone-600 font-medium leading-none mt-0.5">
+                <p className="text-xs text-stone-950 font-medium leading-none mt-0.5">
                   Media Trust &amp; Forensics
                 </p>
               </div>
@@ -99,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
           {/* Main Navigation */}
           <nav className="px-3 py-3 space-y-1">
-            <div className="px-3 py-1 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">
+            <div className="px-3 py-1 text-xs font-mono font-bold text-stone-950 uppercase tracking-wider">
               Navigation
             </div>
             {navBtn('home', 'Platform Overview', Layers)}
@@ -112,7 +112,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Investigator Suite */}
           <div className="px-3 pt-3 pb-1 mt-2 space-y-1"
             style={{ borderTop: '1px solid rgba(200, 185, 155, 0.22)' }}>
-            <div className="px-3 py-1 text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">
+            <div className="px-3 py-1 text-xs font-mono font-bold text-stone-950 uppercase tracking-wider">
               Investigator Suite
             </div>
 
@@ -124,7 +124,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                 activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
                   ? 'nav-item-active'
-                  : 'text-stone-800 nav-item-hover hover:text-stone-950'
+                  : 'text-stone-950 nav-item-hover hover:text-stone-950'
               }`}
             >
               <div className="flex items-center gap-3">
@@ -144,14 +144,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
             className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
               activeTab === 'settings'
                 ? 'nav-item-active'
-                : 'text-stone-800 nav-item-hover hover:text-stone-950'
+                : 'text-stone-950 nav-item-hover hover:text-stone-950'
             }`}
           >
             <div className="flex items-center gap-2.5">
-              <Settings className={`w-4 h-4 ${activeTab === 'settings' ? 'text-stone-300' : 'text-stone-600'}`} />
+              <Settings className={`w-4 h-4 ${activeTab === 'settings' ? 'text-stone-300' : 'text-stone-950'}`} />
               <span>Account Settings</span>
             </div>
-            <Sparkles className="w-3.5 h-3.5 text-stone-400" />
+            <Sparkles className="w-3.5 h-3.5 text-stone-950" />
           </button>
         </div>
       </aside>

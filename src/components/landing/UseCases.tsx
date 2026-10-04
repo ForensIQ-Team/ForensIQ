@@ -42,7 +42,7 @@ export const UseCases: React.FC = () => {
         <h2 className="text-3xl sm:text-4xl font-serif font-bold text-stone-900 tracking-tight">
           Investigative Use Cases
         </h2>
-        <p className="text-stone-600 text-sm leading-relaxed">
+        <p className="text-stone-950 text-sm leading-relaxed">
           Engineered for institutions requiring absolute digital asset authenticity and provenance.
         </p>
       </div>
@@ -62,7 +62,7 @@ export const UseCases: React.FC = () => {
               </div>
 
               <div className="flex items-center justify-between border-b border-stone-200 pb-3 mb-4">
-                <span className="font-mono text-[10px] font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200 uppercase">
+                <span className="font-mono text-xs font-bold text-red-700 bg-red-50 px-2 py-0.5 rounded border border-red-200 uppercase">
                   {c.tag}
                 </span>
                 <div className="w-8 h-8 rounded bg-stone-900 text-stone-100 flex items-center justify-center">
@@ -71,9 +71,9 @@ export const UseCases: React.FC = () => {
               </div>
 
               <h3 className="font-serif font-bold text-stone-900 text-lg mb-2">{c.title}</h3>
-              <p className="text-xs text-stone-600 leading-relaxed font-sans">{c.description}</p>
+              <p className="text-xs text-stone-950 leading-relaxed font-sans">{c.description}</p>
 
-              <div className="mt-4 pt-3 border-t border-stone-200 text-[10px] font-mono text-stone-400">
+              <div className="mt-4 pt-3 border-t border-stone-200 text-xs font-mono text-stone-950">
                 FORENSIQ DEPLOYMENT READY
               </div>
             </div>
