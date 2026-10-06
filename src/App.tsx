@@ -14,6 +14,7 @@ import { ProfessionalAnalysisScreen } from './components/ProfessionalAnalysisScr
 import { ReportScreen } from './components/ReportScreen';
 import { HistoryScreen } from './components/HistoryScreen';
 import { AccountSettingsModal } from './components/AccountSettingsModal';
+import { MagnifyingCursor } from './components/landing/MagnifyingCursor';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<NavItem>('landing');
@@ -56,21 +57,24 @@ export default function App() {
     <div
       className="relative min-h-screen text-stone-950 font-sans flex flex-col antialiased selection:bg-red-900 selection:text-white"
       style={{ background: 'transparent' }}
-    >
+       >
+      <MagnifyingCursor />
+
       {/* Global ShaderGradient Background — fixed, lowest z-index, pointer-events none */}
       <ShaderBackground />
 
       {/* Main Application Content Layer — full-width, transparent bg, floating navbar */}
-      <div className="relative z-10 flex flex-col flex-1 min-h-screen pt-2" style={{ background: 'transparent' }}>
+      <div className="relative z-10 flex flex-col flex-1 min-h-screen" style={{ background: 'transparent' }}>
         {/* Floating Top Glass Navbar */}
-        <Header
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          userRole={userRole}
-          setUserRole={setUserRole}
-          isMobileOpen={isMobileOpen}
-          setIsMobileOpen={setIsMobileOpen}
-        />
+  
+<Header
+  activeTab={activeTab}
+  setActiveTab={setActiveTab}
+  userRole={userRole}
+  setUserRole={setUserRole}
+  isMobileOpen={isMobileOpen}
+  setIsMobileOpen={setIsMobileOpen}
+/>
 
         {/* Full-Width Viewport Container Stage — transparent, shader visible in gaps */}
         <main className="flex-1 w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 pb-12" style={{ background: 'transparent' }}>

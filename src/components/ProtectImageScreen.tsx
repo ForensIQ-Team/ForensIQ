@@ -7,8 +7,6 @@ import {
   Download,
   Info,
   RefreshCw,
-  FileCheck2,
-  Sparkles,
   Copy,
   ExternalLink,
 } from 'lucide-react';
@@ -18,6 +16,24 @@ import { MOCK_PROTECTIONS, SAMPLE_IMAGES } from '../data/mockData';
 interface ProtectImageScreenProps {
   setActiveTab: (tab: NavItem) => void;
 }
+
+const glassPanelStyle: React.CSSProperties = {
+  background: 'rgba(255, 252, 244, 0.78)',
+  backdropFilter: 'blur(20px) saturate(130%)',
+  WebkitBackdropFilter: 'blur(20px) saturate(130%)',
+  border: '1px solid rgba(255, 255, 255, 0.7)',
+  boxShadow: '0 8px 32px rgba(40, 30, 15, 0.08)',
+};
+
+const glassCardStyle: React.CSSProperties = {
+  background: 'rgba(245, 238, 222, 0.45)',
+  border: '1px solid rgba(226, 216, 195, 0.7)',
+};
+
+const glassInputStyle: React.CSSProperties = {
+  background: 'rgba(255, 255, 255, 0.65)',
+  border: '1px solid rgba(226, 216, 195, 0.8)',
+};
 
 export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiveTab }) => {
   const [protectionLevel, setProtectionLevel] = useState<'EOT' | 'Hybrid' | 'Metadata'>('EOT');
@@ -71,13 +87,13 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
         {/* Left Upload & Configuration Section */}
         <div className="lg:col-span-2 space-y-6">
           {/* Step 1: Upload / Selected Media */}
-          <div className="glass-panel rounded-xl p-6 shadow-xs space-y-4">
+          <div className="rounded-2xl p-6 space-y-4" style={glassPanelStyle}>
             <h3 className="font-bold text-stone-950 text-sm flex items-center gap-2 border-b border-[#e2d8c3]/80 pb-2">
               <Upload className="w-4 h-4 text-red-700" />
               <span>1. Upload or Select Original Image</span>
             </h3>
 
-            <div className="border-2 border-dashed border-[#d8ccb6] rounded-xl p-6 text-center glass-card flex flex-col items-center justify-center">
+            <div className="border-2 border-dashed border-[#d8ccb6] rounded-xl p-6 text-center flex flex-col items-center justify-center" style={glassCardStyle}>
               <img
                 src={activeRecord.mediaUrl}
                 alt="Original"
@@ -86,7 +102,10 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
               <p className="text-xs font-bold text-stone-950">{activeRecord.originalName}</p>
               <p className="text-[11px] text-stone-500 mt-0.5">3.42 MB • 3840 x 2560 px</p>
 
-              <label className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 glass-input text-stone-800 text-xs font-semibold rounded-lg transition-colors cursor-pointer">
+              <label
+                className="mt-3 inline-flex items-center gap-2 px-3 py-1.5 text-stone-800 text-xs font-semibold rounded-lg transition-colors cursor-pointer"
+                style={glassInputStyle}
+              >
                 <span>Choose Different Image</span>
                 <input
                   type="file"
@@ -99,7 +118,7 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
           </div>
 
           {/* Step 2: Select Protection Intensity */}
-          <div className="glass-panel rounded-xl p-6 shadow-xs space-y-4">
+          <div className="rounded-2xl p-6 space-y-4" style={glassPanelStyle}>
             <h3 className="font-bold text-stone-950 text-sm flex items-center gap-2 border-b border-[#e2d8c3]/80 pb-2">
               <Lock className="w-4 h-4 text-red-700" />
               <span>2. Select Protection Configuration</span>
@@ -108,16 +127,17 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <button
                 onClick={() => setProtectionLevel('EOT')}
-                className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                style={protectionLevel !== 'EOT' ? glassCardStyle : undefined}
+                className={`p-4 rounded-xl text-left transition-all cursor-pointer ${
                   protectionLevel === 'EOT'
-                    ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                    : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                    ? 'border border-stone-950 bg-[#1e1b18] text-white shadow-xs'
+                    : 'text-stone-800 hover:opacity-90'
                 }`}
               >
                 <div className="font-bold text-xs">EOT Adversarial</div>
                 <p
                   className={`text-[11px] mt-1 leading-snug ${
-                    protectionLevel === 'EOT' ? 'text-amber-200' : 'text-stone-500'
+                    protectionLevel === 'EOT' ? 'text-amber-200' : 'text-stone-600'
                   }`}
                 >
                   Applies expectation-over-transformation perturbation to confuse generative AI models.
@@ -126,16 +146,17 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
 
               <button
                 onClick={() => setProtectionLevel('Hybrid')}
-                className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                style={protectionLevel !== 'Hybrid' ? glassCardStyle : undefined}
+                className={`p-4 rounded-xl text-left transition-all cursor-pointer ${
                   protectionLevel === 'Hybrid'
-                    ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                    : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                    ? 'border border-stone-950 bg-[#1e1b18] text-white shadow-xs'
+                    : 'text-stone-800 hover:opacity-90'
                 }`}
               >
                 <div className="font-bold text-xs">Robust Hybrid</div>
                 <p
                   className={`text-[11px] mt-1 leading-snug ${
-                    protectionLevel === 'Hybrid' ? 'text-amber-200' : 'text-stone-500'
+                    protectionLevel === 'Hybrid' ? 'text-amber-200' : 'text-stone-600'
                   }`}
                 >
                   Combines invisible pHash frequency watermarking with CLIP vector embedding.
@@ -144,16 +165,17 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
 
               <button
                 onClick={() => setProtectionLevel('Metadata')}
-                className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
+                style={protectionLevel !== 'Metadata' ? glassCardStyle : undefined}
+                className={`p-4 rounded-xl text-left transition-all cursor-pointer ${
                   protectionLevel === 'Metadata'
-                    ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                    : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                    ? 'border border-stone-950 bg-[#1e1b18] text-white shadow-xs'
+                    : 'text-stone-800 hover:opacity-90'
                 }`}
               >
                 <div className="font-bold text-xs">Provenance EXIF</div>
                 <p
                   className={`text-[11px] mt-1 leading-snug ${
-                    protectionLevel === 'Metadata' ? 'text-amber-200' : 'text-stone-500'
+                    protectionLevel === 'Metadata' ? 'text-amber-200' : 'text-stone-600'
                   }`}
                 >
                   Appends C2PA cryptographically signed ownership manifest to image headers.
@@ -164,7 +186,7 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
             <button
               onClick={handleStartProtection}
               disabled={processState === 'protecting'}
-              className="w-full py-3 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs disabled:opacity-50"
+              className="w-full py-3 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs disabled:opacity-50"
             >
               {processState === 'protecting' ? (
                 <>
@@ -184,12 +206,12 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
         {/* Right Info & Protection Checklist Panel */}
         <div className="space-y-6">
           {/* How Protection Works Card */}
-          <div className="glass-panel rounded-xl p-5 shadow-xs space-y-4">
+          <div className="rounded-2xl p-5 space-y-4" style={glassPanelStyle}>
             <h4 className="font-bold text-stone-950 text-xs uppercase tracking-wider border-b border-[#e2d8c3]/80 pb-2">
               PROTECTION SUMMARY
             </h4>
 
-            <p className="text-xs text-stone-600 leading-relaxed glass-input p-3 rounded-lg">
+            <p className="text-xs text-stone-600 leading-relaxed p-3 rounded-lg" style={glassInputStyle}>
               ForensIQ applies transformation-robust adversarial protection, adds an invisible ownership signal, and creates a media fingerprint.
             </p>
 
@@ -217,20 +239,20 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
             </div>
 
             {/* Responsible Transparency Disclaimer */}
-            <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-lg text-[11px] text-amber-900 space-y-1">
+            <div className="p-3 bg-amber-50/80 border border-amber-200 rounded-xl text-[11px] text-amber-900 space-y-1">
               <div className="font-bold flex items-center gap-1.5">
                 <Info className="w-3.5 h-3.5 text-amber-700" />
                 <span>Responsible Protection Notice</span>
               </div>
               <p className="leading-snug">
-                Designed to make malicious AI regeneration harder and help identify later copies or modified versions. EOT protection is designed for robustness against expected web transformations; it does not prevent raw manual screenshots or guarantee protection against every manipulation.
+                Designed to make malicious AI regeneration harder and help identify later copies or modified versions.
               </p>
             </div>
           </div>
 
-          {/* Registration Record Box (After complete) */}
+          {/* Registration Record Box */}
           {processState === 'complete' && (
-            <div className="glass-panel rounded-xl p-5 shadow-xs space-y-4">
+            <div className="rounded-2xl p-5 space-y-4" style={glassPanelStyle}>
               <div className="flex items-center justify-between border-b border-[#e2d8c3]/80 pb-2">
                 <span className="text-[11px] font-bold text-stone-500 uppercase tracking-wider">
                   REGISTRATION RECORD
@@ -241,7 +263,7 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
               </div>
 
               <div className="space-y-2 text-xs">
-                <div className="p-2.5 glass-input rounded-lg flex items-center justify-between">
+                <div className="p-2.5 rounded-lg flex items-center justify-between" style={glassInputStyle}>
                   <div>
                     <p className="text-[10px] text-stone-500 font-bold uppercase">Registration ID</p>
                     <p className="font-mono font-bold text-stone-900">{activeRecord.registrationId}</p>
@@ -274,8 +296,8 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
 
               <div className="pt-2 space-y-2">
                 <button
-                  onClick={() => alert('Downloading protected file with embedded signal...')}
-                  className="w-full py-2.5 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-semibold rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
+                  onClick={() => alert('Downloading protected file...')}
+                  className="w-full py-2.5 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-semibold rounded-xl flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
                 >
                   <Download className="w-4 h-4 text-amber-300" />
                   <span>Download Protected Image</span>
@@ -283,7 +305,8 @@ export const ProtectImageScreen: React.FC<ProtectImageScreenProps> = ({ setActiv
 
                 <button
                   onClick={() => setActiveTab('find-misuse')}
-                  className="w-full py-2 glass-input hover:bg-[#e8decb]/60 text-stone-800 text-xs font-semibold rounded-lg flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  className="w-full py-2 text-stone-800 text-xs font-semibold rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
+                  style={glassInputStyle}
                 >
                   <span>Search Misuse for This Item</span>
                   <ExternalLink className="w-3.5 h-3.5 text-stone-500" />
