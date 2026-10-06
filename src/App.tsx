@@ -64,16 +64,17 @@ export default function App() {
       <ShaderBackground />
 
       {/* Main Application Content Layer — full-width, transparent bg, floating navbar */}
-      <div className="relative z-10 flex flex-col flex-1 min-h-screen pt-2" style={{ background: 'transparent' }}>
+      <div className="relative z-10 flex flex-col flex-1 min-h-screen" style={{ background: 'transparent' }}>
         {/* Floating Top Glass Navbar */}
-        <Header
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-          userRole={userRole}
-          setUserRole={setUserRole}
-          isMobileOpen={isMobileOpen}
-          setIsMobileOpen={setIsMobileOpen}
-        />
+  
+<Header
+  activeTab={activeTab}
+  setActiveTab={setActiveTab}
+  userRole={userRole}
+  setUserRole={setUserRole}
+  isMobileOpen={isMobileOpen}
+  setIsMobileOpen={setIsMobileOpen}
+/>
 
         {/* Full-Width Viewport Container Stage — transparent, shader visible in gaps */}
         <main className="flex-1 w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 pb-12" style={{ background: 'transparent' }}>

@@ -23,6 +23,24 @@ interface HomeScreenProps {
   onOpenReport?: (analysis?: DetectionResult) => void;
 }
 
+const glassPanelStyle: React.CSSProperties = {
+  background: 'rgba(255, 252, 244, 0.78)',
+  backdropFilter: 'blur(20px) saturate(130%)',
+  WebkitBackdropFilter: 'blur(20px) saturate(130%)',
+  border: '1px solid rgba(255, 255, 255, 0.7)',
+  boxShadow: '0 8px 32px rgba(40, 30, 15, 0.08)',
+};
+
+const glassCardStyle: React.CSSProperties = {
+  background: 'rgba(245, 238, 222, 0.45)',
+  border: '1px solid rgba(226, 216, 195, 0.7)',
+};
+
+const glassInputStyle: React.CSSProperties = {
+  background: 'rgba(255, 255, 255, 0.65)',
+  border: '1px solid rgba(226, 216, 195, 0.8)',
+};
+
 export const HomeScreen: React.FC<HomeScreenProps> = ({
   setActiveTab,
   userRole,
@@ -54,19 +72,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
   const undeterminedPct = totalAnalyzed > 0 ? 100 - authenticPct - fakePct : 7;
 
   return (
-    <div className="space-y-8 max-w-[1700px] mx-auto pb-12">
+    <div className="space-y-8 max-w-[1700px] mx-auto pb-12 pt-4">
       {/* 1. FORENSIC METRIC CARDS ROW */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         {/* Metric 1 */}
-        <div className="glass-card rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all">
+        <div className="rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all" style={glassPanelStyle}>
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold text-stone-600 uppercase tracking-wider">
               Total Media Analyzed
             </span>
-            <div
-              className="p-2 rounded-xl text-stone-900"
-              style={{ background: 'rgba(230, 215, 185, 0.35)' }}
-            >
+            <div className="p-2 rounded-xl text-stone-900" style={{ background: 'rgba(230, 215, 185, 0.35)' }}>
               <Activity className="w-4 h-4 text-stone-800" />
             </div>
           </div>
@@ -81,15 +96,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         {/* Metric 2 */}
-        <div className="glass-card rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all">
+        <div className="rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all" style={glassPanelStyle}>
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold text-stone-600 uppercase tracking-wider">
               Authentic Media
             </span>
-            <div
-              className="p-2 rounded-xl text-emerald-900"
-              style={{ background: 'rgba(215, 240, 220, 0.40)' }}
-            >
+            <div className="p-2 rounded-xl text-emerald-900" style={{ background: 'rgba(215, 240, 220, 0.40)' }}>
               <ShieldCheck className="w-4 h-4 text-emerald-700" />
             </div>
           </div>
@@ -104,15 +116,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         {/* Metric 3 */}
-        <div className="glass-card rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all">
+        <div className="rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all" style={glassPanelStyle}>
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold text-stone-600 uppercase tracking-wider">
               Suspicious / Fake Media
             </span>
-            <div
-              className="p-2 rounded-xl text-red-900"
-              style={{ background: 'rgba(250, 215, 215, 0.40)' }}
-            >
+            <div className="p-2 rounded-xl text-red-900" style={{ background: 'rgba(250, 215, 215, 0.40)' }}>
               <AlertTriangle className="w-4 h-4 text-red-700" />
             </div>
           </div>
@@ -127,15 +136,12 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         {/* Metric 4 */}
-        <div className="glass-card rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all">
+        <div className="rounded-2xl p-5 space-y-2 hover:-translate-y-1 transition-all" style={glassPanelStyle}>
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-mono font-bold text-stone-600 uppercase tracking-wider">
               Protected Assets
             </span>
-            <div
-              className="p-2 rounded-xl text-stone-900"
-              style={{ background: 'rgba(230, 215, 185, 0.35)' }}
-            >
+            <div className="p-2 rounded-xl text-stone-900" style={{ background: 'rgba(230, 215, 185, 0.35)' }}>
               <Lock className="w-4 h-4 text-stone-800" />
             </div>
           </div>
@@ -150,23 +156,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </div>
 
-      {/* 2. MAIN ANALYTICS SECTION (LEFT: DETECTION ACTIVITY / RIGHT: AUTHENTICITY DISTRIBUTION) */}
+      {/* 2. MAIN ANALYTICS SECTION */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* LEFT: Detection Activity Chart */}
-        <div className="lg:col-span-2 glass-panel rounded-2xl p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-[#f0e6d6]/80 pb-3">
+        <div className="lg:col-span-2 rounded-2xl p-6 space-y-4" style={glassPanelStyle}>
+          <div className="flex items-center justify-between border-b border-[#e2d8c3]/80 pb-3">
             <div className="flex items-center gap-2">
               <Activity className="w-4 h-4 text-red-700" />
-              <h3 className="font-serif font-bold text-stone-950 text-base">
-                Media Detection Activity
-              </h3>
+              <h3 className="font-serif font-bold text-stone-950 text-base">Media Detection Activity</h3>
             </div>
             <span className="text-[10px] font-mono font-bold text-stone-500 uppercase tracking-wider">
               Real Time Logging
             </span>
           </div>
 
-          {/* SVG Activity Graph Visualization */}
           <div className="relative pt-4 pb-2">
             <div className="h-44 w-full relative flex items-end">
               <svg className="w-full h-full overflow-visible" viewBox="0 0 500 120" preserveAspectRatio="none">
@@ -187,7 +190,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   strokeWidth="2.5"
                   strokeLinecap="round"
                 />
-                {/* Data point dots */}
                 <circle cx="100" cy="50" r="4" fill="#c41e1e" />
                 <circle cx="200" cy="40" r="4" fill="#c41e1e" />
                 <circle cx="300" cy="70" r="4" fill="#c41e1e" />
@@ -196,7 +198,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
               </svg>
             </div>
 
-            <div className="flex justify-between items-center text-[10px] font-mono text-stone-500 pt-3 border-t border-[#f0e6d6]/60">
+            <div className="flex justify-between items-center text-[10px] font-mono text-stone-500 pt-3 border-t border-[#e2d8c3]/60">
               <span>24 Hours Ago</span>
               <span>18 Hours Ago</span>
               <span>12 Hours Ago</span>
@@ -207,21 +209,16 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
 
         {/* RIGHT: Authenticity Distribution */}
-        <div className="glass-panel rounded-2xl p-6 space-y-4 flex flex-col justify-between">
+        <div className="rounded-2xl p-6 space-y-4 flex flex-col justify-between" style={glassPanelStyle}>
           <div>
-            <div className="flex items-center justify-between border-b border-[#f0e6d6]/80 pb-3 mb-4">
+            <div className="flex items-center justify-between border-b border-[#e2d8c3]/80 pb-3 mb-4">
               <div className="flex items-center gap-2">
                 <PieChart className="w-4 h-4 text-red-700" />
-                <h3 className="font-serif font-bold text-stone-950 text-base">
-                  Authenticity Distribution
-                </h3>
+                <h3 className="font-serif font-bold text-stone-950 text-base">Authenticity Distribution</h3>
               </div>
-              <span className="text-[10px] font-mono font-bold text-stone-500 uppercase">
-                Consensus
-              </span>
+              <span className="text-[10px] font-mono font-bold text-stone-500 uppercase">Consensus</span>
             </div>
 
-            {/* Progress Segment Bar */}
             <div className="space-y-4">
               <div className="h-3 w-full rounded-full flex overflow-hidden p-0.5" style={{ background: 'rgba(230, 220, 200, 0.40)' }}>
                 <div
@@ -241,7 +238,6 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                 />
               </div>
 
-              {/* Breakdown Labels */}
               <div className="space-y-2.5 pt-2 text-xs">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -270,7 +266,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
             </div>
           </div>
 
-          <div className="pt-3 border-t border-[#f0e6d6]/60">
+          <div className="pt-3 border-t border-[#e2d8c3]/60">
             <p className="text-[11px] text-stone-600 leading-tight">
               Dual-model confidence score fusion combining Xception V2 &amp; EfficientNet-B4 V2.
             </p>
@@ -278,33 +274,29 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
         </div>
       </div>
 
-      {/* 3. QUICK ACTIONS SECTION ("START AN INVESTIGATION") */}
+      {/* 3. WORKFLOW CARDS SECTION */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="font-serif font-bold text-stone-950 text-base">Start an Investigation</h3>
-          <span className="text-[10px] font-mono font-bold text-stone-500 uppercase">
-            Workstation Modules
-          </span>
+          <span className="text-[10px] font-mono font-bold text-stone-500 uppercase">Workstation Modules</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {/* Card 1: Check Media */}
-          <div className="glass-card rounded-2xl p-6 hover:-translate-y-1 hover:border-red-900/40 hover:shadow-lg transition-all flex flex-col justify-between group">
+          <div className="rounded-2xl p-6 hover:-translate-y-1 transition-all flex flex-col justify-between group" style={glassPanelStyle}>
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-xl bg-[#1e1b18] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
                 <FileSearch className="w-6 h-6 text-red-400" />
               </div>
               <div>
-                <h4 className="text-base font-serif font-bold text-stone-950">
-                  Check Media
-                </h4>
+                <h4 className="text-base font-serif font-bold text-stone-950">Check Media</h4>
                 <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
-                  Analyze images or video for synthetic face swaps, AI generation, or spatial manipulation using Xception V2 &amp; EfficientNet-B4 V2.
+                  Analyze images or video for synthetic face swaps, AI generation, or spatial manipulation.
                 </p>
               </div>
             </div>
 
-            <div className="pt-6 border-t border-[#f0e6d6]/60 mt-6">
+            <div className="pt-6 border-t border-[#e2d8c3]/60 mt-6">
               <button
                 onClick={() => setActiveTab('check-media')}
                 className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1e1b18] hover:bg-stone-950 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
@@ -316,22 +308,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           {/* Card 2: Protect Image */}
-          <div className="glass-card rounded-2xl p-6 hover:-translate-y-1 hover:border-red-900/40 hover:shadow-lg transition-all flex flex-col justify-between group">
+          <div className="rounded-2xl p-6 hover:-translate-y-1 transition-all flex flex-col justify-between group" style={glassPanelStyle}>
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-xl bg-[#1e1b18] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
                 <Lock className="w-6 h-6 text-red-400" />
               </div>
               <div>
-                <h4 className="text-base font-serif font-bold text-stone-950">
-                  Protect Image
-                </h4>
+                <h4 className="text-base font-serif font-bold text-stone-950">Protect Image</h4>
                 <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
-                  Apply neural adversarial perturbation and embed ownership metadata to protect assets from AI cloning before public release.
+                  Apply neural adversarial perturbation and embed ownership metadata to protect assets.
                 </p>
               </div>
             </div>
 
-            <div className="pt-6 border-t border-[#f0e6d6]/60 mt-6">
+            <div className="pt-6 border-t border-[#e2d8c3]/60 mt-6">
               <button
                 onClick={() => setActiveTab('protect-image')}
                 className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1e1b18] hover:bg-stone-950 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
@@ -343,22 +333,20 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           </div>
 
           {/* Card 3: Find Misuse */}
-          <div className="glass-card rounded-2xl p-6 hover:-translate-y-1 hover:border-red-900/40 hover:shadow-lg transition-all flex flex-col justify-between group">
+          <div className="rounded-2xl p-6 hover:-translate-y-1 transition-all flex flex-col justify-between group" style={glassPanelStyle}>
             <div className="space-y-4">
               <div className="w-12 h-12 rounded-xl bg-[#1e1b18] text-white flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform">
                 <Search className="w-6 h-6 text-red-400" />
               </div>
               <div>
-                <h4 className="text-base font-serif font-bold text-stone-950">
-                  Find Misuse
-                </h4>
+                <h4 className="text-base font-serif font-bold text-stone-950">Find Misuse</h4>
                 <p className="text-xs text-stone-600 mt-1.5 leading-relaxed">
-                  Search indexed public web sources and registered hash databases to locate unauthorized media copies or deepfake derivatives.
+                  Search indexed public web sources and registered hash databases to locate unauthorized copies.
                 </p>
               </div>
             </div>
 
-            <div className="pt-6 border-t border-[#f0e6d6]/60 mt-6">
+            <div className="pt-6 border-t border-[#e2d8c3]/60 mt-6">
               <button
                 onClick={() => setActiveTab('find-misuse')}
                 className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1e1b18] hover:bg-stone-950 text-white text-xs font-bold rounded-xl transition-colors cursor-pointer"
@@ -372,8 +360,8 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
       </div>
 
       {/* 4. REAL RECENT ACTIVITY SECTION */}
-      <div className="glass-panel rounded-2xl p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-[#f0e6d6]/80 pb-4">
+      <div className="rounded-2xl p-6 space-y-4" style={glassPanelStyle}>
+        <div className="flex items-center justify-between border-b border-[#e2d8c3]/80 pb-4">
           <div className="flex items-center gap-2">
             <History className="w-5 h-5 text-stone-800" />
             <h3 className="font-serif font-bold text-stone-950 text-base">Recent Activity</h3>
@@ -391,7 +379,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
-                <tr className="border-b border-[#f0e6d6]/80 text-stone-500 font-mono font-bold uppercase">
+                <tr className="border-b border-[#e2d8c3]/80 text-stone-500 font-mono font-bold uppercase">
                   <th className="py-2.5 px-3">Media Item</th>
                   <th className="py-2.5 px-3">Action</th>
                   <th className="py-2.5 px-3">Result &amp; Status</th>
@@ -404,7 +392,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                   <tr
                     key={item.id}
                     className="transition-colors"
-                    onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(240, 228, 200, 0.22)')}
+                    onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(240, 228, 200, 0.35)')}
                     onMouseLeave={(e) => (e.currentTarget.style.background = 'transparent')}
                   >
                     <td className="py-3 px-3">
@@ -421,7 +409,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                       </div>
                     </td>
                     <td className="py-3 px-3">
-                      <span className="px-2.5 py-1 rounded-md glass-input text-stone-900 font-semibold text-[11px]">
+                      <span className="px-2.5 py-1 rounded-md text-stone-900 font-semibold text-[11px]" style={glassInputStyle}>
                         {item.action}
                       </span>
                     </td>

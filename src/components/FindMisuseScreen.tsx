@@ -23,6 +23,24 @@ interface FindMisuseScreenProps {
   onOpenReport?: () => void;
 }
 
+const glassPanelStyle: React.CSSProperties = {
+  background: 'rgba(255, 252, 244, 0.78)',
+  backdropFilter: 'blur(20px) saturate(130%)',
+  WebkitBackdropFilter: 'blur(20px) saturate(130%)',
+  border: '1px solid rgba(255, 255, 255, 0.7)',
+  boxShadow: '0 8px 32px rgba(40, 30, 15, 0.08)',
+};
+
+const glassCardStyle: React.CSSProperties = {
+  background: 'rgba(245, 238, 222, 0.45)',
+  border: '1px solid rgba(226, 216, 195, 0.7)',
+};
+
+const glassInputStyle: React.CSSProperties = {
+  background: 'rgba(255, 255, 255, 0.65)',
+  border: '1px solid rgba(226, 216, 195, 0.8)',
+};
+
 export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
   userRole,
   setActiveTab,
@@ -77,7 +95,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
       </div>
 
       {/* Discovery Methods Selector */}
-      <div className="glass-panel rounded-xl p-6 shadow-xs space-y-5">
+      <div className="rounded-xl p-6 shadow-xs space-y-5" style={glassPanelStyle}>
         <h3 className="font-bold text-stone-950 text-sm uppercase tracking-wider border-b border-[#e2d8c3]/80 pb-2">
           SELECT DISCOVERY METHOD
         </h3>
@@ -86,10 +104,11 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
           {/* Method 1 */}
           <button
             onClick={() => setSelectedMethod('reverse')}
+            style={selectedMethod !== 'reverse' ? glassCardStyle : undefined}
             className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
               selectedMethod === 'reverse'
                 ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                : 'border-[#e2d8c3]/80 text-stone-800 hover:bg-[#faf7f2]/60'
             }`}
           >
             <div className="flex items-center gap-2 font-bold text-xs mb-1">
@@ -108,10 +127,11 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
           {/* Method 2 */}
           <button
             onClick={() => setSelectedMethod('web')}
+            style={selectedMethod !== 'web' ? glassCardStyle : undefined}
             className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
               selectedMethod === 'web'
                 ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                : 'border-[#e2d8c3]/80 text-stone-800 hover:bg-[#faf7f2]/60'
             }`}
           >
             <div className="flex items-center gap-2 font-bold text-xs mb-1">
@@ -130,10 +150,11 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
           {/* Method 3 */}
           <button
             onClick={() => setSelectedMethod('submission')}
+            style={selectedMethod !== 'submission' ? glassCardStyle : undefined}
             className={`p-4 rounded-xl border text-left transition-all cursor-pointer ${
               selectedMethod === 'submission'
                 ? 'border-stone-950 bg-[#1e1b18] text-white shadow-xs'
-                : 'border-[#e2d8c3]/80 glass-card text-stone-800 hover:bg-[#faf7f2]/60'
+                : 'border-[#e2d8c3]/80 text-stone-800 hover:bg-[#faf7f2]/60'
             }`}
           >
             <div className="flex items-center gap-2 font-bold text-xs mb-1">
@@ -186,10 +207,10 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
 
       {/* Scanning Progress Screen */}
       {searchState === 'scanning' && (
-        <div className="glass-panel rounded-xl p-10 text-center shadow-xs space-y-4">
+        <div className="rounded-xl p-10 text-center shadow-xs space-y-4" style={glassPanelStyle}>
           <RefreshCw className="w-8 h-8 text-red-700 animate-spin mx-auto" />
           <h3 className="font-bold text-stone-950 text-lg">Scanning Public Sources &amp; Web Indices</h3>
-          <p className="text-xs font-mono text-red-800 glass-input px-3 py-1 rounded inline-block font-bold">
+          <p className="text-xs font-mono text-red-800 px-3 py-1 rounded inline-block font-bold" style={glassInputStyle}>
             {scanStep}
           </p>
         </div>
@@ -199,7 +220,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
       {searchState === 'complete' && (
         <div className="space-y-6">
           {/* Results Summary Header */}
-          <div className="glass-panel rounded-xl p-5 shadow-xs flex flex-wrap items-center justify-between gap-4">
+          <div className="rounded-xl p-5 shadow-xs flex flex-wrap items-center justify-between gap-4" style={glassPanelStyle}>
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-bold text-stone-950 text-lg">5 Possible Matches Found</span>
@@ -224,7 +245,8 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
 
               <button
                 onClick={() => setActiveTab('report')}
-                className="px-3.5 py-2 glass-input hover:bg-[#e8decb]/60 text-stone-800 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="px-3.5 py-2 hover:bg-[#e8decb]/60 text-stone-800 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                style={glassInputStyle}
               >
                 <FileText className="w-4 h-4 text-stone-600" />
                 <span>Generate Ready Report</span>
@@ -258,7 +280,8 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
             {matches.map((item) => (
               <div
                 key={item.id}
-                className="glass-panel rounded-xl p-5 shadow-xs hover:border-stone-400/80 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
+                style={glassPanelStyle}
+                className="rounded-xl p-5 shadow-xs hover:border-stone-400/80 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
               >
                 {/* Left Thumbnail & Info */}
                 <div className="flex items-start gap-4">
@@ -315,10 +338,11 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                 <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto pt-3 md:pt-0 border-t md:border-t-0 border-[#e2d8c3]/80">
                   <button
                     onClick={() => toggleSaveMatch(item.id)}
+                    style={!savedMatches[item.id] ? glassInputStyle : undefined}
                     className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
                       savedMatches[item.id]
                         ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
-                        : 'glass-input text-stone-700 hover:bg-[#e8decb]/60'
+                        : 'text-stone-700 hover:bg-[#e8decb]/60'
                     }`}
                   >
                     {savedMatches[item.id] ? '✓ Saved Evidence' : 'Save Evidence'}
@@ -340,7 +364,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
           </div>
 
           {/* DMCA / Platform Disclaimer Notice */}
-          <div className="p-4 glass-input rounded-xl text-xs text-stone-600 flex items-start gap-3">
+          <div className="p-4 rounded-xl text-xs text-stone-600 flex items-start gap-3" style={glassInputStyle}>
             <Info className="w-5 h-5 text-stone-500 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
               <strong>Notice:</strong> ForensIQ provides evidence gathering and provenance reports to assist media owners. ForensIQ does not directly modify or remove content hosted on third-party websites or platforms.

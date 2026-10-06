@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import {
   Menu,
   X,
-  Search,
   Shield,
   UserCheck,
   HelpCircle,
   Bell,
+  Settings,
   Layers,
   FileSearch,
   Lock,
+  Search,
   History,
-  Settings,
-  ShieldCheck,
   FileText,
 } from 'lucide-react';
 import { NavItem, UserRole } from '../types';
@@ -24,7 +23,6 @@ interface HeaderProps {
   setUserRole: (role: UserRole) => void;
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
-  onQuickSearch?: (query: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -36,7 +34,6 @@ export const Header: React.FC<HeaderProps> = ({
   setIsMobileOpen,
 }) => {
   const [showTrustModal, setShowTrustModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const handleNavClick = (tab: NavItem) => {
     setActiveTab(tab);
@@ -44,7 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
   };
 
   const navItems: { id: NavItem; label: string; icon: any }[] = [
-    { id: 'home', label: 'Platform Overview', icon: Layers },
+    { id: 'home', label: 'Overview', icon: Layers },
     { id: 'check-media', label: 'Check Media', icon: FileSearch },
     { id: 'protect-image', label: 'Protect Image', icon: Lock },
     { id: 'find-misuse', label: 'Find Misuse', icon: Search },
@@ -53,53 +50,36 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <>
-      {/* Floating Top Glass Navbar Wrapper */}
-      <header className="sticky top-3 z-40 max-w-[1700px] mx-auto w-full px-2 sm:px-4 mb-4">
+      {/* Floating Compact Glass Navbar */}
+      <header className="sticky top-3 z-50 max-w-[1700px] mx-auto w-full px-2 sm:px-4 mb-4">
         <div
           className="rounded-2xl px-4 py-2.5 flex items-center justify-between transition-all duration-200"
           style={{
-            background: 'rgba(255, 252, 244, 0.32)',
+            background: 'rgba(255, 252, 244, 0.75)',
             backdropFilter: 'blur(20px) saturate(130%)',
             WebkitBackdropFilter: 'blur(20px) saturate(130%)',
-            border: '1px solid rgba(255, 255, 255, 0.42)',
+            border: '1px solid rgba(255, 255, 255, 0.65)',
             boxShadow: '0 8px 32px rgba(40, 30, 15, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.5)',
           }}
         >
-          {/* Brand Logo & Title */}
+          {/* Brand Logo & V2.4 Badge */}
           <div
-            className="flex items-center gap-2.5 cursor-pointer group shrink-0"
+            className="flex items-center gap-2 cursor-pointer group shrink-0"
             onClick={() => handleNavClick('home')}
           >
-            <div
-              className="w-9 h-9 rounded-xl flex items-center justify-center text-amber-200 shadow-sm transition-transform group-hover:scale-105"
-              style={{ background: 'rgba(20, 18, 15, 0.85)' }}
-            >
-              <ShieldCheck className="w-5 h-5 text-red-500" />
+            <div className="w-8 h-8 rounded-xl bg-stone-900 flex items-center justify-center shadow-xs transition-transform group-hover:scale-105">
+              <Shield className="w-4 h-4 text-red-500 fill-red-500/20" />
             </div>
-            <div>
-              <div className="flex items-center gap-1.5">
-                <span className="font-serif font-black text-lg text-stone-950 tracking-tight leading-none">
-                  FORENSIQ
-                </span>
-                <span
-                  className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded uppercase leading-none"
-                  style={{
-                    background: 'rgba(220, 200, 155, 0.40)',
-                    border: '1px solid rgba(180, 155, 100, 0.35)',
-                    color: '#4a3a20',
-                  }}
-                >
-                  v2.4
-                </span>
-              </div>
-              <p className="hidden sm:block text-[10px] text-stone-600 font-semibold leading-none mt-0.5">
-                Forensic Workstation
-              </p>
-            </div>
+            <span className="font-serif font-black tracking-wider text-stone-900 text-sm sm:text-base uppercase">
+              FORENSIQ
+            </span>
+            <span className="px-1.5 py-0.5 text-[9px] font-mono font-bold text-amber-900/80 bg-amber-200/50 rounded-md border border-amber-300/40">
+              V2.4
+            </span>
           </div>
 
-          {/* Desktop Center Navigation Pills */}
-          <nav className="hidden lg:flex items-center gap-1">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden lg:flex items-center gap-1 bg-[#eae0cf]/40 p-1 rounded-xl border border-stone-300/30">
             {navItems.map((item) => {
               const Icon = item.icon;
               const isActive = activeTab === item.id;
@@ -107,19 +87,11 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     isActive
-                      ? 'text-white shadow-xs'
-                      : 'text-stone-800 hover:text-stone-950'
+                      ? 'bg-[#1e1b18] text-white shadow-xs'
+                      : 'text-stone-800 hover:bg-[#ded1bc]/50 hover:text-stone-950'
                   }`}
-                  style={
-                    isActive
-                      ? {
-                          background: 'rgba(20, 18, 15, 0.85)',
-                          boxShadow: '0 2px 10px rgba(0, 0, 0, 0.15)',
-                        }
-                      : { background: 'transparent' }
-                  }
                 >
                   <Icon
                     className={`w-3.5 h-3.5 ${
@@ -131,131 +103,111 @@ export const Header: React.FC<HeaderProps> = ({
               );
             })}
 
-            {/* Investigator View Link if investigator mode */}
             {userRole === 'investigator' && (
               <button
                 onClick={() => handleNavClick('professional-analysis')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                    ? 'text-white shadow-xs'
-                    : 'text-stone-800 hover:text-stone-950'
+                    ? 'bg-[#1e1b18] text-white shadow-xs'
+                    : 'text-stone-800 hover:bg-[#ded1bc]/50 hover:text-stone-950'
                 }`}
-                style={
-                  activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                    ? { background: 'rgba(20, 18, 15, 0.85)' }
-                    : { background: 'rgba(196, 30, 30, 0.12)', border: '1px solid rgba(196, 30, 30, 0.30)' }
-                }
               >
                 <Shield className="w-3.5 h-3.5 text-red-600" />
                 <span>Investigator Suite</span>
               </button>
             )}
+
+            <button
+              onClick={() => handleNavClick('report')}
+              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                activeTab === 'report'
+                  ? 'bg-[#1e1b18] text-white shadow-xs'
+                  : 'text-stone-800 hover:bg-[#ded1bc]/50 hover:text-stone-950'
+              }`}
+            >
+              <FileText className="w-3.5 h-3.5 text-amber-600" />
+              <span>Reports</span>
+            </button>
           </nav>
 
-          {/* Right Utilities */}
+          {/* Right Utilities Icons */}
           <div className="flex items-center gap-2 sm:gap-2.5">
-            {/* Quick Search Input */}
-            <div className="hidden md:flex items-center relative w-64 lg:w-72">
-              <Search className="w-3.5 h-3.5 absolute left-3 text-stone-500 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Quick search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1 text-xs rounded-xl focus:outline-none text-stone-800 placeholder-stone-400"
-                style={{
-                  background: 'rgba(248, 242, 230, 0.45)',
-                  border: '1px solid rgba(210, 196, 170, 0.50)',
-                }}
-              />
-            </div>
-
-            {/* Role Switcher Badge */}
+            {/* User Role Toggle Button */}
             <button
               onClick={() => setUserRole(userRole === 'normal' ? 'investigator' : 'normal')}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
-              style={
-                userRole === 'investigator'
-                  ? {
-                      background: 'rgba(20, 18, 15, 0.85)',
-                      border: '1px solid rgba(80, 60, 40, 0.60)',
-                      color: '#fef3c7',
-                    }
-                  : {
-                      background: 'rgba(237, 225, 200, 0.45)',
-                      border: '1px solid rgba(200, 180, 140, 0.50)',
-                      color: '#292524',
-                    }
-              }
-              title="Click to toggle user role mode"
+              className="p-2.5 rounded-xl text-stone-800 transition-all cursor-pointer shrink-0 flex items-center gap-1.5 text-xs font-bold"
+              style={{
+                background: userRole === 'investigator' ? 'rgba(20, 18, 15, 0.85)' : 'rgba(230, 220, 200, 0.45)',
+                color: userRole === 'investigator' ? '#fef3c7' : '#292524',
+                border: '1px solid rgba(200, 180, 140, 0.40)',
+              }}
+              title={`Role: ${userRole === 'investigator' ? 'Investigator' : 'Standard User'}`}
             >
               {userRole === 'investigator' ? (
                 <>
-                  <Shield className="w-3.5 h-3.5 text-red-400" />
+                  <Shield className="w-4 h-4 text-red-400" />
                   <span className="hidden sm:inline">Investigator</span>
                 </>
               ) : (
                 <>
-                  <UserCheck className="w-3.5 h-3.5 text-stone-600" />
-                  <span className="hidden sm:inline">Standard User</span>
+                  <UserCheck className="w-4 h-4 text-stone-700" />
+                  <span className="hidden sm:inline">Standard</span>
                 </>
               )}
             </button>
 
             {/* Notifications Button */}
             <button
-              className="p-2 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer relative"
-              style={{ background: 'rgba(230, 220, 200, 0.35)', border: '1px solid rgba(200, 185, 155, 0.30)' }}
+              className="p-2.5 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer relative"
+              style={{ background: 'rgba(230, 220, 200, 0.45)', border: '1px solid rgba(200, 185, 155, 0.40)' }}
               title="Notifications"
             >
               <Bell className="w-4 h-4" />
-              <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-red-600" />
+              <span className="absolute top-2 right-2 w-2 h-2 rounded-full bg-red-600" />
             </button>
 
             {/* Account Settings Button */}
             <button
               onClick={() => handleNavClick('settings')}
-              className={`p-2 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer ${
-                activeTab === 'settings' ? 'text-stone-950 font-bold' : ''
-              }`}
+              className="p-2.5 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer"
               style={{
-                background: activeTab === 'settings' ? 'rgba(20, 18, 15, 0.85)' : 'rgba(230, 220, 200, 0.35)',
+                background: activeTab === 'settings' ? 'rgba(20, 18, 15, 0.85)' : 'rgba(230, 220, 200, 0.45)',
                 color: activeTab === 'settings' ? '#ffffff' : undefined,
-                border: '1px solid rgba(200, 185, 155, 0.30)',
+                border: '1px solid rgba(200, 185, 155, 0.40)',
               }}
               title="Account Settings"
             >
               <Settings className="w-4 h-4" />
             </button>
 
-            {/* Trust Info Disclaimer Button */}
+            {/* Help / Trust Disclaimer Button */}
             <button
               onClick={() => setShowTrustModal(true)}
-              className="p-2 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer"
-              style={{ background: 'rgba(230, 220, 200, 0.35)', border: '1px solid rgba(200, 185, 155, 0.30)' }}
+              className="p-2.5 text-stone-700 hover:text-stone-950 rounded-xl transition-colors cursor-pointer"
+              style={{ background: 'rgba(230, 220, 200, 0.45)', border: '1px solid rgba(200, 185, 155, 0.40)' }}
               title="Trust & Forensic Principles"
             >
               <HelpCircle className="w-4 h-4" />
             </button>
 
-            {/* Mobile Navigation Toggle Button */}
+            {/* Menu Toggle Button (For Mobile/Tablet) */}
             <button
               onClick={() => setIsMobileOpen(!isMobileOpen)}
-              className="p-2 rounded-xl text-stone-800 lg:hidden cursor-pointer"
-              style={{ background: 'rgba(230, 220, 200, 0.45)', border: '1px solid rgba(200, 185, 155, 0.35)' }}
-              aria-label="Toggle Mobile Menu"
+              className="p-2.5 rounded-xl text-stone-800 cursor-pointer lg:hidden"
+              style={{ background: 'rgba(230, 220, 200, 0.45)', border: '1px solid rgba(200, 185, 155, 0.40)' }}
+              aria-label="Toggle Menu"
             >
-              {isMobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {isMobileOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Compact Glass Dropdown */}
+        {/* Dropdown Navigation Menu for Mobile */}
         {isMobileOpen && (
           <div
-            className="lg:hidden mt-2 rounded-2xl p-4 shadow-xl space-y-2 transition-all"
+            className="mt-2 rounded-2xl p-3 shadow-xl space-y-1.5 transition-all lg:hidden"
             style={{
-              background: 'rgba(255, 252, 244, 0.92)',
+              background: 'rgba(255, 252, 244, 0.95)',
               backdropFilter: 'blur(22px) saturate(130%)',
               WebkitBackdropFilter: 'blur(22px) saturate(130%)',
               border: '1px solid rgba(255, 255, 255, 0.60)',
@@ -271,7 +223,7 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     isActive ? 'text-white' : 'text-stone-800 hover:bg-[#ede4d4]/60'
                   }`}
                   style={
@@ -288,31 +240,28 @@ export const Header: React.FC<HeaderProps> = ({
               );
             })}
 
-            {/* Investigator link in mobile menu */}
-            <button
-              onClick={() => {
-                if (userRole === 'normal') setUserRole('investigator');
-                handleNavClick('professional-analysis');
-              }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                  ? 'text-white'
-                  : 'text-stone-800 hover:bg-[#ede4d4]/60'
-              }`}
-              style={
-                activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                  ? { background: 'rgba(20, 18, 15, 0.85)' }
-                  : {}
-              }
-            >
-              <Shield className="w-4 h-4 text-red-700" />
-              <span>Professional Investigator Suite</span>
-            </button>
+            {userRole === 'investigator' && (
+              <button
+                onClick={() => handleNavClick('professional-analysis')}
+                className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
+                    ? 'text-white'
+                    : 'text-stone-800 hover:bg-[#ede4d4]/60'
+                }`}
+                style={
+                  activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
+                    ? { background: 'rgba(20, 18, 15, 0.85)' }
+                    : {}
+                }
+              >
+                <Shield className="w-4 h-4 text-red-700" />
+                <span>Professional Investigator Suite</span>
+              </button>
+            )}
 
-            {/* Reports link */}
             <button
               onClick={() => handleNavClick('report')}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              className={`w-full flex items-center gap-3 px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeTab === 'report' ? 'text-white' : 'text-stone-800 hover:bg-[#ede4d4]/60'
               }`}
               style={activeTab === 'report' ? { background: 'rgba(20, 18, 15, 0.85)' } : {}}
@@ -324,13 +273,13 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </header>
 
-      {/* Trust & Transparency Principles Modal */}
+      {/* Trust Principles Modal */}
       {showTrustModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 glass-modal-bg">
           <div
             className="rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4"
             style={{
-              background: 'rgba(250, 245, 232, 0.85)',
+              background: 'rgba(250, 245, 232, 0.92)',
               backdropFilter: 'blur(22px) saturate(120%)',
               WebkitBackdropFilter: 'blur(22px) saturate(120%)',
               border: '1px solid rgba(255, 255, 255, 0.50)',
@@ -363,32 +312,8 @@ export const Header: React.FC<HeaderProps> = ({
                 }}
               >
                 <strong>Probabilistic Intelligence:</strong> AI detection and media forensics are
-                probabilistic signals. ForensIQ does not issue absolute 100% guarantees; we present
-                mathematical likelihoods and multi-model consensus.
+                probabilistic signals. ForensIQ does not issue absolute 100% guarantees.
               </p>
-              <div className="space-y-2">
-                <div className="flex gap-2">
-                  <span className="font-bold text-stone-900 min-w-[80px]">Protection:</span>
-                  <span>
-                    EOT-based adversarial perturbation adds robust ownership signals against unexpected
-                    web transformations.
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <span className="font-bold text-stone-900 min-w-[80px]">Discovery:</span>
-                  <span>
-                    Misuse detection searches indexed public web sources and registered hash
-                    registries.
-                  </span>
-                </div>
-                <div className="flex gap-2">
-                  <span className="font-bold text-stone-900 min-w-[80px]">Roles:</span>
-                  <span>
-                    Standard users receive intuitive authenticity ratings; verified investigators
-                    access raw ELA maps, spectral metrics, and evidence binders.
-                  </span>
-                </div>
-              </div>
             </div>
 
             <div

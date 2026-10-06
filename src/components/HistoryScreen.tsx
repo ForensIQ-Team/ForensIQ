@@ -17,6 +17,24 @@ interface HistoryScreenProps {
   onOpenReport?: (analysis?: DetectionResult) => void;
 }
 
+const glassPanelStyle: React.CSSProperties = {
+  background: 'rgba(255, 252, 244, 0.78)',
+  backdropFilter: 'blur(20px) saturate(130%)',
+  WebkitBackdropFilter: 'blur(20px) saturate(130%)',
+  border: '1px solid rgba(255, 255, 255, 0.7)',
+  boxShadow: '0 8px 32px rgba(40, 30, 15, 0.08)',
+};
+
+const glassCardStyle: React.CSSProperties = {
+  background: 'rgba(245, 238, 222, 0.45)',
+  border: '1px solid rgba(226, 216, 195, 0.7)',
+};
+
+const glassInputStyle: React.CSSProperties = {
+  background: 'rgba(255, 255, 255, 0.65)',
+  border: '1px solid rgba(226, 216, 195, 0.8)',
+};
+
 export const HistoryScreen: React.FC<HistoryScreenProps> = ({
   userRole,
   setActiveTab,
@@ -55,45 +73,49 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
       </div>
 
       {/* Filter Tabs & Search Bar */}
-      <div className="glass-panel rounded-xl p-4 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4">
+      <div className="rounded-xl p-4 shadow-xs flex flex-col md:flex-row items-center justify-between gap-4" style={glassPanelStyle}>
         {/* Filter Pills */}
         <div className="flex flex-wrap items-center gap-1.5 text-xs">
           <button
             onClick={() => setFilter('all')}
+            style={filter !== 'all' ? glassInputStyle : undefined}
             className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
               filter === 'all'
                 ? 'bg-[#1e1b18] text-white shadow-xs'
-                : 'glass-input text-stone-800 hover:bg-[#eae0d0]/60'
+                : 'text-stone-800 hover:bg-[#eae0d0]/60'
             }`}
           >
             All Activity
           </button>
           <button
             onClick={() => setFilter('checked')}
+            style={filter !== 'checked' ? glassInputStyle : undefined}
             className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
               filter === 'checked'
                 ? 'bg-[#1e1b18] text-white shadow-xs'
-                : 'glass-input text-stone-800 hover:bg-[#eae0d0]/60'
+                : 'text-stone-800 hover:bg-[#eae0d0]/60'
             }`}
           >
             Checked Media
           </button>
           <button
             onClick={() => setFilter('protected')}
+            style={filter !== 'protected' ? glassInputStyle : undefined}
             className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
               filter === 'protected'
                 ? 'bg-[#1e1b18] text-white shadow-xs'
-                : 'glass-input text-stone-800 hover:bg-[#eae0d0]/60'
+                : 'text-stone-800 hover:bg-[#eae0d0]/60'
             }`}
           >
             Protected Images
           </button>
           <button
             onClick={() => setFilter('misuse')}
+            style={filter !== 'misuse' ? glassInputStyle : undefined}
             className={`px-3 py-1.5 rounded-lg font-bold transition-colors cursor-pointer ${
               filter === 'misuse'
                 ? 'bg-[#1e1b18] text-white shadow-xs'
-                : 'glass-input text-stone-800 hover:bg-[#eae0d0]/60'
+                : 'text-stone-800 hover:bg-[#eae0d0]/60'
             }`}
           >
             Misuse Searches
@@ -108,13 +130,14 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
             placeholder="Search analysis ID, filename..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-1.5 glass-input rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-stone-900 text-stone-800 placeholder-stone-400"
+            style={glassInputStyle}
+            className="w-full pl-9 pr-3 py-1.5 rounded-lg text-xs focus:outline-none focus:ring-1 focus:ring-stone-900 text-stone-800 placeholder-stone-400"
           />
         </div>
       </div>
 
       {/* History Table Container */}
-      <div className="glass-panel rounded-xl shadow-xs overflow-hidden">
+      <div className="rounded-xl shadow-xs overflow-hidden" style={glassPanelStyle}>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             <thead>
@@ -149,7 +172,7 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
                     </div>
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className="px-2 py-1 rounded glass-input text-stone-900 font-semibold text-[11px]">
+                    <span className="px-2 py-1 rounded text-stone-900 font-semibold text-[11px]" style={glassInputStyle}>
                       {item.action}
                     </span>
                   </td>
