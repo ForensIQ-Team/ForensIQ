@@ -10,7 +10,11 @@ export type NavItem =
   | 'history'
   | 'professional-analysis'
   | 'report'
-  | 'settings';
+  | 'settings'
+  | 'signup'
+  | 'login'
+  | 'profile'
+  | 'investigator-workspace';
 
 export type RiskLevel = 'low' | 'medium' | 'high';
 
@@ -226,3 +230,183 @@ export interface HistoryItem {
   risk?: RiskLevel;
   detectionResult?: DetectionResult;
 }
+
+// ----------------------------------------------------------------
+// Auth & Investigator Workspace Types
+// ----------------------------------------------------------------
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  display_name?: string;
+  role: 'user' | 'investigator' | 'admin';
+  tier: number;
+  org_id?: string;
+  is_active: boolean;
+  created_at?: string;
+  last_login_at?: string;
+}
+
+export interface OrganizationInfo {
+  id: string;
+  name: string;
+  domain?: string;
+  website?: string;
+  verified_at?: string;
+  verification_method?: string;
+  created_at?: string;
+}
+
+export interface InvestigatorAppInfo {
+  id: string;
+  user_id: string;
+  organization_name?: string;
+  designation?: string;
+  work_email?: string;
+  org_website?: string;
+  linkedin_url?: string;
+  reason?: string;
+  status: 'pending' | 'approved' | 'rejected';
+  created_at?: string;
+}
+
+export interface InvestigatorCase {
+  id: string;
+  org_id: string;
+  created_by: string;
+  assigned_to?: string;
+  title: string;
+  description?: string;
+  status: 'open' | 'in_progress' | 'closed' | 'escalated' | 'archived';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  tags: string[];
+  closed_at?: string;
+  created_at?: string;
+  updated_at?: string;
+  creator_name?: string;
+  assignee_name?: string;
+  findings_count: number;
+  notes_count: number;
+}
+
+export interface CaseFindingItem {
+  id: string;
+  case_id: string;
+  uploaded_by: string;
+  media_type: 'image' | 'video';
+  original_filename: string;
+  storage_path: string;
+  sha256: string;
+  file_size_bytes: number;
+  verdict: 'FAKE' | 'REAL' | 'INCONCLUSIVE';
+  confidence: number;
+  analysis_json: any;
+  gradcam_path?: string;
+  report_id?: string;
+  frozen: boolean;
+  frozen_by?: string;
+  frozen_at?: string;
+  created_at?: string;
+}
+
+export interface CaseTimelineItem {
+  id: number;
+  case_id: string;
+  actor_id?: string;
+  action: string;
+  payload: Record<string, any>;
+  created_at?: string;
+  actor_name?: string;
+}
+
+export interface CaseNoteItem {
+  id: string;
+  case_id: string;
+  author_id: string;
+  text: string;
+  created_at?: string;
+  author_name?: string;
+}
+
+export interface EvidenceLockItem {
+  id: string;
+  finding_id: string;
+  locked_by: string;
+  reason?: string;
+  content_hash: string;
+  chain_hash: string;
+  locked_at?: string;
+  locked_by_name?: string;
+}
+
+export interface WatchlistItem {
+  id: string;
+  org_id: string;
+  created_by: string;
+  name: string;
+  description?: string;
+  target_type: string;
+  target_query: string;
+  active: boolean;
+  created_at?: string;
+  alerts_count?: number;
+}
+
+export interface WatchlistAlertItem {
+  id: string;
+  watchlist_id: string;
+  watchlist_name?: string;
+  source_url: string;
+  source_type: string;
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  match_score?: number;
+  snapshot_path?: string;
+  status: 'new' | 'triaged' | 'dismissed' | 'escalated';
+  triaged_by?: string;
+  triaged_at?: string;
+  case_id?: string;
+  created_at?: string;
+}
+
+export interface SourceReputationItem {
+  id: string;
+  org_id: string;
+  domain: string;
+  total_findings: number;
+  fake_findings: number;
+  fake_ratio: number;
+  last_seen_at?: string;
+  notes?: string;
+}
+
+export interface AuditLogItem {
+  id: number;
+  user_id?: string;
+  org_id?: string;
+  action: string;
+  target_type?: string;
+  target_id?: string;
+  metadata?: Record<string, any>;
+  ip_address?: string;
+  user_agent?: string;
+  created_at?: string;
+  user_name?: string;
+}
+
+export interface OrgMemberItem {
+  org_id: string;
+  user_id: string;
+  role: 'owner' | 'admin' | 'analyst' | 'viewer';
+  joined_at?: string;
+  user?: AuthUser;
+}
+
+export interface DashboardStatsData {
+  total_cases: number;
+  open_cases: number;
+  findings_month: number;
+  fake_findings_month: number;
+  real_findings_month: number;
+  unread_alerts: number;
+}
+

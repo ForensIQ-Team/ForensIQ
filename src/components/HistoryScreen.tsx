@@ -185,10 +185,10 @@ export const HistoryScreen: React.FC<HistoryScreenProps> = ({
                         }
                       }}
                       className="px-3 py-1.5 bg-[#1e1b18] hover:bg-stone-900 text-white rounded-lg text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer shadow-xs transition-colors"
-                      title="View Forensic Report"
+                      title="Open Forensic Report"
                     >
                       <FileText className="w-3.5 h-3.5 text-amber-300" />
-                      <span>VIEW REPORT</span>
+                      <span>OPEN REPORT</span>
                     </button>
                   </td>
                 </tr>

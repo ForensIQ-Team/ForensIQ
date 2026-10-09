@@ -1,0 +1,113 @@
+{
+  "report_id": "FX-20261009-B546",
+  "generated_at": "2026-10-09T11:21:36.925335+00:00",
+  "version": "ForensIQ-Report-V1",
+  "input": {
+    "media_type": "image",
+    "filename": "ChatGPT Image Sep 29, 2026, 10_09_41 PM.png",
+    "width": 1536,
+    "height": 1024
+  },
+  "verdict": {
+    "label": "FAKE",
+    "confidence": 0.52,
+    "fake_score": 0.52,
+    "headline": "Image appears to be fabricated"
+  },
+  "visuals": {
+    "original_image": "assets/original.png",
+    "original_ext": ".png",
+    "original_size_bytes": 2036773,
+    "gradcam_overlay": "assets/gradcam_overlay.jpg",
+    "gradcam_overlay_size": 370301,
+    "gradcam_error": null
+  },
+  "ai_analysis": {
+    "headline": "Image appears to be fabricated",
+    "summary": "Our analysis detected signs of manipulation in the picture and assigned a low-to-moderate confidence of 52%. The evidence points toward a fabricated image, but the confidence is borderline.",
+    "analysis": {
+      "overview": "We first ran an automated face detector to locate any faces, then extracted the detected face region for deeper inspection. An attention map highlighted a specific square area of the image. The model examined pixel patterns, lighting consistency, and texture within that area. Based on those cues it returned a FAKE verdict.",
+      "heatmap_interpretation": "The highlighted square covers the central portion of the face, including the eyes, nose, and mouth. In that zone we observed irregular shading and edge artifacts that are typical of synthetic generation. These patterns suggest the facial features were likely inserted or altered.",
+      "region_focus": "The analysis concentrated on the box at (x=507, y=150) with width=489 px and height=489 px, roughly the middle‑left of the image."
+    },
+    "observed_indicators": [
+      "inconsistent lighting across facial features",
+      "blurred edge around the jawline",
+      "unnatural skin texture in the highlighted area",
+      "pixel-level noise patterns not matching surrounding regions",
+      "misaligned facial landmarks"
+    ],
+    "confidence_statement": "The confidence score of 0.52 indicates a borderline level of certainty; the evidence is not strong enough for a definitive conclusion.",
+    "limitations": "This analysis only examined the extracted face region and cannot assess other parts of the image. It cannot determine the original source or intent of the image, nor can it rule out manipulation outside the highlighted area.",
+    "recommendation": "We recommend a manual visual review by an expert and, if needed, additional forensic testing with complementary tools."
+  },
+  "ai_analysis_error": null,
+  "metadata": {
+    "face_detected": true,
+    "detection_method": "mtcnn_strict",
+    "aligned": true,
+    "bbox": [
+      507,
+      150,
+      489,
+      489
+    ],
+    "bbox_fraction": 0.152029,
+    "bbox_center_pct": [
+      0.4893,
+      0.3853
+    ]
+  },
+  "_pipeline_result": {
+    "final": {
+      "prediction": "FAKE",
+      "confidence": 0.52,
+      "fake_score": 0.52,
+      "real_score": 0.48
+    },
+    "face_detection": {
+      "detected": true,
+      "num_faces": 1,
+      "confidence": 0.9999610185623169,
+      "crop_box": [
+        507,
+        150,
+        996,
+        639
+      ],
+      "raw_face_box": [
+        659.0181274414062,
+        250.79531860351562,
+        843.5806274414062,
+        501.5502014160156
+      ],
+      "fallback": false,
+      "detection_method": "mtcnn_strict",
+      "aligned": true,
+      "margin": {
+        "side": 0.35,
+        "top": 0.4,
+        "bottom": 0.55
+      },
+      "square_pad": true
+    },
+    "fusion": {
+      "xception_weight": 0.45,
+      "efficientnet_weight": 0.25,
+      "vit_weight": 0.3,
+      "xception_alert_threshold": 0.5,
+      "xception_max_pull_down": 0.15,
+      "normal_weighted_score": 0.330048828125,
+      "final_fake_score": 0.52,
+      "final_real_score": 0.48,
+      "fusion_mode": "XCEPTION_PRIORITY_OVERRIDE",
+      "support_score": 0.17761452414772724,
+      "xception_alert": true,
+      "xception_priority_applied": true,
+      "xception_dissent": false,
+      "review_recommended": true,
+      "difference": 0.5097780227661133,
+      "disagreement_level": "HIGH"
+    }
+  }
+}

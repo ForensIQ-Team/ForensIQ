@@ -1,0 +1,104 @@
+{
+  "report_id": "FX-20261008-22B7",
+  "generated_at": "2026-10-08T13:38:54.715859+00:00",
+  "version": "ForensIQ-Report-V1",
+  "input": {
+    "media_type": "video",
+    "filename": "Man_adjusting_suit_cuffs_20261007210245.mp4",
+    "width": 1280,
+    "height": 720
+  },
+  "verdict": {
+    "label": "FAKE",
+    "confidence": 0.7684646606445313,
+    "fake_score": 0.7684646606445313,
+    "headline": "Video appears to be fabricated (FAKE)"
+  },
+  "visuals": {
+    "original_image": "assets/original.jpg",
+    "original_ext": ".jpg",
+    "original_size_bytes": 989135,
+    "gradcam_overlay": "assets/gradcam_overlay.jpg",
+    "gradcam_overlay_size": 165091,
+    "gradcam_error": null
+  },
+  "ai_analysis": {
+    "headline": "Video appears to be fabricated (FAKE)",
+    "summary": "Our analysis of the video identified consistent manipulation signals across all examined frames. We are moderately confident (about 77%) that the content is not authentic.",
+    "analysis": {
+      "overview": "The pipeline first detected and aligned any faces, then extracted a cropped region for deeper inspection. An attention map highlighted a large central area of the frame, which the system used to focus its decision making. All 19 sampled frames were classified as fake, leading to an overall FAKE verdict. No model architecture names are disclosed.",
+      "heatmap_interpretation": "The highlighted region spans the upper‑left to centre of the frame and includes the primary face and surrounding background. Its size and position suggest the algorithm found the most suspicious visual cues in that area, such as facial artifacts and edge inconsistencies.",
+      "region_focus": "The analysis concentrated on the rectangle starting at (314, 0) with a width of 698 px and height of 490 px, covering roughly the middle‑left portion of the video."
+    },
+    "observed_indicators": [
+      "Unnatural edge blending around the face",
+      "Inconsistent lighting across the highlighted area",
+      "Visible compression artifacts in the central region",
+      "Mismatched facial landmarks after alignment",
+      "Uniform fake scores across all frames"
+    ],
+    "confidence_statement": "With a confidence score of 0.77, we consider the evidence fairly strong but not absolute.",
+    "limitations": "The analysis cannot determine who created the video, the original source material, or the exact manipulation technique used. It also cannot assess audio authenticity or contextual intent.",
+    "recommendation": "We recommend obtaining the original source, if possible, and conducting a manual review by a qualified expert."
+  },
+  "ai_analysis_error": null,
+  "metadata": {
+    "face_detected": true,
+    "detection_method": "mtcnn_strict",
+    "aligned": true,
+    "bbox": [
+      314,
+      0,
+      698,
+      490
+    ],
+    "bbox_fraction": 0.371115,
+    "bbox_center_pct": [
+      0.518,
+      0.3403
+    ],
+    "peak_frame_index": 148
+  },
+  "video_stats": {
+    "frames_analyzed": 19,
+    "fake_frames": 19,
+    "fake_frame_ratio": 1.0,
+    "mean_fake": 0.745505690574646,
+    "median_fake": 0.7437799572944641,
+    "p75_fake": 0.766796886920929,
+    "p90_fake": 0.7902432680130005,
+    "peak_escalated": true,
+    "segment_pattern": "UNIFORM"
+  },
+  "_pipeline_result": {
+    "final": {
+      "prediction": "FAKE",
+      "confidence": 0.7684646606445313,
+      "fake_score": 0.7684646606445313,
+      "real_score": 0.23153533935546866
+    },
+    "aggregation": {
+      "mean_fake": 0.745505690574646,
+      "median_fake": 0.7437799572944641,
+      "p75_fake": 0.766796886920929,
+      "p90_fake": 0.7902432680130005,
+      "weights": {
+        "mean": 0.2,
+        "median": 0.15,
+        "p75": 0.25,
+        "p90": 0.4
+      },
+      "base_score": 0.7684646606445313,
+      "peak_frame_ratio": 1.0,
+      "peak_escalated": true,
+      "peak_fake_level": 0.55,
+      "peak_frame_ratio_threshold": 0.2,
+      "video_fake_score": 0.7684646606445313,
+      "video_real_score": 0.23153533935546866,
+      "thresholds": {
+        "fake": 0.4,
+        "suspicious": 0.32
+      }
+    }
+  }
+}

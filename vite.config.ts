@@ -18,6 +18,13 @@ export default defineConfig(() => {
       port: 3000,
       host: true,
       hmr: process.env.DISABLE_HMR !== 'true',
+      proxy: {
+        '/api': {
+          target: 'http://localhost:8000',
+          changeOrigin: true,
+          secure: false,
+        },
+      },
       watch: {
         ignored: [
           '**/ForensIQ-ML/**',

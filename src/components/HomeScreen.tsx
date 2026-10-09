@@ -446,7 +446,7 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({
                           }
                         }}
                         className="px-3 py-1.5 bg-[#1e1b18] hover:bg-stone-950 text-white rounded-lg text-[11px] font-bold inline-flex items-center gap-1 cursor-pointer transition-colors"
-                        title="View Report"
+                        title="Open Report"
                       >
                         <FileText className="w-3 h-3 text-amber-300" />
                         <span>Report</span>

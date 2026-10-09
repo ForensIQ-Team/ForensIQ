@@ -1,0 +1,112 @@
+{
+  "report_id": "FX-20261008-79E4",
+  "generated_at": "2026-10-08T08:13:36.794841+00:00",
+  "version": "ForensIQ-Report-V1",
+  "input": {
+    "media_type": "image",
+    "filename": "033_097_frame_000016_face_0.jpg",
+    "width": 299,
+    "height": 299
+  },
+  "verdict": {
+    "label": "FAKE",
+    "confidence": 0.971240234375,
+    "fake_score": 0.971240234375,
+    "headline": "Image identified as fabricated with high confidence"
+  },
+  "visuals": {
+    "original_image": "assets/original.jpg",
+    "original_ext": ".jpg",
+    "original_size_bytes": 21466,
+    "gradcam_overlay": "assets/gradcam_overlay.jpg",
+    "gradcam_overlay_size": 28293,
+    "gradcam_error": null
+  },
+  "ai_analysis": {
+    "headline": "Image identified as fabricated with high confidence",
+    "summary": "Our forensic analysis found clear signs of manipulation throughout the picture. The system is 97% confident the image is fake.",
+    "analysis": {
+      "overview": "We first scanned the file for any human faces and confirmed a face is present. The entire picture was then examined using an attention map that highlights areas contributing most to the decision. The map showed the model focused on the full frame, not just a small patch. Based on the patterns detected, the system assigned a fake label. No manual adjustments were applied to the face region before analysis.",
+      "heatmap_interpretation": "The highlighted region covers 100% of the image, meaning the algorithm detected inconsistencies across the whole picture. This suggests widespread artifacts rather than a localized edit.",
+      "region_focus": "The analysis concentrated on the complete image area, from the top‑left corner (0,0) to the bottom‑right corner (299,299)."
+    },
+    "observed_indicators": [
+      "Unnatural lighting gradients",
+      "Inconsistent shadow directions",
+      "Visible compression artifacts around edges",
+      "Mismatched texture patterns in background"
+    ],
+    "confidence_statement": "The confidence score of 0.97 indicates strong evidence of fabrication, though absolute certainty is not claimed.",
+    "limitations": "The tool cannot pinpoint the exact editing software or the original source file. It also cannot assess content that may be authentic but still altered in subtle ways beyond its detection scope.",
+    "recommendation": "Proceed with a manual visual review and, if possible, obtain the original source for verification."
+  },
+  "ai_analysis_error": null,
+  "metadata": {
+    "face_detected": true,
+    "detection_method": "mtcnn_strict",
+    "aligned": false,
+    "bbox": [
+      0,
+      0,
+      299,
+      299
+    ],
+    "bbox_fraction": 1.0,
+    "bbox_center_pct": [
+      0.5,
+      0.5
+    ]
+  },
+  "_pipeline_result": {
+    "final": {
+      "prediction": "FAKE",
+      "confidence": 0.971240234375,
+      "fake_score": 0.971240234375,
+      "real_score": 0.028759765625000044
+    },
+    "face_detection": {
+      "detected": true,
+      "num_faces": 1,
+      "confidence": 0.9999732971191406,
+      "crop_box": [
+        0,
+        0,
+        299,
+        299
+      ],
+      "raw_face_box": [
+        41.36681365966797,
+        27.531719207763672,
+        246.1656494140625,
+        269.1222229003906
+      ],
+      "fallback": false,
+      "detection_method": "mtcnn_strict",
+      "aligned": false,
+      "margin": {
+        "side": 0.35,
+        "top": 0.4,
+        "bottom": 0.55
+      },
+      "square_pad": true
+    },
+    "fusion": {
+      "xception_weight": 0.45,
+      "efficientnet_weight": 0.25,
+      "vit_weight": 0.3,
+      "xception_alert_threshold": 0.5,
+      "xception_max_pull_down": 0.15,
+      "normal_weighted_score": 0.9691162109375,
+      "final_fake_score": 0.971240234375,
+      "final_real_score": 0.028759765625000044,
+      "fusion_mode": "XCEPTION_ALERT_CONFIRMED",
+      "support_score": 0.9499999999999998,
+      "xception_alert": true,
+      "xception_priority_applied": false,
+      "xception_dissent": false,
+      "review_recommended": false,
+      "difference": 0.007128906250000067,
+      "disagreement_level": "LOW"
+    }
+  }
+}

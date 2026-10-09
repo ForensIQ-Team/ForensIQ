@@ -1,0 +1,113 @@
+{
+  "report_id": "FX-20261008-4E7D",
+  "generated_at": "2026-10-08T08:32:30.476648+00:00",
+  "version": "ForensIQ-Report-V1",
+  "input": {
+    "media_type": "image",
+    "filename": "baby-face-swap.jpg",
+    "width": 800,
+    "height": 795
+  },
+  "verdict": {
+    "label": "FAKE",
+    "confidence": 0.83505859375,
+    "fake_score": 0.83505859375,
+    "headline": "Image shows clear signs of manipulation, likely a fake"
+  },
+  "visuals": {
+    "original_image": "assets/original.jpg",
+    "original_ext": ".jpg",
+    "original_size_bytes": 75539,
+    "gradcam_overlay": "assets/gradcam_overlay.jpg",
+    "gradcam_overlay_size": 158303,
+    "gradcam_error": null
+  },
+  "ai_analysis": {
+    "headline": "Image shows clear signs of manipulation, likely a fake",
+    "summary": "Our forensic pipeline detected anomalies in the central portion of the picture. The attention map highlighted a large area covering the face region, leading us to label the image as fake with high confidence.",
+    "analysis": {
+      "overview": "We first ran automated face detection to locate any human subjects, then aligned and cropped the face for detailed inspection. The cropped region was examined for visual inconsistencies using a pixel‑level attention mechanism that flags areas contributing most to the decision. The attention map pointed to a 451 × 451 pixel block near the top‑center of the image, which overlapped the primary face. Based on the patterns observed in that block, the system assigned a fake verdict.",
+      "heatmap_interpretation": "The highlighted block corresponds to the main facial area and surrounding background. Within this block we observed irregular edge blending, mismatched lighting, and compression artifacts that are typical of synthetic or edited content. These signs suggest that the face was likely inserted or altered.",
+      "region_focus": "The analysis concentrated on a rectangle starting at (176, 34) and extending 451 pixels in both width and height, roughly the central‑top portion of the image."
+    },
+    "observed_indicators": [
+      "Visible edge halos around the face outline",
+      "Inconsistent lighting direction between face and background",
+      "Blurring and pixelation at the boundary of the face region",
+      "Compression artifacts clustered within the highlighted area",
+      "Color mismatches suggesting compositing"
+    ],
+    "confidence_statement": "We are fairly confident in this assessment, with a confidence score of 0.84. While not absolute, the evidence strongly supports a fake determination.",
+    "limitations": "The analysis is limited to visual cues and cannot assess the provenance of the original file. It cannot rule out sophisticated deep‑fake techniques that may evade detection. Audio, metadata, or external context were not examined.",
+    "recommendation": "We recommend further review by a human expert and, if possible, obtaining the original source file for additional verification."
+  },
+  "ai_analysis_error": null,
+  "metadata": {
+    "face_detected": true,
+    "detection_method": "mtcnn_strict",
+    "aligned": true,
+    "bbox": [
+      176,
+      34,
+      451,
+      451
+    ],
+    "bbox_fraction": 0.319813,
+    "bbox_center_pct": [
+      0.5019,
+      0.3264
+    ]
+  },
+  "_pipeline_result": {
+    "final": {
+      "prediction": "FAKE",
+      "confidence": 0.83505859375,
+      "fake_score": 0.83505859375,
+      "real_score": 0.16494140624999998
+    },
+    "face_detection": {
+      "detected": true,
+      "num_faces": 2,
+      "confidence": 0.9999234676361084,
+      "crop_box": [
+        176,
+        34,
+        627,
+        485
+      ],
+      "raw_face_box": [
+        302.95794677734375,
+        126.28899383544922,
+        500.1768493652344,
+        357.883544921875
+      ],
+      "fallback": false,
+      "detection_method": "mtcnn_strict",
+      "aligned": true,
+      "margin": {
+        "side": 0.35,
+        "top": 0.4,
+        "bottom": 0.55
+      },
+      "square_pad": true
+    },
+    "fusion": {
+      "xception_weight": 0.45,
+      "efficientnet_weight": 0.25,
+      "vit_weight": 0.3,
+      "xception_alert_threshold": 0.5,
+      "xception_max_pull_down": 0.15,
+      "normal_weighted_score": 0.5904321289062501,
+      "final_fake_score": 0.83505859375,
+      "final_real_score": 0.16494140624999998,
+      "fusion_mode": "XCEPTION_ALERT_PARTIAL_SUPPORT",
+      "support_score": 0.26755593039772724,
+      "xception_alert": true,
+      "xception_priority_applied": false,
+      "xception_dissent": false,
+      "review_recommended": false,
+      "difference": 0.91126708984375,
+      "disagreement_level": "HIGH"
+    }
+  }
+}

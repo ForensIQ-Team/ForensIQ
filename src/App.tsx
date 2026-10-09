@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavItem, UserRole, ForensicAnalysis, DetectionResult, ForensicReportData } from './types';
 import { MOCK_ANALYSES } from './data/mockData';
 import { generateReportFromDetection } from './services/reportGenerator';
+import { AuthProvider } from './services/authContext';
 import { ShaderBackground } from './components/ShaderBackground';
 import { Header } from './components/Header';
 import { LandingPage } from './components/LandingPage';
@@ -14,6 +15,10 @@ import { ProfessionalAnalysisScreen } from './components/ProfessionalAnalysisScr
 import { ReportScreen } from './components/ReportScreen';
 import { HistoryScreen } from './components/HistoryScreen';
 import { AccountSettingsModal } from './components/AccountSettingsModal';
+import { SignupScreen } from './components/auth/SignupScreen';
+import { LoginScreen } from './components/auth/LoginScreen';
+import { ProfileScreen } from './components/auth/ProfileScreen';
+import { InvestigatorWorkspace } from './components/investigator/InvestigatorWorkspace';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<NavItem>('landing');
@@ -21,6 +26,7 @@ export default function App() {
   const [isMobileOpen, setIsMobileOpen] = useState<boolean>(false);
   const [activeAnalysis, setActiveAnalysis] = useState<ForensicAnalysis>(MOCK_ANALYSES['FQ-8091']);
   const [activeReportData, setActiveReportData] = useState<ForensicReportData | undefined>(undefined);
+  const [activeReportId, setActiveReportId] = useState<string | undefined>('FX-20261007-9FC1');
 
   // Navigate to Interactive Forensic Viewer with specific analysis item
   const handleOpenViewer = (analysis: ForensicAnalysis) => {
@@ -29,7 +35,10 @@ export default function App() {
   };
 
   // Open dynamic forensic report generated from analysis result
-  const handleOpenReport = (analysisResult?: DetectionResult) => {
+  const handleOpenReport = (analysisResult?: DetectionResult, reportId?: string) => {
+    if (reportId) {
+      setActiveReportId(reportId);
+    }
     if (analysisResult) {
       setActiveAnalysis(analysisResult);
       setActiveReportData(generateReportFromDetection(analysisResult));
@@ -39,110 +48,138 @@ export default function App() {
     setActiveTab('report');
   };
 
-  // Standalone Landing Page rendering (No ShaderGradient background on Landing Page)
-  if (activeTab === 'landing') {
-    return (
-      <LandingPage
-        setActiveTab={setActiveTab}
-        setUserRole={setUserRole}
-        userRole={userRole}
-        onOpenViewer={handleOpenViewer}
-      />
-    );
-  }
-
   return (
-    /* Root wrapper: transparent so ShaderGradient is the true background */
-    <div
-      className="relative min-h-screen text-stone-950 font-sans flex flex-col antialiased selection:bg-red-900 selection:text-white"
-      style={{ background: 'transparent' }}
-    >
-      {/* Global ShaderGradient Background — fixed, lowest z-index, pointer-events none */}
-      <ShaderBackground />
-
-      {/* Main Application Content Layer — full-width, transparent bg, floating navbar */}
-      <div className="relative z-10 flex flex-col flex-1 min-h-screen pt-2" style={{ background: 'transparent' }}>
-        {/* Floating Top Glass Navbar */}
-        <Header
-          activeTab={activeTab}
+    <AuthProvider>
+      {activeTab === 'landing' ? (
+        <LandingPage
           setActiveTab={setActiveTab}
-          userRole={userRole}
           setUserRole={setUserRole}
-          isMobileOpen={isMobileOpen}
-          setIsMobileOpen={setIsMobileOpen}
+          userRole={userRole}
+          onOpenViewer={handleOpenViewer}
         />
+      ) : (
+        /* Root wrapper: transparent so ShaderGradient is the true background */
+        <div
+          className="relative min-h-screen text-stone-950 font-sans flex flex-col antialiased selection:bg-red-900 selection:text-white"
+          style={{ background: 'transparent' }}
+        >
+          {/* Global ShaderGradient Background — fixed, lowest z-index, pointer-events none */}
+          <ShaderBackground />
 
-        {/* Full-Width Viewport Container Stage — transparent, shader visible in gaps */}
-        <main className="flex-1 w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 pb-12" style={{ background: 'transparent' }}>
-          {activeTab === 'home' && (
-            <HomeScreen
+          {/* Main Application Content Layer — full-width, transparent bg, floating navbar */}
+          <div className="relative z-10 flex flex-col flex-1 min-h-screen pt-2" style={{ background: 'transparent' }}>
+            {/* Floating Top Glass Navbar */}
+            <Header
+              activeTab={activeTab}
               setActiveTab={setActiveTab}
-              userRole={userRole}
-              onOpenReport={handleOpenReport}
-            />
-          )}
-
-          {activeTab === 'check-media' && (
-            <CheckMediaScreen
-              userRole={userRole}
-              setActiveTab={setActiveTab}
-              onOpenViewer={handleOpenViewer}
-              onOpenReport={handleOpenReport}
-            />
-          )}
-
-          {activeTab === 'forensic-viewer' && (
-            <ForensicViewer
-              analysis={activeAnalysis}
-              userRole={userRole}
-              setActiveTab={setActiveTab}
-              onBack={() => setActiveTab('check-media')}
-            />
-          )}
-
-          {activeTab === 'protect-image' && (
-            <ProtectImageScreen setActiveTab={setActiveTab} />
-          )}
-
-          {activeTab === 'find-misuse' && (
-            <FindMisuseScreen
-              userRole={userRole}
-              setActiveTab={setActiveTab}
-            />
-          )}
-
-          {activeTab === 'history' && (
-            <HistoryScreen
-              userRole={userRole}
-              setActiveTab={setActiveTab}
-              onOpenReport={handleOpenReport}
-            />
-          )}
-
-          {activeTab === 'professional-analysis' && (
-            <ProfessionalAnalysisScreen
-              userRole={userRole}
-              setActiveTab={setActiveTab}
-              onOpenViewer={handleOpenViewer}
-            />
-          )}
-
-          {activeTab === 'report' && (
-            <ReportScreen
-              report={activeReportData || generateReportFromDetection(activeAnalysis)}
-              userRole={userRole}
-              setActiveTab={setActiveTab}
-            />
-          )}
-
-          {activeTab === 'settings' && (
-            <AccountSettingsModal
               userRole={userRole}
               setUserRole={setUserRole}
+              isMobileOpen={isMobileOpen}
+              setIsMobileOpen={setIsMobileOpen}
             />
-          )}
-        </main>
-      </div>
-    </div>
+
+            {/* Full-Width Viewport Container Stage — transparent, shader visible in gaps */}
+            <main className="flex-1 w-full max-w-[1700px] mx-auto px-3 sm:px-6 lg:px-8 pb-12" style={{ background: 'transparent' }}>
+              {activeTab === 'home' && (
+                <HomeScreen
+                  setActiveTab={setActiveTab}
+                  userRole={userRole}
+                  onOpenReport={handleOpenReport}
+                />
+              )}
+
+              {activeTab === 'check-media' && (
+                <CheckMediaScreen
+                  userRole={userRole}
+                  setActiveTab={setActiveTab}
+                  onOpenViewer={handleOpenViewer}
+                  onOpenReport={handleOpenReport}
+                />
+              )}
+
+              {activeTab === 'forensic-viewer' && (
+                <ForensicViewer
+                  analysis={activeAnalysis}
+                  userRole={userRole}
+                  setActiveTab={setActiveTab}
+                  onBack={() => setActiveTab('check-media')}
+                />
+              )}
+
+              {activeTab === 'protect-image' && (
+                <ProtectImageScreen setActiveTab={setActiveTab} />
+              )}
+
+              {activeTab === 'find-misuse' && (
+                <FindMisuseScreen
+                  userRole={userRole}
+                  setActiveTab={setActiveTab}
+                />
+              )}
+
+              {activeTab === 'history' && (
+                <HistoryScreen
+                  userRole={userRole}
+                  setActiveTab={setActiveTab}
+                  onOpenReport={handleOpenReport}
+                />
+              )}
+
+              {activeTab === 'professional-analysis' && (
+                <ProfessionalAnalysisScreen
+                  userRole={userRole}
+                  setActiveTab={setActiveTab}
+                  onOpenViewer={handleOpenViewer}
+                />
+              )}
+
+              {activeTab === 'report' && (
+                <ReportScreen
+                  report={activeReportData}
+                  reportId={activeReportId}
+                  userRole={userRole}
+                  setActiveTab={setActiveTab}
+                />
+              )}
+
+              {activeTab === 'settings' && (
+                <AccountSettingsModal
+                  userRole={userRole}
+                  setUserRole={setUserRole}
+                />
+              )}
+
+              {activeTab === 'signup' && (
+                <SignupScreen
+                  setActiveTab={setActiveTab}
+                  onSuccess={() => setActiveTab('home')}
+                />
+              )}
+
+              {activeTab === 'login' && (
+                <LoginScreen
+                  setActiveTab={setActiveTab}
+                  onSuccess={() => setActiveTab('home')}
+                />
+              )}
+
+              {activeTab === 'profile' && (
+                <ProfileScreen
+                  setActiveTab={setActiveTab}
+                  setUserRole={setUserRole}
+                />
+              )}
+
+              {activeTab === 'investigator-workspace' && (
+                <InvestigatorWorkspace
+                  setActiveTab={setActiveTab}
+                  onOpenReport={handleOpenReport}
+                />
+              )}
+            </main>
+          </div>
+        </div>
+      )}
+    </AuthProvider>
   );
 }
