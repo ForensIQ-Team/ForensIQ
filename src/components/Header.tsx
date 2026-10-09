@@ -14,8 +14,11 @@ import {
   Settings,
   ShieldCheck,
   FileText,
+  UserPlus,
+  LogIn,
 } from 'lucide-react';
 import { NavItem, UserRole } from '../types';
+import { useAuth } from '../services/authContext';
 
 interface HeaderProps {
   activeTab: NavItem;
@@ -35,8 +38,8 @@ export const Header: React.FC<HeaderProps> = ({
   isMobileOpen,
   setIsMobileOpen,
 }) => {
+  const { user } = useAuth();
   const [showTrustModal, setShowTrustModal] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const handleNavClick = (tab: NavItem) => {
     setActiveTab(tab);
@@ -131,76 +134,68 @@ export const Header: React.FC<HeaderProps> = ({
               );
             })}
 
-            {/* Investigator View Link if investigator mode */}
-            {userRole === 'investigator' && (
+            {/* Investigator Hub Link if investigator */}
+            {(userRole === 'investigator' || user?.role === 'investigator') && (
               <button
-                onClick={() => handleNavClick('professional-analysis')}
+                onClick={() => handleNavClick('investigator-workspace')}
                 className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                  activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
+                  activeTab === 'investigator-workspace'
                     ? 'text-white shadow-xs'
                     : 'text-stone-800 hover:text-stone-950'
                 }`}
                 style={
-                  activeTab === 'professional-analysis' || activeTab === 'forensic-viewer'
-                    ? { background: 'rgba(20, 18, 15, 0.85)' }
+                  activeTab === 'investigator-workspace'
+                    ? { background: 'rgba(185, 28, 28, 0.9)' }
                     : { background: 'rgba(196, 30, 30, 0.12)', border: '1px solid rgba(196, 30, 30, 0.30)' }
                 }
               >
                 <Shield className="w-3.5 h-3.5 text-red-600" />
-                <span>Investigator Suite</span>
+                <span>Investigator Hub</span>
               </button>
             )}
           </nav>
 
           {/* Right Utilities */}
           <div className="flex items-center gap-2 sm:gap-2.5">
-            {/* Quick Search Input */}
-            <div className="hidden md:flex items-center relative w-64 lg:w-72">
-              <Search className="w-3.5 h-3.5 absolute left-3 text-stone-500 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Quick search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-8 pr-3 py-1 text-xs rounded-xl focus:outline-none text-stone-800 placeholder-stone-400"
-                style={{
-                  background: 'rgba(248, 242, 230, 0.45)',
-                  border: '1px solid rgba(210, 196, 170, 0.50)',
-                }}
-              />
-            </div>
 
-            {/* Role Switcher Badge */}
-            <button
-              onClick={() => setUserRole(userRole === 'normal' ? 'investigator' : 'normal')}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0"
-              style={
-                userRole === 'investigator'
-                  ? {
-                      background: 'rgba(20, 18, 15, 0.85)',
-                      border: '1px solid rgba(80, 60, 40, 0.60)',
-                      color: '#fef3c7',
-                    }
-                  : {
-                      background: 'rgba(237, 225, 200, 0.45)',
-                      border: '1px solid rgba(200, 180, 140, 0.50)',
-                      color: '#292524',
-                    }
-              }
-              title="Click to toggle user role mode"
-            >
-              {userRole === 'investigator' ? (
-                <>
-                  <Shield className="w-3.5 h-3.5 text-red-400" />
-                  <span className="hidden sm:inline">Investigator</span>
-                </>
-              ) : (
-                <>
-                  <UserCheck className="w-3.5 h-3.5 text-stone-600" />
-                  <span className="hidden sm:inline">Standard User</span>
-                </>
-              )}
-            </button>
+            {/* Auth Buttons / Profile Switcher */}
+            {user ? (
+              <button
+                onClick={() => handleNavClick('profile')}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer shrink-0 ${
+                  activeTab === 'profile' ? 'bg-stone-900 text-white' : ''
+                }`}
+                style={
+                  activeTab === 'profile'
+                    ? { background: 'rgba(20, 18, 15, 0.88)', color: '#fff' }
+                    : {
+                        background: 'rgba(237, 225, 200, 0.45)',
+                        border: '1px solid rgba(200, 180, 140, 0.50)',
+                        color: '#292524',
+                      }
+                }
+                title="Account Profile"
+              >
+                <UserCheck className="w-3.5 h-3.5 text-stone-700" />
+                <span className="hidden sm:inline font-mono">{user.display_name || user.email.split('@')[0]}</span>
+              </button>
+            ) : (
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handleNavClick('login')}
+                  className="px-2.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer text-stone-800 hover:text-stone-950"
+                >
+                  Sign In
+                </button>
+                <button
+                  onClick={() => handleNavClick('signup')}
+                  className="px-3 py-1.5 rounded-xl text-xs font-bold text-white shadow-xs cursor-pointer"
+                  style={{ background: 'rgba(20, 18, 15, 0.88)' }}
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
 
             {/* Notifications Button */}
             <button

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Upload,
   FileCheck2,
@@ -13,10 +13,13 @@ import {
   AlertTriangle,
   Play,
   CheckCircle2,
+  FolderPlus,
 } from 'lucide-react';
-import { DetectionResult, UserRole, NavItem, PipelineStage } from '../types';
+import { DetectionResult, UserRole, NavItem, PipelineStage, InvestigatorCase } from '../types';
 import { detectionService, DEFAULT_PIPELINE_STAGES, PRESET_DETECTIONS } from '../services/detectionService';
 import { historyService } from '../services/historyService';
+import { useAuth } from '../services/authContext';
+import { investigatorService } from '../services/investigatorService';
 import { DetectionPipeline } from './detection/DetectionPipeline';
 import { NormalUserResult } from './detection/NormalUserResult';
 import { InvestigatorAnalysis } from './detection/InvestigatorAnalysis';
@@ -35,6 +38,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
   onOpenViewer,
   onOpenReport,
 }) => {
+  const { user } = useAuth();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [mediaPreviewUrl, setMediaPreviewUrl] = useState<string | null>(null);
   const [analysisState, setAnalysisState] = useState<'idle' | 'analyzing' | 'complete'>('complete');
@@ -44,12 +48,40 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
   );
   const [detectionResult, setDetectionResult] = useState<DetectionResult>(PRESET_DETECTIONS.real);
   const [activePresetKey, setActivePresetKey] = useState<string>('real');
-  const [viewRole, setViewRole] = useState<UserRole>(userRole);
+  const viewRole: UserRole = 'normal';
 
-  // Synchronize viewRole if userRole changes
-  React.useEffect(() => {
-    setViewRole(userRole);
-  }, [userRole]);
+  const [investigatorCases, setInvestigatorCases] = useState<InvestigatorCase[]>([]);
+  const [selectedSaveCaseId, setSelectedSaveCaseId] = useState<string>('');
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
+
+  // Load active cases if logged in as investigator
+  useEffect(() => {
+    if (user && (user.role === 'investigator' || user.role === 'admin')) {
+      investigatorService.listCases({ status: 'open' })
+        .then(res => setInvestigatorCases(res.cases))
+        .catch(() => {});
+    }
+  }, [user]);
+
+  const handleSaveToCase = async () => {
+    if (!selectedSaveCaseId) return;
+    try {
+      setSaveStatus('Saving...');
+      await investigatorService.attachDetection(selectedSaveCaseId, {
+        file: selectedFile || undefined,
+        detectionJson: JSON.stringify(detectionResult),
+        verdict: detectionResult.classification,
+        confidence: detectionResult.confidenceScore / 100,
+        reportId: detectionResult.id,
+      });
+      setSaveStatus('✓ Saved to Case');
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (err: any) {
+      setSaveStatus('Error saving');
+      setTimeout(() => setSaveStatus(null), 3000);
+    }
+  };
+
 
   // Execute detection pipeline on preset select or upload
   const runDetectionPipeline = async (input: File | string) => {
@@ -94,39 +126,12 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
 
   return (
     <div className="space-y-8 max-w-[1700px] mx-auto pb-12">
-      {/* Title & View Switcher Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-serif font-bold text-stone-950 tracking-tight">AI Media Detection Engine</h2>
-          <p className="text-stone-600 text-xs sm:text-sm mt-1">
-            Detect deepfakes, synthetic AI media, and face swaps using multi-model score fusion &amp; explainability heatmaps.
-          </p>
-        </div>
-
-        {/* View Mode Toggle (Normal vs Investigator) */}
-        <div className="flex items-center gap-2 glass-panel rounded-xl p-1.5 shadow-xs">
-          <span className="text-xs font-semibold text-stone-500 pl-2">Presentation View:</span>
-          <div className="flex rounded-lg p-0.5" style={{ background: 'rgba(230, 220, 200, 0.28)' }}>
-            <button
-              onClick={() => setViewRole('normal')}
-              className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                viewRole === 'normal' ? 'text-white shadow-xs' : 'text-stone-700 hover:text-stone-950'
-              }`}
-              style={viewRole === 'normal' ? { background: 'rgba(20, 18, 15, 0.82)' } : {}}
-            >
-              Normal View
-            </button>
-            <button
-              onClick={() => setViewRole('investigator')}
-              className={`px-3 py-1 rounded-md text-xs font-bold transition-all cursor-pointer ${
-                viewRole === 'investigator' ? 'text-white shadow-xs' : 'text-stone-700 hover:text-stone-950'
-              }`}
-              style={viewRole === 'investigator' ? { background: 'rgba(20, 18, 15, 0.82)' } : {}}
-            >
-              Investigator View
-            </button>
-          </div>
-        </div>
+      {/* Title Header */}
+      <div>
+        <h2 className="text-2xl font-serif font-bold text-stone-950 tracking-tight">AI Media Detection Engine</h2>
+        <p className="text-stone-600 text-xs sm:text-sm mt-1">
+          Detect deepfakes, synthetic AI media, and face swaps using multi-model score fusion &amp; explainability heatmaps.
+        </p>
       </div>
 
       {/* Upload Zone & Sample Selector */}
@@ -144,7 +149,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
                 Choose a file
                 <input
                   type="file"
-                  accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"
+                  accept="image/jpeg,image/png,image/webp,image/bmp,video/mp4,video/quicktime,video/avi,video/webm,.mp4,.avi,.mov,.mkv,.webm"
                   onChange={handleFileUpload}
                   className="hidden"
                 />
@@ -284,10 +289,42 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
       {/* Completed Results Stage */}
       {analysisState === 'complete' && (
         <div className="space-y-6">
+          {/* Investigator Save to Case Bar */}
+          {user && (user.role === 'investigator' || user.role === 'admin') && (
+            <div className="glass-panel rounded-xl p-3 flex flex-wrap items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-center gap-2 text-xs font-semibold text-stone-800">
+                <FolderPlus className="w-4 h-4 text-red-600 shrink-0" />
+                <span>Investigator Action: Attach this detection finding to an active case dossier</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <select
+                  value={selectedSaveCaseId}
+                  onChange={(e) => setSelectedSaveCaseId(e.target.value)}
+                  className="glass-input rounded-xl px-3 py-1.5 text-xs text-stone-900 focus:outline-none"
+                >
+                  <option value="">Select Target Case...</option>
+                  {investigatorCases.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.title}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleSaveToCase}
+                  disabled={!selectedSaveCaseId || saveStatus === 'Saving...'}
+                  className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-white bg-stone-950 hover:bg-stone-900 shadow-sm disabled:opacity-50 cursor-pointer"
+                >
+                  {saveStatus || 'Save to Case'}
+                </button>
+              </div>
+            </div>
+          )}
+
           {/* Render View based on viewRole */}
           {viewRole === 'normal' ? (
             <NormalUserResult
               result={detectionResult}
+              selectedFile={selectedFile}
               onExploreDetails={() => setViewRole('investigator')}
               onOpenReport={() => onOpenReport && onOpenReport(detectionResult)}
             />

@@ -1,239 +1,234 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Download,
   ShieldCheck,
-  Share2,
-  Copy,
+  ExternalLink,
+  Printer,
+  Upload,
+  RefreshCw,
+  FileText,
+  AlertCircle,
   CheckCircle2,
+  Sparkles,
+  Cpu,
 } from 'lucide-react';
 import { ForensicReportData, UserRole, NavItem } from '../types';
-import { MOCK_REPORT } from '../data/mockData';
+import { reportService, GenerateReportResponse } from '../services/reportService';
 
 interface ReportScreenProps {
   report?: ForensicReportData;
+  reportId?: string;
   userRole: UserRole;
   setActiveTab: (tab: NavItem) => void;
 }
 
 export const ReportScreen: React.FC<ReportScreenProps> = ({
-  report = MOCK_REPORT,
+  report,
+  reportId: initialReportId,
   userRole,
   setActiveTab,
 }) => {
-  const [copiedAudit, setCopiedAudit] = useState<boolean>(false);
+  // Use passed reportId, or detect from report.reportId, or fallback to latest generated ID
+  const defaultReportId = initialReportId || (report?.reportId?.startsWith('FX-') ? report.reportId : 'FX-20261007-9FC1');
+  const [activeReportId, setActiveReportId] = useState<string>(defaultReportId);
+  const [reportResult, setReportResult] = useState<GenerateReportResponse | null>(null);
 
-  const handleCopyHash = () => {
-    if (report.auditHash) {
-      navigator.clipboard.writeText(report.auditHash);
-      setCopiedAudit(true);
-      setTimeout(() => setCopiedAudit(false), 2000);
+  const [isGenerating, setIsGenerating] = useState<boolean>(false);
+  const [generationStep, setGenerationStep] = useState<string>('');
+  const [generationError, setGenerationError] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!e.target.files || !e.target.files[0]) return;
+    const file = e.target.files[0];
+    await generateNewReport(file);
+  };
+
+  const generateNewReport = async (file: File) => {
+    setIsGenerating(true);
+    setGenerationError(null);
+    setGenerationStep('Uploading media to forensic server...');
+
+    try {
+      const stepTimer1 = setTimeout(() => {
+        setGenerationStep('Running multi-model ensemble (Xception, EfficientNet, ViT)...');
+      }, 1500);
+
+      const stepTimer2 = setTimeout(() => {
+        setGenerationStep('Extracting face crops and computing Grad-CAM heatmaps...');
+      }, 5000);
+
+      const stepTimer3 = setTimeout(() => {
+        setGenerationStep('Synthesizing forensic findings with Groq LLM (Llama / GPT)...');
+      }, 10000);
+
+      const res = await reportService.generateReport(file);
+
+      clearTimeout(stepTimer1);
+      clearTimeout(stepTimer2);
+      clearTimeout(stepTimer3);
+
+      setReportResult(res);
+      setActiveReportId(res.report_id);
+      setIsGenerating(false);
+      setGenerationStep('');
+    } catch (err: unknown) {
+      setIsGenerating(false);
+      setGenerationStep('');
+      setGenerationError(err instanceof Error ? err.message : 'Report generation failed');
     }
   };
 
-  const handleExportPdf = () => {
-    window.print();
+  const reportHtmlUrl = activeReportId ? reportService.getReportHtmlUrl(activeReportId) : '';
+  const reportDownloadUrl = activeReportId ? reportService.getReportDownloadUrl(activeReportId) : '';
+
+  const handlePrint = () => {
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      iframeRef.current.contentWindow.focus();
+      iframeRef.current.contentWindow.print();
+    } else {
+      window.print();
+    }
   };
 
   return (
-    <div className="space-y-8 max-w-[1700px] mx-auto pb-12">
-      {/* Top Header Controls */}
+    <div className="space-y-6 max-w-[1700px] mx-auto pb-12">
+      {/* Header Bar */}
       <div className="glass-panel rounded-xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 print:hidden">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold text-stone-900 glass-input px-2 py-0.5 rounded">
-              REPORT ID: {report.reportId}
-            </span>
-            <span className="px-2 py-0.5 rounded bg-emerald-50/80 text-emerald-800 text-[10px] font-bold border border-emerald-200 uppercase">
-              {report.status}
-            </span>
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-lg bg-[#1e1b18] text-amber-400 flex items-center justify-center font-bold shadow-xs">
+            <ShieldCheck className="w-6 h-6" />
           </div>
-          <h2 className="text-lg font-serif font-bold text-stone-950 mt-1">Forensic Evidence Report Preview</h2>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-stone-900 glass-input px-2.5 py-0.5 rounded">
+                REPORT ID: {activeReportId || 'NOT GENERATED'}
+              </span>
+              <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 text-[10px] font-bold border border-emerald-200 uppercase flex items-center gap-1">
+                <Sparkles className="w-3 h-3 text-amber-500" />
+                GROQ NARRATIVE + ML GRAD-CAM
+              </span>
+            </div>
+            <h2 className="text-lg font-serif font-bold text-stone-950 mt-1">
+              ForensIQ Forensic Inspection Report
+            </h2>
+          </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileUpload}
+            accept="image/jpeg,image/png,image/webp,image/bmp,video/mp4,video/quicktime,video/avi,video/webm"
+            className="hidden"
+          />
+
           <button
-            onClick={handleExportPdf}
-            className="px-4 py-2 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={isGenerating}
+            className="px-3.5 py-2 bg-stone-100 hover:bg-stone-200 text-stone-800 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer border border-stone-300"
           >
-            <Download className="w-4 h-4 text-amber-300" />
-            <span>Export / Print PDF</span>
+            {isGenerating ? (
+              <RefreshCw className="w-4 h-4 animate-spin text-stone-600" />
+            ) : (
+              <Upload className="w-4 h-4 text-stone-700" />
+            )}
+            <span>{isGenerating ? 'Generating...' : 'Generate New Report'}</span>
           </button>
-        </div>
-      </div>
 
-      {/* Main Document & Side Panel Layout */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Printable Executive Forensic Report Document */}
-        <div className="lg:col-span-2 glass-panel-strong rounded-xl p-8 shadow-xs space-y-6 text-stone-900 font-sans print:border-none print:shadow-none print:p-0">
-          {/* Document Header */}
-          <div className="border-b-2 border-stone-950 pb-6 flex items-start justify-between">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded bg-[#1e1b18] text-red-500 flex items-center justify-center font-bold">
-                  <ShieldCheck className="w-5 h-5" />
-                </div>
-                <span className="font-serif font-black text-2xl tracking-tight text-stone-950">ForensIQ</span>
-              </div>
-              <p className="text-xs font-mono font-bold uppercase tracking-wider text-stone-600 pt-1">
-                DIGITAL MEDIA FORENSICS &amp; PROVENANCE INSPECTION
-              </p>
-            </div>
+          {activeReportId && (
+            <>
+              <a
+                href={reportHtmlUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-3 py-2 glass-input hover:bg-white text-stone-800 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors"
+                title="Open Report in Full Tab"
+              >
+                <ExternalLink className="w-4 h-4 text-stone-600" />
+                <span>Open in Tab</span>
+              </a>
 
-            <div className="text-right text-xs font-mono">
-              <p className="font-bold text-red-700">{report.reportId}</p>
-              <p className="text-stone-600">{report.createdDate}</p>
-              <p className="text-emerald-800 font-bold uppercase">{report.status}</p>
-            </div>
-          </div>
-
-          {/* Metadata Block */}
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 p-4 glass-card rounded-lg text-xs">
-            <div>
-              <p className="text-[10px] text-stone-500 font-mono font-bold uppercase">TARGET MEDIA</p>
-              <p className="font-bold text-stone-950 truncate">{report.mediaName}</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-stone-500 font-mono font-bold uppercase">AUTHOR / INVESTIGATOR</p>
-              <p className="font-semibold text-stone-800">{report.authorRole || 'Forensic Media Specialist (Level III)'}</p>
-            </div>
-            <div>
-              <p className="text-[10px] text-stone-500 font-mono font-bold uppercase">ENSEMBLE VERSION</p>
-              <p className="font-mono text-stone-800">ForensIQ v2.4 (2026)</p>
-            </div>
-          </div>
-
-          {/* Section I: Executive Summary */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-mono font-extrabold text-stone-950 uppercase tracking-wider border-b border-[#e2d8c3]/80 pb-1">
-              I. EXECUTIVE SUMMARY
-            </h3>
-            <p className="text-xs text-stone-800 leading-relaxed font-sans">{report.summary}</p>
-          </div>
-
-          {/* Section II: Detection Findings */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-mono font-extrabold text-stone-950 uppercase tracking-wider border-b border-[#e2d8c3]/80 pb-1">
-              II. DETECTION FINDINGS &amp; MODEL CONSENSUS
-            </h3>
-            <ul className="space-y-1.5 text-xs text-stone-800 font-mono">
-              {report.detectionFindings.map((f, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="text-red-700 font-bold">•</span>
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Section III: Visual & Heatmap Analysis */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-mono font-extrabold text-stone-950 uppercase tracking-wider border-b border-[#e2d8c3]/80 pb-1">
-              III. VISUAL &amp; HEATMAP ANALYSIS
-            </h3>
-            <p className="text-xs text-stone-800 leading-relaxed">{report.visualFindings}</p>
-          </div>
-
-          {/* Section IV: Metadata Findings */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-mono font-extrabold text-stone-950 uppercase tracking-wider border-b border-[#e2d8c3]/80 pb-1">
-              IV. METADATA &amp; FILE STRUCTURE FINDINGS
-            </h3>
-            <p className="text-xs text-stone-800 leading-relaxed">{report.metadataFindings}</p>
-          </div>
-
-          {/* Section V: Similarity & Ownership Findings */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-mono font-extrabold text-stone-950 uppercase tracking-wider border-b border-[#e2d8c3]/80 pb-1">
-              V. SIMILARITY &amp; OWNERSHIP FINDINGS
-            </h3>
-            <p className="text-xs text-stone-800 leading-relaxed">{report.similarityFindings}</p>
-          </div>
-
-          {/* Section VI: Propagation Findings */}
-          <div className="space-y-2">
-            <h3 className="text-xs font-mono font-extrabold text-stone-950 uppercase tracking-wider border-b border-[#e2d8c3]/80 pb-1">
-              VI. PROPAGATION FINDINGS
-            </h3>
-            <p className="text-xs text-stone-800 leading-relaxed">{report.propagationFindings}</p>
-          </div>
-
-          {/* Section VII: Evidence Audit Sign-off */}
-          <div className="pt-6 border-t-2 border-stone-950 space-y-2 text-xs">
-            <div className="flex justify-between items-end">
-              <div>
-                <p className="font-serif font-bold text-stone-950">ForensIQ Forensic Verification Sign-off</p>
-                <p className="text-stone-500 font-mono text-[10px]">Analysis ID: {report.reportId}</p>
-                <p className="text-stone-500 font-mono text-[10px]">Engine: ForensIQ Core v2.4</p>
-              </div>
-              <div className="text-right">
-                <p className="font-bold text-stone-950">{report.author || 'Forensic Media Specialist'}</p>
-                <p className="text-stone-600 text-[11px]">Verified Forensic Specialist (Level III)</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Side Report Actions & Audit Info */}
-        <div className="space-y-6 print:hidden">
-          {/* Actions Box */}
-          <div className="glass-panel rounded-xl p-5 shadow-xs space-y-4">
-            <h4 className="font-mono font-bold text-stone-950 text-xs uppercase tracking-wider border-b border-[#f0e6d6]/80 pb-2">
-              REPORT ACTIONS
-            </h4>
-
-            <div className="space-y-2">
               <button
-                onClick={handleExportPdf}
-                className="w-full py-2.5 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-bold rounded-lg flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-xs"
+                onClick={handlePrint}
+                className="px-3 py-2 glass-input hover:bg-white text-stone-800 text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                title="Print or Save as PDF"
+              >
+                <Printer className="w-4 h-4 text-stone-600" />
+                <span>Print PDF</span>
+              </button>
+
+              <a
+                href={reportDownloadUrl}
+                download
+                className="px-4 py-2 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-colors shadow-xs cursor-pointer"
               >
                 <Download className="w-4 h-4 text-amber-300" />
-                <span>DOWNLOAD PDF FORMAT</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Audit Trail Info Card */}
-          <div className="glass-panel rounded-xl p-5 shadow-xs space-y-3">
-            <h4 className="font-mono font-bold text-stone-950 text-xs uppercase tracking-wider border-b border-[#f0e6d6]/80 pb-2">
-              AUDIT INFORMATION
-            </h4>
-
-            <div className="space-y-2 text-xs text-stone-700">
-              <div className="flex justify-between">
-                <span>Created:</span>
-                <span className="font-mono text-stone-950">{report.createdDate}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Last Updated:</span>
-                <span className="font-mono text-stone-950">{report.lastUpdated}</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Analysis Engine:</span>
-                <span className="font-bold text-stone-950">ForensIQ Core v2.4</span>
-              </div>
-            </div>
-
-            <div className="pt-2 border-t border-[#f0e6d6]/80 space-y-1">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] text-stone-500 font-mono font-bold uppercase">Audit Hash</span>
-                <button
-                  onClick={handleCopyHash}
-                  className="text-[10px] text-red-700 font-bold hover:underline cursor-pointer"
-                >
-                  Copy
-                </button>
-              </div>
-              <p className="font-mono text-[10px] text-stone-800 glass-input p-2 rounded break-all">
-                {report.auditHash}
-              </p>
-              {copiedAudit && (
-                <p className="text-[10px] text-emerald-800 font-bold text-right">Hash copied!</p>
-              )}
-            </div>
-          </div>
+                <span>Download Report (.html)</span>
+              </a>
+            </>
+          )}
         </div>
       </div>
+
+      {/* Generation Status Overlay / Banner */}
+      {isGenerating && (
+        <div className="glass-panel rounded-xl p-6 border-amber-300/60 bg-amber-50/70 text-amber-950 flex items-center gap-4 animate-pulse">
+          <div className="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center shrink-0">
+            <Cpu className="w-6 h-6 text-amber-700 animate-spin" />
+          </div>
+          <div className="space-y-1">
+            <h4 className="font-bold text-sm">Generating Forensic Report...</h4>
+            <p className="text-xs text-amber-800 font-mono">{generationStep}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Generation Error Alert */}
+      {generationError && (
+        <div className="glass-panel rounded-xl p-4 border-red-300 bg-red-50/80 text-red-950 flex items-center gap-3">
+          <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+          <div>
+            <h4 className="font-bold text-xs">Report Generation Failed</h4>
+            <p className="text-xs text-red-700">{generationError}</p>
+          </div>
+        </div>
+      )}
+
+      {/* Main Report View Container */}
+      {activeReportId ? (
+        <div className="w-full rounded-xl overflow-hidden shadow-lg border border-stone-200/80 bg-white">
+          <iframe
+            ref={iframeRef}
+            src={reportHtmlUrl}
+            title="ForensIQ Forensic Report"
+            className="w-full h-[900px] border-none block"
+            style={{ minHeight: '850px' }}
+          />
+        </div>
+      ) : (
+        <div className="glass-panel-strong rounded-xl p-12 text-center space-y-4">
+          <div className="w-16 h-16 rounded-full bg-stone-100 flex items-center justify-center mx-auto text-stone-400">
+            <FileText className="w-8 h-8" />
+          </div>
+          <h3 className="text-lg font-bold text-stone-900">No Forensic Report Generated Yet</h3>
+          <p className="text-xs text-stone-600 max-w-md mx-auto">
+            Upload an image or video above to generate a full digital forensics report powered by our
+            multi-model ensemble, Grad-CAM attention heatmaps, and Groq narrative analysis.
+          </p>
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="px-6 py-2.5 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-bold rounded-lg inline-flex items-center gap-2 transition-colors cursor-pointer shadow-xs"
+          >
+            <Upload className="w-4 h-4 text-amber-300" />
+            <span>Select Media to Generate Report</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

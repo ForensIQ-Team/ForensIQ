@@ -1,39 +1,69 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { DetectionResult } from '../../types';
-import { ShieldCheck, ShieldAlert, AlertTriangle, CheckCircle2, FileText, ArrowRight } from 'lucide-react';
+import {
+  ShieldCheck,
+  ShieldAlert,
+  AlertTriangle,
+  CheckCircle2,
+  FileText,
+  ArrowRight,
+  RefreshCw,
+  ExternalLink,
+  Download,
+} from 'lucide-react';
+import {
+  generateForensicReport,
+  buildReportHtmlUrl,
+  buildReportDownloadUrl,
+  GenerateReportResponse,
+} from '../../services/reportService';
 
 interface NormalUserResultProps {
   result: DetectionResult;
+  selectedFile?: File | null;
   onExploreDetails: () => void;
   onOpenReport?: () => void;
 }
 
 export const NormalUserResult: React.FC<NormalUserResultProps> = ({
   result,
+  selectedFile,
   onExploreDetails,
-  onOpenReport,
 }) => {
+  const [reportLoading, setReportLoading] = useState(false);
+  const [reportError, setReportError] = useState<string | null>(null);
+  const [reportResult, setReportResult] = useState<GenerateReportResponse | null>(null);
+
+  const handleGenerateReport = async () => {
+    if (!selectedFile) {
+      setReportError('Please upload an image or video first.');
+      return;
+    }
+
+    setReportLoading(true);
+    setReportError(null);
+
+    try {
+      const res = await generateForensicReport(selectedFile);
+      setReportResult(res);
+      // Immediately open report in a new tab
+      window.open(buildReportHtmlUrl(res.report_id), '_blank');
+    } catch (e: unknown) {
+      const msg = e instanceof Error ? e.message : 'Report generation failed.';
+      setReportError(msg);
+    } finally {
+      setReportLoading(false);
+    }
+  };
+
   const isReal = result.classification === 'Real';
   const isUncertain = result.classification === 'Uncertain';
   const isFakeOrAI = result.classification === 'Deepfake' || result.classification === 'AI-Generated';
 
   const confValue = result.confidenceScore ?? result.confidence ?? 90;
 
-  // Extract model scores
-  const xception = result.detailedModelScores?.find(m => m.name.toLowerCase().includes('xception'));
-  const efficientnet = result.detailedModelScores?.find(m => m.name.toLowerCase().includes('efficientnet'));
-  const fusion = result.detailedModelScores?.find(m => m.name.toLowerCase().includes('fusion') || m.name.toLowerCase().includes('ensemble'));
 
-  const xFake = xception ? xception.fakeScore : (isFakeOrAI ? confValue : 100 - confValue);
-  const xReal = xception ? xception.realScore : 100 - xFake;
 
-  const eFake = efficientnet ? efficientnet.fakeScore : (isFakeOrAI ? Math.max(0, confValue - 2) : Math.max(0, 100 - confValue - 1));
-  const eReal = efficientnet ? efficientnet.realScore : 100 - eFake;
-
-  const fusedFake = fusion ? fusion.fakeScore : (isFakeOrAI ? confValue : 100 - confValue);
-  const fusedReal = fusion ? fusion.realScore : 100 - fusedFake;
-
-  const modelsAgree = (xFake >= 50 && eFake >= 50) || (xFake < 50 && eFake < 50);
 
   return (
     <div className="glass-panel-strong rounded-xl p-6 shadow-md space-y-6">
@@ -131,71 +161,8 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
         </div>
       </div>
 
-      {/* Model Analysis & Ensemble Breakdown Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* MODEL ANALYSIS */}
-        <div className="glass-card rounded-xl p-4 space-y-3">
-          <h4 className="font-mono font-bold text-xs uppercase tracking-wider text-stone-950 pb-1" style={{ borderBottom: '1px solid rgba(200, 185, 155, 0.28)' }}>
-            MODEL ANALYSIS
-          </h4>
 
-          <div className="space-y-3 text-xs">
-            {/* Xception V2 */}
-            <div className="p-3 rounded-lg space-y-1" style={{ background: 'rgba(248, 242, 228, 0.38)', border: '1px solid rgba(200, 185, 155, 0.30)' }}>
-              <div className="flex justify-between font-bold text-stone-900">
-                <span>XCEPTION V2</span>
-                <span className={xFake >= 50 ? 'text-red-700' : 'text-emerald-700'}>
-                  {xFake >= 50 ? 'PREDICTION: FAKE' : 'PREDICTION: REAL'}
-                </span>
-              </div>
-              <div className="flex justify-between font-mono text-[11px] text-stone-700">
-                <span>Fake: {xFake.toFixed(1)}%</span>
-                <span>Real: {xReal.toFixed(1)}%</span>
-              </div>
-            </div>
 
-            {/* EfficientNet-B4 V2 */}
-            <div className="p-3 rounded-lg space-y-1" style={{ background: 'rgba(248, 242, 228, 0.38)', border: '1px solid rgba(200, 185, 155, 0.30)' }}>
-              <div className="flex justify-between font-bold text-stone-900">
-                <span>EFFICIENTNET-B4 V2</span>
-                <span className={eFake >= 50 ? 'text-red-700' : 'text-emerald-700'}>
-                  {eFake >= 50 ? 'PREDICTION: FAKE' : 'PREDICTION: REAL'}
-                </span>
-              </div>
-              <div className="flex justify-between font-mono text-[11px] text-stone-700">
-                <span>Fake: {eFake.toFixed(1)}%</span>
-                <span>Real: {eReal.toFixed(1)}%</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* ENSEMBLE */}
-        <div className="glass-card rounded-xl p-4 space-y-3">
-          <h4 className="font-mono font-bold text-xs uppercase tracking-wider text-stone-950 pb-1" style={{ borderBottom: '1px solid rgba(200, 185, 155, 0.28)' }}>
-            ENSEMBLE FUSION
-          </h4>
-
-          <div className="space-y-2 text-xs font-mono">
-            <div className="p-3 rounded-lg space-y-1.5" style={{ background: 'rgba(248, 242, 228, 0.38)', border: '1px solid rgba(200, 185, 155, 0.30)' }}>
-              <div className="flex justify-between">
-                <span className="text-stone-600">Fused Fake Score:</span>
-                <span className="font-bold text-red-700">{fusedFake.toFixed(1)}%</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-stone-600">Fused Real Score:</span>
-                <span className="font-bold text-emerald-700">{fusedReal.toFixed(1)}%</span>
-              </div>
-              <div className="flex justify-between pt-1" style={{ borderTop: '1px solid rgba(200, 185, 155, 0.28)' }}>
-                <span className="text-stone-600">Model Agreement:</span>
-                <span className={`font-bold ${modelsAgree ? 'text-emerald-800' : 'text-amber-800'}`}>
-                  {modelsAgree ? 'AGREE (High Consensus)' : 'DISAGREE (Score Discrepancy)'}
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Report Action Buttons */}
       <div className="pt-3 border-t border-[#f0e6d6]/80 flex flex-wrap items-center justify-between gap-3">
@@ -208,26 +175,77 @@ export const NormalUserResult: React.FC<NormalUserResultProps> = ({
         </button>
 
         <div className="flex items-center gap-2">
-          {onOpenReport && (
-            <>
-              <button
-                onClick={onOpenReport}
-                className="px-4 py-2.5 bg-[#1e1b18] hover:bg-stone-900 text-white rounded-lg text-xs font-bold flex items-center gap-2 cursor-pointer shadow-xs transition-colors"
-              >
+          <button
+            onClick={handleGenerateReport}
+            disabled={reportLoading || !selectedFile}
+            className="px-4 py-2.5 bg-[#1e1b18] hover:bg-stone-900 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg text-xs font-bold flex items-center gap-2 cursor-pointer shadow-xs transition-colors"
+          >
+            {reportLoading ? (
+              <>
+                <RefreshCw className="w-4 h-4 text-amber-300 animate-spin" />
+                <span>Generating report…</span>
+              </>
+            ) : (
+              <>
                 <FileText className="w-4 h-4 text-amber-300" />
-                <span>GENERATE FORENSIC REPORT</span>
-              </button>
-
-              <button
-                onClick={onOpenReport}
-                className="px-3.5 py-2.5 glass-input hover:bg-[#e8decb]/80 text-stone-900 rounded-lg text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors"
-              >
-                <span>VIEW REPORT</span>
-              </button>
-            </>
-          )}
+                <span>Generate Forensic Report</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
+
+      {/* Success Banner */}
+      {reportResult && (
+        <div className="p-4 rounded-xl bg-stone-900/90 border border-stone-800 text-stone-100 flex flex-wrap items-center justify-between gap-3 text-xs shadow-md">
+          <div className="flex items-center gap-2.5">
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="font-semibold text-stone-300">Report Ready:</span>
+            <span
+              className={`px-2 py-0.5 rounded font-mono font-bold uppercase text-[11px] ${
+                reportResult.verdict === 'REAL'
+                  ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                  : reportResult.verdict === 'FAKE'
+                  ? 'bg-red-950 text-red-300 border border-red-800'
+                  : 'bg-amber-950 text-amber-300 border border-amber-800'
+              }`}
+            >
+              {reportResult.verdict}
+            </span>
+            <span className="font-mono text-stone-400">
+              ({(reportResult.confidence * 100).toFixed(1)}%)
+            </span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <a
+              href={buildReportHtmlUrl(reportResult.report_id)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-amber-300 hover:text-amber-200 font-bold inline-flex items-center gap-1 hover:underline"
+            >
+              <span>Open report</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+            <span className="text-stone-600">•</span>
+            <a
+              href={buildReportDownloadUrl(reportResult.report_id)}
+              className="text-stone-300 hover:text-white font-bold inline-flex items-center gap-1 hover:underline"
+            >
+              <span>Download report</span>
+              <Download className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        </div>
+      )}
+
+      {/* Error Message */}
+      {reportError && (
+        <div className="p-3 rounded-lg bg-red-950/60 border border-red-800/80 text-red-200 text-xs flex items-center gap-2">
+          <AlertTriangle className="w-4 h-4 text-red-400 shrink-0" />
+          <span>{reportError}</span>
+        </div>
+      )}
     </div>
   );
 };

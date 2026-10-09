@@ -1,3 +1,4 @@
+```gitignore
 # ============================================================
 # ForensIQ - Git Ignore
 # ============================================================
@@ -19,9 +20,9 @@ pnpm-debug.log*
 # Environment / Secrets
 # -------------------------
 .env
-.env.local
-.env.*.local
+.env.*
 !.env.example
+!.env.*.example
 
 # -------------------------
 # Python
@@ -46,92 +47,69 @@ ENV/
 .idea/
 *.swp
 *.swo
+
+# -------------------------
+# OS files
+# -------------------------
 .DS_Store
 Thumbs.db
+ehthumbs.db
+Desktop.ini
 
 # ============================================================
-# FORENSIQ - DO NOT COMMIT LARGE/GENERATED DATA
+# ML DATASETS - DO NOT COMMIT
 # ============================================================
-
-# -------------------------
-# Training datasets
-# -------------------------
 ForensIQ-ML/dataset/
+ForensIQ-ML/datasets/
 ForensIQ-ML/synthetic_dataset/
-
-# If datasets exist elsewhere:
 **/dataset/
 **/datasets/
 **/synthetic_dataset/
 
-# -------------------------
-# Generated prediction results
-# -------------------------
-ForensIQ-ML/predictions/
-ForensIQ-ML/prediction_results/
-ForensIQ-ML/v2_results/
+# ============================================================
+# MODEL CHECKPOINTS - DO NOT COMMIT
+# ============================================================
+ForensIQ-ML/checkpoints/
+**/checkpoints/
+*.pth
+*.pt
+*.ckpt
+*.onnx
 
-# CSV/JSON results generated during experiments
-ForensIQ-ML/v2_results/*.csv
-ForensIQ-ML/v2_results/*.json
-
-# -------------------------
-# Grad-CAM generated outputs
-# -------------------------
+# ============================================================
+# DEBUG CROPS / GENERATED VISUALIZATIONS
+# ============================================================
+ForensIQ-ML/debug_crops/
 ForensIQ-ML/gradcam_results/
-ForensIQ-ML/gradcam_results/*.jpg
-ForensIQ-ML/gradcam_results/*.jpeg
-ForensIQ-ML/gradcam_results/*.png
-ForensIQ-ML/gradcam_results/*.npy
-ForensIQ-ML/gradcam_results/*.json
-
-# -------------------------
-# Experiment outputs
-# -------------------------
 ForensIQ-ML/ensemble_results/
 ForensIQ-ML/experiment_results/
 ForensIQ-ML/results/
 
 # ============================================================
-# IMPORTANT:
-# DO NOT IGNORE MODEL CHECKPOINTS
+# GENERATED PREDICTION / EXPERIMENT OUTPUTS
 # ============================================================
+ForensIQ-ML/predictions/
+ForensIQ-ML/prediction_results/
+ForensIQ-ML/v2_results/
+ForensIQ-ML/inference/result.json
 
-# Keep these tracked in Git:
-# *.pth
-# *.pt
-#
-# Your trained Xception / EfficientNet-B4 checkpoints
-# must remain available to every team member.
-
-# ============================================================
-# Temporary / local files
-# ============================================================
-
+# Temporary prediction outputs
+**/debug_crops/
 *.tmp
 *.temp
 *.bak
 *.cache
 
-# Python generated files
+# Python serialized data
 *.pickle
 *.pkl
 
 # Jupyter
 .ipynb_checkpoints/
 
-# -------------------------
-# OS files
-# -------------------------
-.DS_Store
-ehthumbs.db
-Desktop.ini
-
 # Local testing images
 test*.jpg
 test*.jpeg
 test*.png
 test*.webp
-
-# Or, if ALL images in the project root are just temporary tests:
-# /test*.*
+```

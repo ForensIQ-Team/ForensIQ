@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>ForensIQ Forensic Case Dossier - Operation DeepShield</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f6f1e3; color: #1c1917; padding: 40px; margin: 0; }
+    .container { max-width: 900px; margin: 0 auto; background: #ffffff; border: 1px solid #dcd3c1; border-radius: 12px; padding: 36px; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    .header { border-bottom: 2px solid #b91c1c; padding-bottom: 20px; margin-bottom: 24px; }
+    .title { font-size: 26px; font-weight: 800; color: #0c0a09; }
+    .badge { display: inline-block; padding: 4px 10px; font-size: 11px; font-weight: 700; border-radius: 6px; text-transform: uppercase; background: #fee2e2; color: #991b1b; }
+    .section { margin-top: 28px; }
+    .section-title { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #78716c; border-bottom: 1px solid #e7e5e4; padding-bottom: 6px; margin-bottom: 12px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
+    th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid #f5f5f4; }
+    th { background: #fafaf9; font-weight: 600; color: #44403c; }
+    .footer { margin-top: 40px; border-top: 1px solid #e7e5e4; padding-top: 16px; font-size: 11px; color: #a8a29e; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">ForensIQ Certified Dossier</div>
+      <h1 class="title">Operation DeepShield</h1>
+      <p style="margin: 4px 0; font-size: 13px; color: #57534e;">Case ID: a5245b34-cb95-4eb6-a53b-427ea2f2f24c &bull; Org: ACME &bull; Exported by: Alice</p>
+      <p style="margin: 4px 0; font-size: 12px; color: #78716c;">Status: <strong>OPEN</strong> &bull; Severity: <strong>HIGH</strong></p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Case Description &amp; Scope</div>
+      <p style="font-size: 14px; line-height: 1.6;">Investigating synthetic executive clone dissemination</p>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Attached Forensic Findings (1)</div>
+      <table>
+        <thead>
+          <tr>
+            <th>Filename</th>
+            <th>Verdict</th>
+            <th>Confidence</th>
+            <th>SHA-256 Hash</th>
+            <th>Evidence Lock</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>test.jpeg</strong></td>
+            <td><span class="badge">FAKE</span></td>
+            <td>94.0%</td>
+            <td style="font-family: monospace; font-size: 11px;">5ae7caf4dcc2ef1e...</td>
+            <td>LOCKED</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Investigator Notes (1)</div>
+      <ul>
+        <li style="font-size: 13px; margin-bottom: 8px;">Artifact shows spatial discontinuities around facial boundary.</li>
+      </ul>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Chain of Custody &amp; Activity Log</div>
+      <table>
+        <thead>
+          <tr><th>Timestamp</th><th>Action</th><th>Payload Summary</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="font-size: 11px;">2026-10-08 21:32:28.394344+05:30</td>
+            <td><strong>note</strong></td>
+            <td style="font-size: 12px;">{'note_id': '55dcecc4-b560-4ef7-936c-15533f15c602'}</td>
+          </tr><tr>
+            <td style="font-size: 11px;">2026-10-08 21:32:24.315084+05:30</td>
+            <td><strong>freeze</strong></td>
+            <td style="font-size: 12px;">{'reason': 'Evidentiary hold for law enforcement transfer', 'chain_hash': '2038f15d8bb069f019c7581a393798ef5cee29c46f63c2f603121e376e20fa7b', 'finding_id': '1dfc8d9b-6929-4649-bcd1-6fab869ec858'}</td>
+          </tr><tr>
+            <td style="font-size: 11px;">2026-10-08 21:32:22.264439+05:30</td>
+            <td><strong>upload</strong></td>
+            <td style="font-size: 12px;">{'verdict': 'FAKE', 'filename': 'test.jpeg', 'confidence': 0.94, 'finding_id': '1dfc8d9b-6929-4649-bcd1-6fab869ec858'}</td>
+          </tr><tr>
+            <td style="font-size: 11px;">2026-10-08 21:32:16.100461+05:30</td>
+            <td><strong>create</strong></td>
+            <td style="font-size: 12px;">{'title': 'Operation DeepShield', 'severity': 'high'}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="footer">
+      Generated automatically by ForensIQ Workstation v2.4 &bull; Cryptographically auditable record
+    </div>
+  </div>
+</body>
+</html>

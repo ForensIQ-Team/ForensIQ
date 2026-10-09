@@ -116,6 +116,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
               Investigator Suite
             </div>
 
+            {navBtn('investigator-workspace', 'Investigator Hub', Shield, true)}
+
             <button
               onClick={() => {
                 if (userRole === 'normal') setUserRole('investigator');

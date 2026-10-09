@@ -1,0 +1,113 @@
+{
+  "report_id": "FX-20261008-A329",
+  "generated_at": "2026-10-08T08:34:08.550820+00:00",
+  "version": "ForensIQ-Report-V1",
+  "input": {
+    "media_type": "image",
+    "filename": "Gemini_Generated_Image_i18qexi18qexi18q.png",
+    "width": 1408,
+    "height": 768
+  },
+  "verdict": {
+    "label": "FAKE",
+    "confidence": 0.6408913352272727,
+    "fake_score": 0.6408913352272727,
+    "headline": "Image identified as likely manipulated (fake)"
+  },
+  "visuals": {
+    "original_image": "assets/original.png",
+    "original_ext": ".png",
+    "original_size_bytes": 2159151,
+    "gradcam_overlay": "assets/gradcam_overlay.jpg",
+    "gradcam_overlay_size": 284073,
+    "gradcam_error": null
+  },
+  "ai_analysis": {
+    "headline": "Image identified as likely manipulated (fake)",
+    "summary": "Our analysis found signs of manipulation in the image. With a confidence of about 64%, we consider it likely fake.",
+    "analysis": {
+      "overview": "We first detected any faces using a strict detector, then aligned and cropped the face region for detailed inspection. The cropped area was examined by an AI forensics pipeline that generates an attention map highlighting where it sees suspicious evidence. The model assigned a fake verdict based on patterns it learned from known manipulations. No specific algorithm names are disclosed.",
+      "heatmap_interpretation": "The highlighted area covers most of the picture, including the central face and surrounding background. This suggests the system found irregularities across the main subject and its context, rather than a small isolated spot.",
+      "region_focus": "The analysis concentrated on the rectangle starting at x=327, y=0, width=989, height=768, which spans the central and right portions of the image."
+    },
+    "observed_indicators": [
+      "Visible edge blending around the face",
+      "Inconsistent lighting between subject and background",
+      "Unnatural color transitions near the eyes",
+      "Compression artifacts in the highlighted zone",
+      "Misaligned facial features"
+    ],
+    "confidence_statement": "The system is moderately confident (≈64%) that the image is fake, but certainty is not absolute.",
+    "limitations": "The analysis only examines visual cues and cannot verify the image's provenance or metadata authenticity. It also cannot rule out subtle manipulations outside the highlighted region.",
+    "recommendation": "We recommend a manual expert review and, if possible, comparison with original sources."
+  },
+  "ai_analysis_error": null,
+  "metadata": {
+    "face_detected": true,
+    "detection_method": "mtcnn_strict",
+    "aligned": true,
+    "bbox": [
+      327,
+      0,
+      989,
+      768
+    ],
+    "bbox_fraction": 0.702415,
+    "bbox_center_pct": [
+      0.5835,
+      0.5
+    ]
+  },
+  "_pipeline_result": {
+    "final": {
+      "prediction": "FAKE",
+      "confidence": 0.6408913352272727,
+      "fake_score": 0.6408913352272727,
+      "real_score": 0.3591086647727273
+    },
+    "face_detection": {
+      "detected": true,
+      "num_faces": 1,
+      "confidence": 0.9999984502792358,
+      "crop_box": [
+        327,
+        0,
+        1316,
+        768
+      ],
+      "raw_face_box": [
+        631.5556640625,
+        115.08060455322266,
+        1011.0743408203125,
+        622.5399780273438
+      ],
+      "fallback": false,
+      "detection_method": "mtcnn_strict",
+      "aligned": true,
+      "margin": {
+        "side": 0.35,
+        "top": 0.4,
+        "bottom": 0.55
+      },
+      "square_pad": true
+    },
+    "fusion": {
+      "xception_weight": 0.45,
+      "efficientnet_weight": 0.25,
+      "vit_weight": 0.3,
+      "xception_alert_threshold": 0.5,
+      "xception_max_pull_down": 0.15,
+      "normal_weighted_score": 0.63048828125,
+      "final_fake_score": 0.6408913352272727,
+      "final_real_score": 0.3591086647727273,
+      "fusion_mode": "XCEPTION_ALERT_CONFIRMED",
+      "support_score": 0.5368607954545455,
+      "xception_alert": true,
+      "xception_priority_applied": false,
+      "xception_dissent": false,
+      "review_recommended": false,
+      "difference": 0.9214415550231934,
+      "disagreement_level": "HIGH"
+    }
+  }
+}

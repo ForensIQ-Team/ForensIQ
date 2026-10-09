@@ -97,7 +97,7 @@ export const ForensicViewer: React.FC<ForensicViewerProps> = ({
             className="px-3.5 py-1.5 bg-indigo-950 hover:bg-indigo-900 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
           >
             <FileText className="w-3.5 h-3.5 text-indigo-300" />
-            <span>Generate Forensic Report</span>
+            <span>Forensic Audit Report</span>
           </button>
         </div>
       </div>
