@@ -48,7 +48,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
   );
   const [detectionResult, setDetectionResult] = useState<DetectionResult>(PRESET_DETECTIONS.real);
   const [activePresetKey, setActivePresetKey] = useState<string>('real');
-  const viewRole: UserRole = 'normal';
+  const [viewRole, setViewRole] = useState<UserRole>('normal');
 
   const [investigatorCases, setInvestigatorCases] = useState<InvestigatorCase[]>([]);
   const [selectedSaveCaseId, setSelectedSaveCaseId] = useState<string>('');

@@ -62,6 +62,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
   const [submissionError, setSubmissionError]        = useState<string | null>(null);
   const [propSavedItems, setPropSavedItems]          = useState<Record<string, boolean>>({});
   const [showPropagationNetwork, setShowPropagationNetwork] = useState<boolean>(false);
+  const [selectedTierFilter, setSelectedTierFilter]  = useState<string>('all');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const dropRef      = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging]                 = useState(false);
@@ -131,6 +132,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
     setSubmissionResults(null);
     setSubmissionError(null);
     setSubmissionSearchState('idle');
+    setSelectedTierFilter('all');
     if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
@@ -139,6 +141,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
     setSubmissionSearchState('scanning');
     setSubmissionError(null);
     setSubmissionResults(null);
+    setSelectedTierFilter('all');
     setSubmissionStep(PROPAGATION_STEPS[0]);
     setSubmissionStepIdx(0);
 
@@ -423,66 +426,95 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
 
           {submissionSearchState === 'complete' && submissionResults && (
             <div className="space-y-6">
-              {submissionResults.status === 'no_results' && (
+              {submissionResults.status === 'no_results' || !submissionResults.ranked_results || submissionResults.ranked_results.length === 0 ? (
                 <div className="glass-panel rounded-xl p-10 text-center shadow-xs space-y-3">
-                  <Eye className="w-8 h-8 text-stone-400 mx-auto" />
-                  <h4 className="font-bold text-stone-800 text-base">No Matches Found</h4>
-                  <p className="text-xs text-stone-500 max-w-sm mx-auto">
-                    Google Lens did not find any publicly visible copies of this image.
-                    This may mean the image is new, not indexed, or its distribution is limited.
+                  <ShieldAlert className="w-8 h-8 text-stone-400 mx-auto" />
+                  <h4 className="font-bold text-stone-800 text-base">No Matching Sources Discovered</h4>
+                  <p className="text-xs text-stone-500 max-w-md mx-auto leading-relaxed">
+                    {submissionResults.message ||
+                      `We checked ${submissionResults.total_candidates} candidate sources from Google Lens and Yandex, but no matching images could be retrieved.`}
                   </p>
                 </div>
-              )}
-
-              {submissionResults.status === 'success' && (
+              ) : (
                 <>
-                  <div className="glass-panel rounded-xl p-5 shadow-xs flex flex-wrap items-center justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-3 flex-wrap">
-                        <span className="font-bold text-stone-950 text-lg">
-                          {submissionResults.total} Possible Match{submissionResults.total !== 1 ? 'es' : ''} Found
-                        </span>
-                        {submissionResults.exact_matches.length > 0 && (
-                          <span className="px-2 py-0.5 rounded bg-emerald-50/80 text-emerald-800 text-xs font-bold border border-emerald-200">
-                            {submissionResults.exact_matches.length} Exact
+                  {/* Verification Summary Banner */}
+                  <div className="glass-panel rounded-xl p-5 shadow-xs space-y-3">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                      <div className="space-y-1.5">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                          <span className="font-bold text-stone-950 text-lg">
+                            {submissionResults.notable_count} High-Priority Match{submissionResults.notable_count !== 1 ? 'es' : ''} Ranked
                           </span>
-                        )}
-                        {submissionResults.visual_matches.length > 0 && (
-                          <span className="px-2 py-0.5 rounded bg-amber-50/80 text-amber-800 text-xs font-bold border border-amber-200">
-                            {submissionResults.visual_matches.length} Visual
+                          <span className="text-xs px-2 py-0.5 rounded-full font-mono bg-stone-100 text-stone-600 border border-stone-200">
+                            {submissionResults.ranked_results.length} total indexed
                           </span>
-                        )}
+                        </div>
+                        <div className="text-xs text-stone-600 font-medium flex items-center gap-2 flex-wrap">
+                          <span className="text-rose-700 font-semibold">{submissionResults.tier_counts?.critical ?? 0} critical</span>
+                          <span>·</span>
+                          <span className="text-emerald-700 font-semibold">{submissionResults.tier_counts?.high ?? 0} high</span>
+                          <span>·</span>
+                          <span className="text-amber-700 font-semibold">{submissionResults.tier_counts?.medium ?? 0} moderate</span>
+                          <span>·</span>
+                          <span className="text-stone-500">{submissionResults.tier_counts?.low ?? 0} low</span>
+                          <span>·</span>
+                          <span className="text-stone-400">{submissionResults.tier_counts?.unlikely ?? 0} unlikely</span>
+                        </div>
+                        <div className="text-[11px] text-stone-400 font-mono pt-0.5">
+                          Sources: Google Lens {submissionResults.engine_stats?.google ?? 0} · Yandex{' '}
+                          {submissionResults.engine_stats?.yandex ?? 0}
+                        </div>
                       </div>
-                      <p className="text-xs text-stone-500 mt-0.5">
-                        Discovered via Google Lens · Search Discovery (not forensic verification)
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={handleCreateIncident}
-                        className="px-3.5 py-2 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
-                      >
-                        <FolderPlus className="w-4 h-4 text-amber-300" />
-                        <span>Create Incident Record</span>
-                      </button>
-                      <button
-                        onClick={() => setActiveTab('report')}
-                        className="px-3.5 py-2 glass-input hover:bg-[#e8decb]/60 text-stone-800 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-                      >
-                        <FileText className="w-4 h-4 text-stone-600" />
-                        <span>Generate Report</span>
-                      </button>
+
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleCreateIncident}
+                          className="px-3.5 py-2 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                        >
+                          <FolderPlus className="w-4 h-4 text-amber-300" />
+                          <span>Create Incident Record</span>
+                        </button>
+                        <button
+                          onClick={() => setActiveTab('report')}
+                          className="px-3.5 py-2 glass-input hover:bg-[#e8decb]/60 text-stone-800 text-xs font-semibold rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
+                        >
+                          <FileText className="w-4 h-4 text-stone-600" />
+                          <span>Generate Report</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
+
+                  {/* Conditional Warning Banners */}
+                  {!submissionResults.query_had_face && (
+                    <div className="p-3.5 rounded-xl bg-amber-50/90 border border-amber-200 text-amber-800 text-xs flex items-center gap-2.5">
+                      <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+                      <span>
+                        No face detected in your uploaded image. Ranked by image similarity and engine relevance.
+                      </span>
+                    </div>
+                  )}
+
+                  {submissionResults.engine_stats?.yandex_error && (
+                    <div className="p-2.5 rounded-lg bg-stone-100/90 border border-stone-200 text-stone-600 text-xs flex items-center gap-2">
+                      <Info className="w-3.5 h-3.5 text-stone-400 shrink-0" />
+                      <span>
+                        Yandex search unavailable for this query — Google Lens results only.
+                      </span>
+                    </div>
+                  )}
 
                   {incidentCreated && (
                     <div className="p-4 bg-emerald-50/90 border border-emerald-200 rounded-xl text-xs text-emerald-900 flex items-center justify-between shadow-xs">
                       <div className="flex items-center gap-2.5">
                         <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
                         <div>
-                          <p className="font-bold text-sm">Incident INC-2026-{Math.floor(Math.random() * 999).toString().padStart(3, '0')} Created</p>
+                          <p className="font-bold text-sm">
+                            Incident INC-2026-{Math.floor(Math.random() * 999).toString().padStart(3, '0')} Created
+                          </p>
                           <p className="text-emerald-700">
-                            Grouped {submissionResults.total} discovered matches into active investigation binder.
+                            Grouped {submissionResults.ranked_results.length} discovered matches into active investigation binder.
                           </p>
                         </div>
                       </div>
@@ -510,7 +542,7 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                     {showPropagationNetwork && (
                       <div className="mt-4">
                         <PropagationNetwork
-                          results={submissionResults.all_results}
+                          results={submissionResults.ranked_results}
                           searchedImagePreview={submittedPreview}
                         />
                       </div>
@@ -520,16 +552,16 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                   <div className="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
                       <h3 className="font-bold text-stone-950 text-sm uppercase tracking-wider">
-                        Discovered Results ({submissionResults.all_results.length})
+                        Ranked Results ({submissionResults.ranked_results.length})
                       </h3>
                       <p className="text-xs text-stone-500 mt-0.5">
-                        Detailed source records and investigative actions for all indexed matches.
+                        Candidates ordered by facial identity & perceptual similarity confidence.
                       </p>
                     </div>
 
                     {user && (user.role === 'investigator' || user.role === 'admin') && (
                       <button
-                        onClick={() => handleCreateCaseFromResults(submissionResults.all_results.length)}
+                        onClick={() => handleCreateCaseFromResults(submissionResults.ranked_results.length)}
                         disabled={caseCreating}
                         className="px-3.5 py-2 bg-stone-950 hover:bg-stone-900 text-white text-xs font-bold rounded-xl flex items-center gap-1.5 transition-all shadow-xs cursor-pointer shrink-0 disabled:opacity-50"
                       >
@@ -546,89 +578,228 @@ export const FindMisuseScreen: React.FC<FindMisuseScreenProps> = ({
                     </div>
                   )}
 
-                  <div className="space-y-4">
-                    {submissionResults.all_results.map((item, idx) => {
-                      const saveKey = item.url ?? `result_${idx}`;
+                  {/* Tier Filter Tabs */}
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <button
+                      onClick={() => setSelectedTierFilter('all')}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                        selectedTierFilter === 'all'
+                          ? 'bg-[#1e1b18] text-white border-stone-900'
+                          : 'glass-input text-stone-600 border-stone-200 hover:text-stone-900'
+                      }`}
+                    >
+                      All ({submissionResults.ranked_results.length})
+                    </button>
+                    <button
+                      onClick={() => setSelectedTierFilter('notable')}
+                      className={`px-3 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                        selectedTierFilter === 'notable'
+                          ? 'bg-[#1e1b18] text-white border-stone-900'
+                          : 'glass-input text-stone-600 border-stone-200 hover:text-stone-900'
+                      }`}
+                    >
+                      Notable ({submissionResults.notable_count})
+                    </button>
+                    {(['critical', 'high', 'medium', 'low', 'unlikely'] as const).map(tier => {
+                      const count = submissionResults.tier_counts?.[tier] ?? 0;
+                      if (count === 0) return null;
                       return (
-                        <div
-                          key={saveKey}
-                          className="glass-panel rounded-xl p-5 shadow-xs hover:border-stone-400/80 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
+                        <button
+                          key={tier}
+                          onClick={() => setSelectedTierFilter(tier)}
+                          className={`px-3 py-1 rounded-lg text-xs font-semibold border capitalize transition-all cursor-pointer ${
+                            selectedTierFilter === tier
+                              ? 'bg-[#1e1b18] text-white border-stone-900'
+                              : 'glass-input text-stone-600 border-stone-200 hover:text-stone-900'
+                          }`}
                         >
-                          <div className="flex items-start gap-4">
-                            <div className="w-20 h-20 rounded-lg border border-[#d8ccb6] shrink-0 overflow-hidden bg-stone-100/50 flex items-center justify-center">
-                              {item.thumbnail ? (
-                                <img
-                                  src={item.thumbnail}
-                                  alt="Thumbnail"
-                                  className="w-full h-full object-cover"
-                                  onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                                />
-                              ) : (
-                                <Globe2 className="w-8 h-8 text-stone-300" />
-                              )}
+                          {tier} ({count})
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <div className="space-y-4">
+                    {submissionResults.ranked_results
+                      .filter(item => {
+                        if (selectedTierFilter === 'all') return true;
+                        if (selectedTierFilter === 'notable') {
+                          return item.tier === 'critical' || item.tier === 'high' || item.tier === 'medium';
+                        }
+                        return item.tier === selectedTierFilter;
+                      })
+                      .map((item, idx) => {
+                        const saveKey = item.url ?? `result_${idx}`;
+                        const pv = item.verification?.phash_verdict;
+                        const fv = item.verification?.face_verdict;
+                        const tier = item.tier ?? 'unlikely';
+
+                        let badgeText = '';
+                        let badgeStyle = '';
+
+                        if (pv === 'exact_duplicate') {
+                          badgeText = 'EXACT DUPLICATE';
+                          badgeStyle = 'bg-rose-50 text-rose-800 border-rose-200';
+                        } else if (fv === 'same_person') {
+                          badgeText = 'SAME PERSON';
+                          badgeStyle = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+                        } else if (pv === 'near_duplicate') {
+                          badgeText = 'NEAR DUPLICATE';
+                          badgeStyle = 'bg-amber-50 text-amber-800 border-amber-200';
+                        } else if (tier === 'critical') {
+                          badgeText = 'CRITICAL MATCH';
+                          badgeStyle = 'bg-rose-50 text-rose-800 border-rose-200';
+                        } else if (tier === 'high') {
+                          badgeText = 'HIGH CONFIDENCE';
+                          badgeStyle = 'bg-emerald-50 text-emerald-800 border-emerald-200';
+                        } else if (tier === 'medium') {
+                          badgeText = 'MODERATE';
+                          badgeStyle = 'bg-amber-50 text-amber-800 border-amber-200';
+                        } else if (tier === 'low') {
+                          badgeText = 'LOW SIMILARITY';
+                          badgeStyle = 'bg-slate-100 text-slate-700 border-slate-200';
+                        } else {
+                          badgeText = 'UNLIKELY MATCH';
+                          badgeStyle = 'bg-stone-100 text-stone-500 border-stone-200';
+                        }
+
+                        // Numeric evidence
+                        const evidence: string[] = [];
+                        if (item.rank_score !== undefined && item.rank_score !== null) {
+                          evidence.push(`score ${(item.rank_score * 100).toFixed(0)}%`);
+                        }
+                        if (
+                          item.verification?.face_similarity !== null &&
+                          item.verification?.face_similarity !== undefined
+                        ) {
+                          evidence.push(
+                            `face sim ${item.verification.face_similarity.toFixed(2)}`
+                          );
+                        }
+                        if (
+                          item.verification?.phash_distance !== null &&
+                          item.verification?.phash_distance !== undefined
+                        ) {
+                          evidence.push(
+                            `pHash dist ${item.verification.phash_distance}`
+                          );
+                        }
+
+                        return (
+                          <div
+                            key={saveKey}
+                            className="glass-panel rounded-xl p-5 shadow-xs hover:border-stone-400/80 transition-all flex flex-col md:flex-row items-start md:items-center justify-between gap-5"
+                          >
+                            <div className="flex items-start gap-4">
+                              <div className="relative w-20 h-20 rounded-lg border border-[#d8ccb6] shrink-0 overflow-hidden bg-stone-100/50 flex items-center justify-center">
+                                {item.thumbnail ? (
+                                  <img
+                                    src={item.thumbnail}
+                                    alt="Thumbnail"
+                                    className="w-full h-full object-cover"
+                                    onError={(e) => {
+                                      (e.target as HTMLImageElement).style.display = 'none';
+                                    }}
+                                  />
+                                ) : (
+                                  <Globe2 className="w-8 h-8 text-stone-300" />
+                                )}
+                                <span className="absolute top-1 left-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-black/75 text-white backdrop-blur-xs font-mono">
+                                  #{item.rank ?? idx + 1}
+                                </span>
+                              </div>
+
+                              <div className="space-y-1 min-w-0">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                  {badgeText && (
+                                    <span
+                                      className={`inline-block px-2 py-0.5 rounded text-[10px] font-extrabold uppercase border ${badgeStyle}`}
+                                    >
+                                      {badgeText}
+                                    </span>
+                                  )}
+                                  {evidence.length > 0 && (
+                                    <span className="text-[11px] text-stone-500 font-mono">
+                                      {evidence.join(' · ')}
+                                    </span>
+                                  )}
+                                </div>
+
+                                <h4 className="font-bold text-stone-950 text-sm leading-snug">
+                                  {item.title ?? item.domain ?? 'Untitled Source'}
+                                </h4>
+
+                                {item.url && (
+                                  <div className="flex items-center gap-2 max-w-md">
+                                    <a
+                                      href={item.url}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="text-xs text-red-700 hover:underline font-mono flex items-center gap-1 truncate"
+                                    >
+                                      <span className="truncate">{item.url}</span>
+                                      <ExternalLink className="w-3 h-3 shrink-0" />
+                                    </a>
+                                    {item._engine && (
+                                      <span className="text-[10px] text-stone-400 italic shrink-0">
+                                        via {item._engine === 'google' ? 'Google' : 'Yandex'}
+                                      </span>
+                                    )}
+                                  </div>
+                                )}
+
+                                <div className="flex flex-wrap items-center gap-3 text-[11px] text-stone-500 pt-0.5">
+                                  {item.domain && (
+                                    <span className="font-semibold text-stone-700 flex items-center gap-1">
+                                      <Globe2 className="w-3 h-3" /> {item.domain}
+                                    </span>
+                                  )}
+                                  {item.date && (
+                                    <>
+                                      <span>·</span>
+                                      <span>Found: {item.date}</span>
+                                    </>
+                                  )}
+                                  {item.region && (
+                                    <>
+                                      <span>·</span>
+                                      <span>Region: {item.region}</span>
+                                    </>
+                                  )}
+                                  {item.snippet && (
+                                    <p className="w-full text-stone-400 truncate max-w-lg mt-0.5">
+                                      {item.snippet}
+                                    </p>
+                                  )}
+                                </div>
+                              </div>
                             </div>
 
-                            <div className="space-y-1 min-w-0">
-                              <span className={`inline-block px-2 py-0.5 rounded text-[10px] font-extrabold uppercase border ${matchTypeBadgeClasses(item.match_type)}`}>
-                                {matchTypeLabel(item.match_type)}
-                              </span>
-
-                              <h4 className="font-bold text-stone-950 text-sm leading-snug">
-                                {item.title ?? item.domain ?? 'Untitled Source'}
-                              </h4>
-
+                            <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto pt-3 md:pt-0 border-t md:border-t-0 border-[#e2d8c3]/80">
+                              <button
+                                onClick={() => togglePropSave(saveKey)}
+                                className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
+                                  propSavedItems[saveKey]
+                                    ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
+                                    : 'glass-input text-stone-700 hover:bg-[#e8decb]/60'
+                                }`}
+                              >
+                                {propSavedItems[saveKey] ? '[OK] Saved Evidence' : 'Save Evidence'}
+                              </button>
                               {item.url && (
                                 <a
                                   href={item.url}
                                   target="_blank"
                                   rel="noopener noreferrer"
-                                  className="text-xs text-red-700 hover:underline font-mono flex items-center gap-1 truncate max-w-md"
+                                  className="px-3 py-1.5 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
                                 >
-                                  <span className="truncate">{item.url}</span>
-                                  <ExternalLink className="w-3 h-3 shrink-0" />
+                                  Open Source
                                 </a>
                               )}
-
-                              <div className="flex flex-wrap items-center gap-3 text-[11px] text-stone-500 pt-0.5">
-                                {item.domain && (
-                                  <span className="font-semibold text-stone-700 flex items-center gap-1">
-                                    <Globe2 className="w-3 h-3" /> {item.domain}
-                                  </span>
-                                )}
-                                {item.date && <><span>·</span><span>Found: {item.date}</span></>}
-                                {item.region && <><span>·</span><span>Region: {item.region}</span></>}
-                                {item.snippet && (
-                                  <p className="w-full text-stone-400 truncate max-w-lg mt-0.5">{item.snippet}</p>
-                                )}
-                              </div>
                             </div>
                           </div>
-
-                          <div className="flex flex-wrap items-center gap-2 shrink-0 w-full md:w-auto pt-3 md:pt-0 border-t md:border-t-0 border-[#e2d8c3]/80">
-                            <button
-                              onClick={() => togglePropSave(saveKey)}
-                              className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-colors cursor-pointer ${
-                                propSavedItems[saveKey]
-                                  ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
-                                  : 'glass-input text-stone-700 hover:bg-[#e8decb]/60'
-                              }`}
-                            >
-                              {propSavedItems[saveKey] ? '[OK] Saved Evidence' : 'Save Evidence'}
-                            </button>
-                            {item.url && (
-                              <a
-                                href={item.url}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="px-3 py-1.5 bg-[#1e1b18] hover:bg-stone-900 text-white text-xs font-semibold rounded-lg transition-colors cursor-pointer"
-                              >
-                                Open Source
-                              </a>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
                   </div>
                 </>
               )}

@@ -29,17 +29,45 @@ export interface PropagationResult {
   snippet: string | null;
   date: string | null;
   region: string | null;
-  // Future slots — null until pHash/CLIP is implemented
-  phash_verified: null;
-  clip_verified: null;
+  phash_verified?: boolean | null;
+  clip_verified?: boolean | null;
+
+  // Ranking fields (added by pipeline STEP 4)
+  rank?: number;                                              // 1-based position in ranked list
+  rank_score?: number;                                        // composite confidence score [0, 1]
+  tier?: 'critical' | 'high' | 'medium' | 'low' | 'unlikely'; // confidence tier
+
+  // Verification fields
+  _engine?: 'google' | 'yandex';
+  verification?: {
+    status: 'checked' | 'unverifiable';
+    face_status?: string;
+    face_similarity?: number | null;
+    face_verdict?: 'same_person' | 'similar_face' | 'different_person' | null;
+    phash_distance?: number | null;
+    phash_verdict?: 'exact_duplicate' | 'near_duplicate' | 'no_match' | null;
+  };
 }
 
 export interface PropagationSearchResponse {
-  status: "success" | "no_results" | "error";
-  total: number;
-  exact_matches: PropagationResult[];
-  visual_matches: PropagationResult[];
-  all_results: PropagationResult[];
+  status: 'success' | 'no_results' | 'error';
+  ranked_results: PropagationResult[];          // all candidates, sorted by rank_score desc
+  notable_count: number;                        // critical + high + medium tier count
+  tier_counts: {
+    critical: number;
+    high: number;
+    medium: number;
+    low: number;
+    unlikely: number;
+  };
+  total_candidates: number;
+  query_had_face: boolean;
+  engine_stats: {
+    google: number;
+    yandex: number;
+    google_error: string | null;
+    yandex_error: string | null;
+  };
   error: string | null;
   message?: string;
 }
@@ -49,11 +77,11 @@ export interface PropagationSearchResponse {
 // ----------------------------------------------------------------
 
 export const PROPAGATION_STEPS = [
-  "Uploading image to forensic search engine...",
-  "Querying Google Lens visual index...",
-  "Collecting visual and exact matches...",
-  "Processing discovered sources...",
-  "Building propagation network...",
+  'Searching public web indexes (Google Lens & Yandex)...',
+  'Analyzing facial identity in query image...',
+  'Verifying candidate faces & image hashes...',
+  'Ranking results by confidence score...',
+  'Building propagation network...',
 ] as const;
 
 // ----------------------------------------------------------------
