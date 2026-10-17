@@ -523,6 +523,8 @@ def main():
     parser.add_argument("--report", action="store_true",
                         help="Generate a Groq-powered ForensIQ HTML report after Grad-CAM "
                              "(requires --model xception or all)")
+    parser.add_argument("--force-report", action="store_true",
+                        help="Force report generation even if verdict is REAL")
     args = parser.parse_args()
 
     print()
@@ -533,6 +535,7 @@ def main():
     print(f"Image  : {args.image}")
     print(f"Model  : {args.model}")
     print(f"Report : {args.report}")
+    print(f"Force  : {args.force_report}")
 
     if args.report and args.model in ("vit", "efficientnet"):
         print()
@@ -565,6 +568,11 @@ def main():
         xception_result = next((r for r in results if r["model"] == "xception"), None)
         if xception_result is None:
             print("[warn] No Xception result found — skipping report.")
+            return
+
+        if xception_result.get("prediction") == "REAL" and not args.force_report:
+            print()
+            print("[gradcam] Verdict REAL — skipping report. Use --force-report to override.")
             return
 
         try:
