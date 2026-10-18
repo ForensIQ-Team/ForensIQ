@@ -83,16 +83,24 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
   };
 
 
+  const uploadCounterRef = React.useRef<number>(0);
+
   // Execute detection pipeline on preset select or upload
   const runDetectionPipeline = async (input: File | string) => {
+    const currentUploadId = ++uploadCounterRef.current;
     setAnalysisState('analyzing');
     setCurrentStageIndex(0);
 
     try {
       const result = await detectionService.analyzeMedia(input, (stageIndex, updatedStages) => {
-        setCurrentStageIndex(stageIndex);
-        setPipelineStages(updatedStages);
+        if (uploadCounterRef.current === currentUploadId) {
+          setCurrentStageIndex(stageIndex);
+          setPipelineStages(updatedStages);
+        }
       });
+
+      // Avoid showing stale result if a newer upload started
+      if (uploadCounterRef.current !== currentUploadId) return;
 
       setDetectionResult(result);
       setAnalysisState('complete');
@@ -100,6 +108,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
       // Auto-log into persistent historyService
       historyService.addHistoryItem(result);
     } catch (err) {
+      if (uploadCounterRef.current !== currentUploadId) return;
       console.error('Detection pipeline error:', err);
       setAnalysisState('complete');
     }
@@ -122,6 +131,8 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
       setMediaPreviewUrl(url);
       runDetectionPipeline(file);
     }
+    // Clear input so selecting the same file again triggers onChange
+    e.target.value = '';
   };
 
   return (
@@ -150,6 +161,7 @@ export const CheckMediaScreen: React.FC<CheckMediaScreenProps> = ({
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp,image/bmp,video/mp4,video/quicktime,video/avi,video/webm,.mp4,.avi,.mov,.mkv,.webm"
+                  onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
                   onChange={handleFileUpload}
                   className="hidden"
                 />

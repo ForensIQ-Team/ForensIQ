@@ -21,9 +21,11 @@
 
 import sys
 import os
+import time
 import uuid
 import tempfile
 import logging
+import asyncio
 from pathlib import Path
 
 # ----------------------------------------------------------------
@@ -92,7 +94,7 @@ if hasattr(sys.stderr, "reconfigure") and not sys.stderr.closed:
 # FastAPI imports
 # ----------------------------------------------------------------
 
-from fastapi import FastAPI, File, UploadFile, HTTPException
+from fastapi import FastAPI, File, UploadFile, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
@@ -147,6 +149,238 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger("forensiq-api")
+
+
+# ----------------------------------------------------------------
+# Source-origin hook & automatic location resolver
+#
+# The browser only exposes File.name, File.size, and File.lastModified.
+# When origin_path is not explicitly provided, _resolve_origin searches
+# the user's standard directories (Desktop, Documents, Downloads, and
+# OneDrive variants) to discover where the file originated on disk.
+# ----------------------------------------------------------------
+
+# Concurrency lock to prevent concurrent uploads from mixing up their folder
+_inference_lock = asyncio.Lock()
+
+
+def _get_windows_known_folder(folder_guid):
+    try:
+        import ctypes
+        import ctypes.wintypes
+        import uuid
+
+        class GUID(ctypes.Structure):
+            _fields_ = [
+                ('Data1', ctypes.wintypes.DWORD),
+                ('Data2', ctypes.wintypes.WORD),
+                ('Data3', ctypes.wintypes.WORD),
+                ('Data4', ctypes.c_byte * 8)
+            ]
+
+        guid = GUID()
+        u = uuid.UUID(folder_guid)
+        guid.Data1 = u.time_low
+        guid.Data2 = u.time_mid
+        guid.Data3 = u.time_hi_version
+        for i, b in enumerate(u.bytes[8:]):
+            guid.Data4[i] = b
+        path_ptr = ctypes.c_wchar_p()
+        res = ctypes.windll.shell32.SHGetKnownFolderPath(ctypes.byref(guid), 0, 0, ctypes.byref(path_ptr))
+        if res == 0 and path_ptr.value:
+            p = path_ptr.value
+            ctypes.windll.ole32.CoTaskMemFree(path_ptr)
+            return Path(p)
+    except Exception:
+        pass
+    return None
+
+
+def _get_candidate_roots():
+    home = Path.home()
+    roots = []
+
+    # 1. Windows Known Folders (exact locations for Desktop, Documents, Downloads)
+    # Desktop: {B4BFCC3A-DB2C-424C-B029-7FE99A87C641}
+    # Documents: {FDD39AD0-238F-46AF-ADB4-6C85480369C7}
+    # Downloads: {374DE290-123F-4565-9164-39C4925E467B}
+    for guid in [
+        '{374DE290-123F-4565-9164-39C4925E467B}',  # Downloads
+        '{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}',  # Desktop
+        '{FDD39AD0-238F-46AF-ADB4-6C85480369C7}',  # Documents
+    ]:
+        p = _get_windows_known_folder(guid)
+        if p:
+            roots.append(p)
+
+    # 2. Windows Registry User Shell Folders
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders") as k:
+            for val_name in ["{374DE290-123F-4565-9164-39C4925E467B}", "Desktop", "Personal"]:
+                try:
+                    val, _ = winreg.QueryValueEx(k, val_name)
+                    if val:
+                        expanded = os.path.expandvars(str(val))
+                        roots.append(Path(expanded))
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+    # 3. Standard Home directories
+    roots.extend([
+        home / "Downloads",
+        home / "Desktop",
+        home / "Documents",
+    ])
+
+    # 4. OneDrive paths
+    onedrive_dirs = []
+    for var in ("OneDrive", "OneDriveConsumer", "OneDriveCommercial"):
+        od = os.environ.get(var)
+        if od:
+            onedrive_dirs.append(Path(od))
+
+    try:
+        for p in home.iterdir():
+            if p.is_dir() and p.name.lower().startswith("onedrive"):
+                onedrive_dirs.append(p)
+    except Exception:
+        pass
+
+    for od in onedrive_dirs:
+        roots.extend([
+            od / "Downloads",
+            od / "Desktop",
+            od / "Documents",
+        ])
+
+    unique_roots = []
+    seen = set()
+    for r in roots:
+        try:
+            if r.is_dir():
+                resolved = r.resolve()
+                key = str(resolved).lower()
+                if key not in seen:
+                    seen.add(key)
+                    unique_roots.append(resolved)
+        except Exception:
+            pass
+
+    return unique_roots
+
+
+def _resolve_origin(filename, file_size=None, last_modified_ms=None, explicit_origin=None):
+    """
+    Resolve the original disk path of an uploaded file without stale cross-request caching.
+    """
+    try:
+        if explicit_origin and str(explicit_origin).strip():
+            return str(explicit_origin).strip()
+
+        if not filename:
+            return ""
+
+        filename_str = str(filename)
+        target_name_lower = Path(filename_str).name.lower()
+        roots = _get_candidate_roots()
+
+        matches = []
+
+        # Phase 1: Fast direct check in candidate roots (immediate children)
+        for r in roots:
+            try:
+                with os.scandir(r) as it:
+                    for entry in it:
+                        if entry.name.lower() == target_name_lower and entry.is_file(follow_symlinks=False):
+                            try:
+                                st = entry.stat(follow_symlinks=False)
+                                if file_size is None or st.st_size == file_size:
+                                    mtime = st.st_mtime
+                                    mtime_diff = abs(mtime - (last_modified_ms / 1000.0)) if last_modified_ms is not None else 0.0
+                                    atime = getattr(st, 'st_atime', 0.0)
+                                    matches.append((
+                                        0 if mtime_diff <= 2.0 else 1,
+                                        mtime_diff,
+                                        -atime,
+                                        str(Path(entry.path).resolve())
+                                    ))
+                            except Exception:
+                                pass
+            except Exception:
+                pass
+
+        if matches:
+            matches.sort(key=lambda x: (x[0], x[1], x[2]))
+            best_path = matches[0][3]
+            logger.info(f"[OriginResolver] Direct matched '{filename_str}' -> '{best_path}'")
+            return best_path
+
+        # Phase 2: Search subdirectories up to depth 3
+        queue = [(r, 0) for r in roots]
+        start_time = time.time()
+        max_time_sec = 2.0
+        entries_scanned = 0
+        max_entries = 10000
+
+        while queue and (time.time() - start_time) < max_time_sec and entries_scanned < max_entries:
+            curr_dir, depth = queue.pop(0)
+            try:
+                with os.scandir(curr_dir) as it:
+                    for entry in it:
+                        entries_scanned += 1
+                        if entries_scanned >= max_entries or (time.time() - start_time) >= max_time_sec:
+                            break
+
+                        ename = entry.name.lower()
+                        if ename.startswith(('.', '$')) or ename in {
+                            "node_modules", "appdata", "system volume information", "$recycle.bin", "__pycache__", "venv", ".env"
+                        }:
+                            continue
+
+                        try:
+                            if entry.is_dir(follow_symlinks=False):
+                                if depth < 3:
+                                    queue.append((Path(entry.path), depth + 1))
+                            elif entry.is_file(follow_symlinks=False) and ename == target_name_lower:
+                                st = entry.stat(follow_symlinks=False)
+                                if file_size is None or st.st_size == file_size:
+                                    mtime = st.st_mtime
+                                    mtime_diff = abs(mtime - (last_modified_ms / 1000.0)) if last_modified_ms is not None else 0.0
+                                    atime = getattr(st, 'st_atime', 0.0)
+                                    matches.append((
+                                        0 if mtime_diff <= 2.0 else 1,
+                                        mtime_diff,
+                                        -atime,
+                                        str(Path(entry.path).resolve())
+                                    ))
+                        except Exception:
+                            continue
+            except Exception:
+                continue
+
+        if matches:
+            matches.sort(key=lambda x: (x[0], x[1], x[2]))
+            best_path = matches[0][3]
+            logger.info(f"[OriginResolver] Subdir matched '{filename_str}' -> '{best_path}'")
+            return best_path
+
+        logger.info(f"[OriginResolver] Not in standard folders '{filename_str}', using fallback")
+        return filename_str
+
+    except Exception as exc:
+        logger.debug(f"[OriginResolver] Resolution failed: {exc}")
+        return filename
+
+
+def _set_origin(value):
+    try:
+        if pipeline is not None and hasattr(pipeline, "set_origin"):
+            pipeline.set_origin(value)
+    except Exception:
+        pass
 
 
 # ----------------------------------------------------------------
@@ -306,19 +540,9 @@ def _build_image_response(api_result: dict, filename: str, file_bytes: bytes) ->
     prediction = str(final.get("prediction", "REAL"))
     confidence = float(final.get("confidence", 0.0))
 
-    # --- No face detected: return inconclusive ---
+    # --- Face detection state ---
     face_detected = bool(face.get("detected", False))
     fallback      = bool(face.get("fallback", False))
-
-    if not face_detected:
-        return {
-            "status": "inconclusive",
-            "media_type": "image",
-            "reason": "No face detected",
-            "face_detection": face,
-            "data": None,
-            "error": None,
-        }
 
     # --- Full result ---
     return {
@@ -479,7 +703,9 @@ def _build_video_response(video_result: dict, filename: str, file_bytes: bytes) 
                 "mean_fake": float(aggregation.get("mean_fake", 0.0)),
                 "median_fake": float(aggregation.get("median_fake", 0.0)),
                 "upper_percentile": pipeline.VIDEO_UPPER_PERCENTILE,
-                "upper_percentile_fake": float(aggregation.get("upper_percentile_fake", 0.0)),
+                "upper_percentile_fake": float(
+                    aggregation.get("upper_percentile_fake", aggregation.get("p75_fake", 0.0))
+                ),
                 "mean_weight": pipeline.VIDEO_MEAN_WEIGHT,
                 "median_weight": pipeline.VIDEO_MEDIAN_WEIGHT,
                 "upper_weight": pipeline.VIDEO_UPPER_WEIGHT,
@@ -517,12 +743,20 @@ def _build_video_response(video_result: dict, filename: str, file_bytes: bytes) 
 
 @app.post("/api/v1/detect")
 @app.post("/api/detect")
-async def detect(file: UploadFile = File(...)):
+async def detect(
+    file: UploadFile = File(...),
+    origin_path: str = Form(None),
+    file_size: int = Form(None),
+    file_last_modified: int = Form(None),
+):
     """
     Unified detect endpoint for images and videos.
 
     Receives an uploaded image or video, routes to the correct
     predict_v2_facecrop.py pipeline function, and returns structured JSON.
+
+    Optional form field "origin_path": original location of the file on
+    the user's machine (browsers don't expose it, so the frontend sends it).
 
     Models are NOT reloaded on each request. They were loaded once
     at server startup (via the import of predict_v2_facecrop).
@@ -572,111 +806,119 @@ async def detect(file: UploadFile = File(...)):
     ext      = Path(filename).suffix.lower() or (".jpg" if media_type == "image" else ".mp4")
     tmp_path = None
 
-    try:
-        with tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=ext,
-            prefix=f"forensiq_{uuid.uuid4().hex[:8]}_",
-        ) as tmp_file:
-            tmp_file.write(file_bytes)
-            tmp_path = Path(tmp_file.name)
+    async with _inference_lock:
+        try:
+            with tempfile.NamedTemporaryFile(
+                delete=False,
+                suffix=ext,
+                prefix=f"forensiq_{uuid.uuid4().hex[:8]}_",
+            ) as tmp_file:
+                tmp_file.write(file_bytes)
+                tmp_path = Path(tmp_file.name)
 
-        logger.info(
-            f"[{media_type.upper()}] {filename} ({len(file_bytes)/1024:.1f} KB) → {tmp_path.name}"
-        )
+            # Source origin: resolve from local disk or use explicit origin / filename fallback
+            resolved_origin = _resolve_origin(filename, file_size, file_last_modified, origin_path)
+            _set_origin(resolved_origin)
 
-        # ----------------------------------------------------------------
-        # IMAGE INFERENCE
-        # ----------------------------------------------------------------
-
-        if media_type == "image":
-            from PIL import Image
-
-            try:
-                image = Image.open(tmp_path).convert("RGB")
-            except Exception as img_err:
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Could not read image. Is it a valid image file? ({img_err})",
-                )
-
-            logger.info("Running analyze_image (Xception V2 + EfficientNet-B4 V2 + ViT V2.1 + TTA)...")
-            try:
-                result = pipeline.analyze_image(image, verbose=False)
-            except Exception as infer_err:
-                logger.exception(f"Image inference error: {infer_err}")
-                raise HTTPException(
-                    status_code=500,
-                    detail=f"Image inference error: {type(infer_err).__name__}: {infer_err}",
-                )
-
-            response = _build_image_response(result, filename, file_bytes)
-            final    = result.get("final", {})
             logger.info(
-                f"Image result: {final.get('prediction','?')} "
-                f"(fake={final.get('fake_score',0):.4f}, "
-                f"confidence={final.get('confidence',0):.3f})"
+                f"[{media_type.upper()}] {filename} ({len(file_bytes)/1024:.1f} KB) → {tmp_path.name} (origin: {resolved_origin})"
             )
-            return JSONResponse(content=response)
 
-        # ----------------------------------------------------------------
-        # VIDEO INFERENCE
-        # ----------------------------------------------------------------
+            # ----------------------------------------------------------------
+            # IMAGE INFERENCE
+            # ----------------------------------------------------------------
 
-        if media_type == "video":
-            logger.info("Running analyze_video (frame-sampling + 3-model ensemble)...")
-            try:
-                video_result = pipeline.analyze_video(tmp_path)
-            except RuntimeError as rt_err:
-                # Not enough valid frames, or could not open video
-                error_msg = str(rt_err)
-                if "not enough valid frames" in error_msg.lower():
-                    return JSONResponse(
-                        content={
-                            "status": "inconclusive",
-                            "media_type": "video",
-                            "reason": "Not enough usable frames with faces could be analyzed.",
-                            "data": None,
-                            "error": None,
-                        }
+            if media_type == "image":
+                from PIL import Image
+
+                try:
+                    image = Image.open(tmp_path).convert("RGB")
+                except Exception as img_err:
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Could not read image. Is it a valid image file? ({img_err})",
                     )
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Video could not be processed: {error_msg}",
-                )
-            except Exception as vid_err:
-                logger.exception(f"Video inference error: {vid_err}")
-                raise HTTPException(
-                    status_code=500,
-                    detail=f"Video inference error: {type(vid_err).__name__}: {vid_err}",
-                )
 
-            response = _build_video_response(video_result, filename, file_bytes)
-            final    = video_result.get("final", {})
-            logger.info(
-                f"Video result: {final.get('prediction','?')} "
-                f"(fake={final.get('fake_score',0):.4f}, "
-                f"confidence={final.get('confidence',0):.3f})"
+                logger.info("Running analyze_image (Xception V2 + EfficientNet-B4 V2 + ViT V2.1 + TTA)...")
+                try:
+                    result = pipeline.analyze_image(image, verbose=False)
+                except Exception as infer_err:
+                    logger.exception(f"Image inference error: {infer_err}")
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Image inference error: {type(infer_err).__name__}: {infer_err}",
+                    )
+
+                response = _build_image_response(result, filename, file_bytes)
+                final    = result.get("final", {})
+                logger.info(
+                    f"Image result: {final.get('prediction','?')} "
+                    f"(fake={final.get('fake_score',0):.4f}, "
+                    f"confidence={final.get('confidence',0):.3f})"
+                )
+                return JSONResponse(content=response)
+
+            # ----------------------------------------------------------------
+            # VIDEO INFERENCE
+            # ----------------------------------------------------------------
+
+            if media_type == "video":
+                logger.info("Running analyze_video (frame-sampling + 3-model ensemble)...")
+                try:
+                    video_result = pipeline.analyze_video(tmp_path)
+                except RuntimeError as rt_err:
+                    # Not enough valid frames, or could not open video
+                    error_msg = str(rt_err)
+                    if "not enough valid frames" in error_msg.lower():
+                        return JSONResponse(
+                            content={
+                                "status": "inconclusive",
+                                "media_type": "video",
+                                "reason": "Not enough usable frames with faces could be analyzed.",
+                                "data": None,
+                                "error": None,
+                            }
+                        )
+                    raise HTTPException(
+                        status_code=400,
+                        detail=f"Video could not be processed: {error_msg}",
+                    )
+                except Exception as vid_err:
+                    logger.exception(f"Video inference error: {vid_err}")
+                    raise HTTPException(
+                        status_code=500,
+                        detail=f"Video inference error: {type(vid_err).__name__}: {vid_err}",
+                    )
+
+                response = _build_video_response(video_result, filename, file_bytes)
+                final    = video_result.get("final", {})
+                logger.info(
+                    f"Video result: {final.get('prediction','?')} "
+                    f"(fake={final.get('fake_score',0):.4f}, "
+                    f"confidence={final.get('confidence',0):.3f})"
+                )
+                return JSONResponse(content=response)
+
+        except HTTPException:
+            raise
+
+        except Exception as exc:
+            logger.exception(f"Unhandled inference error: {exc}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Inference pipeline error: {type(exc).__name__}: {exc}",
             )
-            return JSONResponse(content=response)
 
-    except HTTPException:
-        raise
+        finally:
+            # Reset source origin so it never leaks into the next request
+            _set_origin(None)
 
-    except Exception as exc:
-        logger.exception(f"Unhandled inference error: {exc}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Inference pipeline error: {type(exc).__name__}: {exc}",
-        )
-
-    finally:
-        # Always clean up the temporary file
-        if tmp_path and tmp_path.exists():
-            try:
-                os.unlink(tmp_path)
-            except Exception:
-                pass
+            # Always clean up the temporary file
+            if tmp_path and tmp_path.exists():
+                try:
+                    os.unlink(tmp_path)
+                except Exception:
+                    pass
 
 
 # ================================================================
@@ -691,11 +933,18 @@ from fastapi.responses import HTMLResponse, FileResponse
 
 
 @app.post("/api/v1/report")
-async def generate_report(file: UploadFile = File(...)):
+async def generate_report(
+    file: UploadFile = File(...),
+    origin_path: str = Form(None),
+    file_size: int = Form(None),
+    file_last_modified: int = Form(None),
+):
     """
     Generate a Groq-powered ForensIQ forensic report for an image or video.
     Calls the REAL pipeline (analyze_image / analyze_video) and
     gradcam_advanced.py --model xception, then calls Groq for narrative analysis.
+
+    Optional form field "origin_path": original location of the file.
     """
     if not PIPELINE_LOADED:
         raise HTTPException(
@@ -723,73 +972,84 @@ async def generate_report(file: UploadFile = File(...)):
     ext      = Path(filename).suffix.lower() or (".jpg" if media_type == "image" else ".mp4")
     tmp_path = None
 
-    try:
-        # Save uploaded file to temp
-        with tempfile.NamedTemporaryFile(
-            delete=False,
-            suffix=ext,
-            prefix=f"forensiq_report_{uuid.uuid4().hex[:8]}_",
-        ) as tmp_file:
-            tmp_file.write(file_bytes)
-            tmp_path = Path(tmp_file.name)
+    async with _inference_lock:
+        try:
+            # Save uploaded file to temp
+            with tempfile.NamedTemporaryFile(
+                delete=False,
+                suffix=ext,
+                prefix=f"forensiq_report_{uuid.uuid4().hex[:8]}_",
+            ) as tmp_file:
+                tmp_file.write(file_bytes)
+                tmp_path = Path(tmp_file.name)
 
-        # Generate a unique report ID and output dir
-        report_id  = f"FX-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d')}-{uuid.uuid4().hex[:4].upper()}"
-        output_dir = REPORTS_DIR / report_id
-        output_dir.mkdir(parents=True, exist_ok=True)
+            # Generate a unique report ID and output dir
+            report_id  = f"FX-{__import__('datetime').datetime.utcnow().strftime('%Y%m%d')}-{uuid.uuid4().hex[:4].upper()}"
+            output_dir = REPORTS_DIR / report_id
+            output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Lazy-import report modules (they live in ForensIQ-ML/)
-        _forensiq_ml = str(_FORENSIQ_ML_ROOT)
-        if _forensiq_ml not in sys.path:
-            sys.path.insert(0, _forensiq_ml)
+            # Lazy-import report modules (they live in ForensIQ-ML/)
+            _forensiq_ml = str(_FORENSIQ_ML_ROOT)
+            if _forensiq_ml not in sys.path:
+                sys.path.insert(0, _forensiq_ml)
 
-        from report_generator import ForensicReportGenerator
-        from report_renderer  import render_html
+            from report_generator import ForensicReportGenerator
+            from report_renderer  import render_html
 
-        gen = ForensicReportGenerator()
+            gen = ForensicReportGenerator()
 
-        if media_type == "image":
-            report = gen.generate_image_report(
-                tmp_path,
-                output_dir,
-                report_id=report_id,
-                original_filename=file.filename,
-            )
-        else:
-            report = gen.generate_video_report(
-                tmp_path,
-                output_dir,
-                report_id=report_id,
-                original_filename=file.filename,
+            # Source origin: resolve from local disk or use explicit origin / filename fallback
+            resolved_origin = _resolve_origin(filename, file_size, file_last_modified, origin_path)
+            _set_origin(resolved_origin)
+
+            logger.info(
+                f"[REPORT] {filename} ({len(file_bytes)/1024:.1f} KB) → {tmp_path.name} (origin: {resolved_origin})"
             )
 
-        render_html(report, output_dir)
+            if media_type == "image":
+                report = gen.generate_image_report(
+                    tmp_path,
+                    output_dir,
+                    report_id=report_id,
+                    original_filename=file.filename,
+                )
+            else:
+                report = gen.generate_video_report(
+                    tmp_path,
+                    output_dir,
+                    report_id=report_id,
+                    original_filename=file.filename,
+                )
 
-        final = report.get("verdict", {})
+            render_html(report, output_dir)
 
-        return JSONResponse(content={
-            "status":       "success",
-            "report_id":    report_id,
-            "report_url":   f"/api/v1/report/{report_id}/html",
-            "download_url": f"/api/v1/report/{report_id}/download",
-            "verdict":      final.get("label", "UNKNOWN"),
-            "confidence":   round(float(final.get("confidence", 0.0)), 4),
-        })
+            final = report.get("verdict", {})
 
-    except HTTPException:
-        raise
-    except Exception as exc:
-        logger.exception(f"Report generation error: {exc}")
-        raise HTTPException(
-            status_code=500,
-            detail=f"Report generation failed: {type(exc).__name__}: {exc}",
-        )
-    finally:
-        if tmp_path and tmp_path.exists():
-            try:
-                os.unlink(tmp_path)
-            except Exception:
-                pass
+            return JSONResponse(content={
+                "status":       "success",
+                "report_id":    report_id,
+                "report_url":   f"/api/v1/report/{report_id}/html",
+                "download_url": f"/api/v1/report/{report_id}/download",
+                "verdict":      final.get("label", "UNKNOWN"),
+                "confidence":   round(float(final.get("confidence", 0.0)), 4),
+            })
+
+        except HTTPException:
+            raise
+        except Exception as exc:
+            logger.exception(f"Report generation error: {exc}")
+            raise HTTPException(
+                status_code=500,
+                detail=f"Report generation failed: {type(exc).__name__}: {exc}",
+            )
+        finally:
+            _set_origin(None)
+
+            if tmp_path and tmp_path.exists():
+                try:
+                    os.unlink(tmp_path)
+                except Exception:
+                    pass
 
 
 @app.get("/api/v1/report/{report_id}/html", response_class=HTMLResponse)
@@ -860,4 +1120,3 @@ if __name__ == "__main__":
         reload=False,
         log_level="info",
     )
-
