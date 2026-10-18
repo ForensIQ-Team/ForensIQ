@@ -101,6 +101,34 @@ function extractPoster(r: PropagationResult): string {
   return 'Not available';
 }
 
+function getVerificationBadge(result: PropagationResult): { label: string; style: string } {
+  const pv = result.verification?.phash_verdict;
+  const fv = result.verification?.face_verdict;
+
+  if (fv === 'same_person') {
+    return {
+      label: 'Identity Verified',
+      style: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+    };
+  }
+  if (pv === 'exact_duplicate') {
+    return {
+      label: 'Exact Duplicate',
+      style: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
+    };
+  }
+  if (pv === 'near_duplicate') {
+    return {
+      label: 'Near Duplicate',
+      style: 'bg-amber-400/20 text-amber-300 border-amber-400/40',
+    };
+  }
+  return {
+    label: 'Verified Match',
+    style: 'bg-violet-400/20 text-violet-300 border-violet-400/40',
+  };
+}
+
 // ================================================================
 // Component
 // ================================================================
@@ -553,8 +581,10 @@ export const PropagationNetwork: React.FC<PropagationNetworkProps> = ({
                                     <span className="text-[11px] font-bold text-white truncate">
                                       {domain}
                                     </span>
-                                    <span className="shrink-0 text-[8px] font-extrabold uppercase tracking-wider px-1 py-px rounded bg-amber-400/15 text-amber-300 border border-amber-400/30">
-                                      Visual
+                                    <span
+                                      className={`shrink-0 text-[8px] font-extrabold uppercase tracking-wider px-1 py-px rounded border ${getVerificationBadge(r).style}`}
+                                    >
+                                      {getVerificationBadge(r).label}
                                     </span>
                                   </div>
                                   {r.title && (
@@ -592,8 +622,10 @@ export const PropagationNetwork: React.FC<PropagationNetworkProps> = ({
             <div className="absolute top-3 right-3 w-80 rounded-xl p-4 border border-violet-400/30 bg-[#1a1530]/95 backdrop-blur-xl shadow-2xl shadow-violet-900/50 space-y-3 z-30">
               <div className="flex items-start justify-between gap-2 border-b border-white/10 pb-2.5">
                 <div className="min-w-0">
-                  <span className="inline-block px-2 py-0.5 rounded text-[10px] font-bold border mb-1.5 bg-amber-400/15 text-amber-300 border-amber-400/30 uppercase tracking-wider">
-                    {matchTypeLabel(selectedResult.match_type) || 'Visual Match'}
+                  <span
+                    className={`inline-block px-2 py-0.5 rounded text-[10px] font-bold border mb-1.5 uppercase tracking-wider ${getVerificationBadge(selectedResult).style}`}
+                  >
+                    {getVerificationBadge(selectedResult).label}
                   </span>
                   <h4 className="font-bold text-white text-xs leading-snug line-clamp-2">
                     {selectedResult.title || 'Untitled Source'}

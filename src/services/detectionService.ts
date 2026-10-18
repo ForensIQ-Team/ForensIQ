@@ -333,7 +333,8 @@ export const detectionService = {
    */
   async analyzeMedia(
     input: File | string,
-    onStageUpdate?: (currentStageIndex: number, stages: PipelineStage[]) => void
+    onStageUpdate?: (currentStageIndex: number, stages: PipelineStage[]) => void,
+    originPath?: string
   ): Promise<DetectionResult> {
     // ----------------------------------------------------------------
     // PRESET DEMO SCENARIOS — deterministic, unchanged
@@ -433,6 +434,15 @@ export const detectionService = {
     // Build FormData
     const formData = new FormData();
     formData.append('file', input);
+    if (typeof input.size === 'number') {
+      formData.append('file_size', String(input.size));
+    }
+    if (typeof input.lastModified === 'number') {
+      formData.append('file_last_modified', String(input.lastModified));
+    }
+    if (originPath) {
+      formData.append('origin_path', originPath);
+    }
 
     // Start the remaining stage animations concurrently with the fetch.
     // These are UI-only indicators — the backend runs synchronously.

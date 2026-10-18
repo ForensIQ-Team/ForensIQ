@@ -71,6 +71,9 @@ def render_html(report: dict, output_dir: Path) -> Path:
     limitations = str(ai.get("limitations", ""))
     recommendation = str(ai.get("recommendation", ""))
 
+    show_gradcam = report.get("show_gradcam", label != "REAL")
+    is_real      = (label == "REAL") or (not show_gradcam)
+
     media_type = str(inp.get("media_type", "image"))
     filename   = str(inp.get("filename", ""))
     img_w      = int(inp.get("width", 0))
@@ -100,16 +103,17 @@ def render_html(report: dict, output_dir: Path) -> Path:
             print(f"[ReportRenderer][warn] No original image found in {assets_dir}")
 
     orig_b64    = _b64_image(_orig_path)
-    overlay_b64 = _b64_image(assets_dir / "gradcam_overlay.jpg")
+    overlay_b64 = "" if is_real else _b64_image(assets_dir / "gradcam_overlay.jpg")
 
     # Sanity log
     _orig_sz    = _orig_path.stat().st_size if _orig_path.exists() else 0
-    _overlay_sz = (assets_dir / "gradcam_overlay.jpg").stat().st_size if (assets_dir / "gradcam_overlay.jpg").exists() else 0
+    _overlay_sz = (assets_dir / "gradcam_overlay.jpg").stat().st_size if (not is_real and (assets_dir / "gradcam_overlay.jpg").exists()) else 0
     print(f"[ReportRenderer] original image size : {_orig_sz:,} bytes ({_orig_path.name})")
-    print(f"[ReportRenderer] overlay image size  : {_overlay_sz:,} bytes")
+    if not is_real:
+        print(f"[ReportRenderer] overlay image size  : {_overlay_sz:,} bytes")
     if _orig_sz < 1000:
         print(f"[ReportRenderer][WARN] original image is suspiciously small ({_orig_sz} bytes)!")
-    if _overlay_sz > 0 and _overlay_sz < 1000:
+    if not is_real and _overlay_sz > 0 and _overlay_sz < 1000:
         print(f"[ReportRenderer][WARN] overlay image is suspiciously small ({_overlay_sz} bytes)!")
 
     # ------------------------------------------------------------------
@@ -131,10 +135,10 @@ def render_html(report: dict, output_dir: Path) -> Path:
     # ------------------------------------------------------------------
     # Metadata table rows
     # ------------------------------------------------------------------
-    bbox      = meta.get("bbox")
-    bbox_str  = f"[{', '.join(str(v) for v in bbox)}]" if bbox else "N/A"
-    bfrac     = meta.get("bbox_fraction")
-    bfrac_str = f"{bfrac * 100:.2f}%" if bfrac is not None else "N/A"
+    bbox      = None if is_real else meta.get("bbox")
+    bbox_str  = "None (Authentic)" if is_real else (f"[{', '.join(str(v) for v in bbox)}]" if bbox else "N/A")
+    bfrac     = None if is_real else meta.get("bbox_fraction")
+    bfrac_str = "N/A" if is_real else (f"{bfrac * 100:.2f}%" if bfrac is not None else "N/A")
 
     meta_rows = f"""
         <tr><td>File</td><td>{filename}</td></tr>
@@ -190,12 +194,75 @@ def render_html(report: dict, output_dir: Path) -> Path:
 
     # Overlay notice
     overlay_notice = ""
-    if not overlay_b64:
+    if not is_real and not overlay_b64:
         gradcam_err = visuals.get("gradcam_error", "")
         overlay_notice = f"""
         <div class="notice warning">
           Grad-CAM overlay unavailable{': ' + gradcam_err if gradcam_err else ''}.
         </div>"""
+
+    # Section 2 HTML (Visual Evidence / Analyzed Image)
+    if is_real:
+        section2_html = f"""
+  <!-- 2. ANALYZED IMAGE -->
+  <div class="card">
+    <div class="section-label">2 · Analyzed Image</div>
+    <div style="text-align:center;margin:12px 0 8px;">
+      {f'<img src="{orig_b64}" alt="Analyzed image" style="max-width:500px;width:100%;height:auto;border-radius:8px;border:1px solid #e5e7eb;display:inline-block;">' if orig_b64 else '<p style="color:#9ca3af;font-size:13px;padding:40px 0;">Original image unavailable</p>'}
+    </div>
+    <p class="img-caption" style="text-align:center;">
+      Submitted image — analysis produced no visual indicators of manipulation.
+    </p>
+  </div>"""
+    else:
+        section2_html = f"""
+  <!-- 2. VISUAL EVIDENCE -->
+  <div class="card">
+    <div class="section-label">2 · Visual Evidence</div>
+    <div class="image-grid">
+      <div class="image-cell">
+        {f'<img src="{orig_b64}" alt="Original image">' if orig_b64 else '<p style="color:#9ca3af;font-size:13px;padding:40px 0;">Original image unavailable</p>'}
+        <div class="image-label">Original</div>
+      </div>
+      <div class="image-cell">
+        {f'<img src="{overlay_b64}" alt="Grad-CAM attention overlay">' if overlay_b64 else '<p style="color:#9ca3af;font-size:13px;padding:40px 0;">Attention map unavailable</p>'}
+        <div class="image-label">Attention Map Overlay</div>
+      </div>
+    </div>
+    <p class="img-caption">
+      Attention map showing regions the analysis pipeline focused on.
+      Warm colours (yellow/red) indicate higher model attention.
+    </p>
+    {overlay_notice}
+  </div>"""
+
+    # Section 3 HTML (AI Analysis)
+    if is_real:
+        analysis_blocks = []
+        if analysis.get("overview"):
+            analysis_blocks.append(
+                f'<div class="analysis-section"><h4>Overview</h4><p>{analysis.get("overview","")}</p></div>'
+            )
+        notes = analysis.get("heatmap_interpretation") or "No manipulation indicators were identified during forensic analysis."
+        analysis_blocks.append(
+            f'<div class="analysis-section"><h4>Notes on the Analysis</h4><p>{notes}</p></div>'
+        )
+        section3_html = "".join(analysis_blocks) if analysis else '<p style="color:#9ca3af">AI analysis unavailable.</p>'
+    else:
+        analysis_blocks = []
+        if analysis.get("overview"):
+            analysis_blocks.append(
+                f'<div class="analysis-section"><h4>Overview</h4><p>{analysis.get("overview","")}</p></div>'
+            )
+        if analysis.get("heatmap_interpretation"):
+            analysis_blocks.append(
+                f'<div class="analysis-section"><h4>Heatmap Interpretation</h4><p>{analysis.get("heatmap_interpretation","")}</p></div>'
+            )
+        if analysis.get("region_focus"):
+            analysis_blocks.append(
+                f'<div class="analysis-section"><h4>Region Focus</h4><p>{analysis.get("region_focus","")}</p></div>'
+            )
+        section3_html = "".join(analysis_blocks) if analysis else '<p style="color:#9ca3af">AI analysis unavailable.</p>'
 
     # ------------------------------------------------------------------
     # Build HTML
@@ -433,34 +500,12 @@ def render_html(report: dict, output_dir: Path) -> Path:
     {ai_error_notice}
   </div>
 
-  <!-- 2. VISUAL EVIDENCE -->
-  <div class="card">
-    <div class="section-label">2 · Visual Evidence</div>
-    <div class="image-grid">
-      <div class="image-cell">
-        {'<img src="' + orig_b64 + '" alt="Original image">' if orig_b64 else '<p style="color:#9ca3af;font-size:13px;padding:40px 0;">Original image unavailable</p>'}
-        <div class="image-label">Original</div>
-      </div>
-      <div class="image-cell">
-        {'<img src="' + overlay_b64 + '" alt="Grad-CAM attention overlay">' if overlay_b64 else '<p style="color:#9ca3af;font-size:13px;padding:40px 0;">Attention map unavailable</p>'}
-        <div class="image-label">Attention Map Overlay</div>
-      </div>
-    </div>
-    <p class="img-caption">
-      Attention map showing regions the analysis pipeline focused on.
-      Warm colours (yellow/red) indicate higher model attention.
-    </p>
-    {overlay_notice}
-  </div>
+  {section2_html}
 
   <!-- 3. AI ANALYSIS -->
   <div class="card">
     <div class="section-label">3 · AI Analysis</div>
-    {''.join([
-      f'<div class="analysis-section"><h4>Overview</h4><p>{analysis.get("overview","")}</p></div>',
-      f'<div class="analysis-section"><h4>Heatmap Interpretation</h4><p>{analysis.get("heatmap_interpretation","")}</p></div>',
-      f'<div class="analysis-section"><h4>Region Focus</h4><p>{analysis.get("region_focus","")}</p></div>',
-    ]) if analysis else '<p style="color:#9ca3af">AI analysis unavailable.</p>'}
+    {section3_html}
   </div>
 
   <!-- 4. OBSERVED INDICATORS -->

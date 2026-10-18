@@ -294,3 +294,55 @@ def _parse_lens_response(raw: dict[str, Any]) -> dict[str, Any]:
         "all_results": all_results,
     }
 
+
+def search_yandex_images(image_path: Path) -> dict[str, Any]:
+    """
+    Yandex reverse-image search via SerpApi.
+    Yandex is significantly better than Google Lens at finding
+    the same FACE across the web, so we run it in parallel.
+    Returns the same schema as search_google_lens.
+    """
+    api_key = _get_api_key()
+    logger.info(f"[SerpApi] Starting Yandex Images search for: {image_path.name}")
+    image_id = _upload_image_to_serpapi(image_path)
+
+    params = {
+        "engine": "yandex_images",
+        "url": (
+            f"https://yandex.com/images/search"
+            f"?rpt=imageview&cbir_id={image_id}"
+        ),
+        "api_key": api_key,
+    }
+
+    try:
+        search = GoogleSearch(params)
+        raw = search.get_dict()
+    except Exception as exc:
+        logger.exception(f"[SerpApi] Yandex call failed: {exc}")
+        raise RuntimeError(f"Yandex search failed: {exc}")
+
+    if "error" in raw:
+        err = str(raw["error"])
+        if "quota" in err.lower() or "limit" in err.lower():
+            raise RuntimeError("Yandex search quota exceeded.")
+        if "invalid api" in err.lower():
+            raise RuntimeError("SerpApi authentication failed.")
+        raise RuntimeError(f"Yandex SerpApi error: {err}")
+
+    raw_items = (
+        raw.get("image_results")
+        or raw.get("organic_results")
+        or raw.get("images_results")
+        or []
+    )
+    normalized = [_normalize_result(r, "visual") for r in raw_items]
+    logger.info(f"[SerpApi] Yandex returned {len(normalized)} results.")
+    return {
+        "total": len(normalized),
+        "exact_matches": [],
+        "visual_matches": normalized,
+        "all_results": normalized,
+    }
+
+
