@@ -48,7 +48,6 @@ _INFERENCE_CANDIDATES = [
     _HERE / "inference",                              # script inside ForensIQ-ML/
     _HERE.parent / "inference",                       # fallback
     _HERE.parent / "ForensIQ-ML" / "inference",       # fallback
-    Path(r"C:\Users\HARSHIL\Downloads\forensiq n\ForensIQ-ML\inference"),  # absolute fallback
 ]
 
 _INFERENCE_DIR = None
@@ -200,69 +199,111 @@ def _get_candidate_roots():
     home = Path.home()
     roots = []
 
-    # 1. Windows Known Folders (exact locations for Desktop, Documents, Downloads)
-    # Desktop: {B4BFCC3A-DB2C-424C-B029-7FE99A87C641}
-    # Documents: {FDD39AD0-238F-46AF-ADB4-6C85480369C7}
-    # Downloads: {374DE290-123F-4565-9164-39C4925E467B}
-    for guid in [
-        '{374DE290-123F-4565-9164-39C4925E467B}',  # Downloads
-        '{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}',  # Desktop
-        '{FDD39AD0-238F-46AF-ADB4-6C85480369C7}',  # Documents
-    ]:
-        p = _get_windows_known_folder(guid)
-        if p:
-            roots.append(p)
+    if sys.platform == "win32":
+        # 1. Windows Known Folders (exact locations for Desktop, Documents, Downloads)
+        # Desktop: {B4BFCC3A-DB2C-424C-B029-7FE99A87C641}
+        # Documents: {FDD39AD0-238F-46AF-ADB4-6C85480369C7}
+        # Downloads: {374DE290-123F-4565-9164-39C4925E467B}
+        for guid in [
+            '{374DE290-123F-4565-9164-39C4925E467B}',  # Downloads
+            '{B4BFCC3A-DB2C-424C-B029-7FE99A87C641}',  # Desktop
+            '{FDD39AD0-238F-46AF-ADB4-6C85480369C7}',  # Documents
+        ]:
+            p = _get_windows_known_folder(guid)
+            if p:
+                roots.append(p)
 
-    # 2. Windows Registry User Shell Folders
-    try:
-        import winreg
-        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders") as k:
-            for val_name in ["{374DE290-123F-4565-9164-39C4925E467B}", "Desktop", "Personal"]:
-                try:
-                    val, _ = winreg.QueryValueEx(k, val_name)
-                    if val:
-                        expanded = os.path.expandvars(str(val))
-                        roots.append(Path(expanded))
-                except Exception:
-                    pass
-    except Exception:
-        pass
+        # 2. Windows Registry User Shell Folders
+        try:
+            import winreg
+            with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders") as k:
+                for val_name in ["{374DE290-123F-4565-9164-39C4925E467B}", "Desktop", "Personal"]:
+                    try:
+                        val, _ = winreg.QueryValueEx(k, val_name)
+                        if val:
+                            expanded = os.path.expandvars(str(val))
+                            roots.append(Path(expanded))
+                    except Exception:
+                        pass
+        except Exception:
+            pass
 
-    # 3. Standard Home directories
-    roots.extend([
-        home / "Downloads",
-        home / "Desktop",
-        home / "Documents",
-    ])
-
-    # 4. OneDrive paths
-    onedrive_dirs = []
-    for var in ("OneDrive", "OneDriveConsumer", "OneDriveCommercial"):
-        od = os.environ.get(var)
-        if od:
-            onedrive_dirs.append(Path(od))
-
-    try:
-        for p in home.iterdir():
-            if p.is_dir() and p.name.lower().startswith("onedrive"):
-                onedrive_dirs.append(p)
-    except Exception:
-        pass
-
-    for od in onedrive_dirs:
+        # 3. Standard Home directories (Windows)
         roots.extend([
-            od / "Downloads",
-            od / "Desktop",
-            od / "Documents",
+            home / "Downloads",
+            home / "Desktop",
+            home / "Documents",
         ])
 
+        # 4. OneDrive paths
+        onedrive_dirs = []
+        for var in ("OneDrive", "OneDriveConsumer", "OneDriveCommercial"):
+            od = os.environ.get(var)
+            if od:
+                onedrive_dirs.append(Path(od))
+
+        try:
+            for p in home.iterdir():
+                if p.is_dir() and p.name.lower().startswith("onedrive"):
+                    onedrive_dirs.append(p)
+        except Exception:
+            pass
+
+        for od in onedrive_dirs:
+            roots.extend([
+                od / "Downloads",
+                od / "Desktop",
+                od / "Documents",
+            ])
+
+    else:
+        # Linux / macOS: read XDG user directories first (highest priority)
+        _XDG_KEYS = (
+            "XDG_DOWNLOAD_DIR",
+            "XDG_DESKTOP_DIR",
+            "XDG_DOCUMENTS_DIR",
+            "XDG_PICTURES_DIR",
+        )
+        xdg_dirs_file = Path.home() / ".config" / "user-dirs.dirs"
+        if xdg_dirs_file.exists():
+            try:
+                home_str = str(Path.home())
+                with xdg_dirs_file.open(encoding="utf-8", errors="replace") as _fh:
+                    for _line in _fh:
+                        _line = _line.strip()
+                        if not _line or _line.startswith("#"):
+                            continue
+                        if "=" not in _line:
+                            continue
+                        _key, _, _val = _line.partition("=")
+                        _key = _key.strip()
+                        if _key not in _XDG_KEYS:
+                            continue
+                        # Strip surrounding quotes and expand $HOME
+                        _val = _val.strip().strip('"').replace("$HOME", home_str)
+                        if _val:
+                            roots.append(Path(_val))
+            except Exception:
+                pass
+
+        # Plain home-directory fallbacks (Downloads and Desktop/Documents
+        # before Pictures so they stay higher priority)
+        roots.extend([
+            home / "Downloads",
+            home / "Desktop",
+            home / "Documents",
+            home / "Pictures",
+        ])
+
+    # Deduplicate while preserving order and filtering non-existent dirs.
+    # Case-insensitive dedup on Windows (NTFS); case-sensitive on Linux.
     unique_roots = []
     seen = set()
     for r in roots:
         try:
             if r.is_dir():
                 resolved = r.resolve()
-                key = str(resolved).lower()
+                key = str(resolved).lower() if sys.platform == "win32" else str(resolved)
                 if key not in seen:
                     seen.add(key)
                     unique_roots.append(resolved)
@@ -399,6 +440,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:3000",
         "http://127.0.0.1:3000",
+        "http://localhost:3001",
+        "http://127.0.0.1:3001",
         "http://localhost:5173",
         "http://127.0.0.1:5173",
     ],
@@ -430,9 +473,12 @@ try:
     from backend.routes_team import router as team_router
     from backend.routes_evidence import router as evidence_router
 
-    # Create all tables (idempotent — safe to call on every startup)
-    Base.metadata.create_all(bind=engine)
-    logger.info("[DB] Tables ensured / created via SQLAlchemy")
+    try:
+        # Create all tables (idempotent — safe to call on every startup)
+        Base.metadata.create_all(bind=engine)
+        logger.info("[DB] Tables ensured / created via SQLAlchemy")
+    except Exception as _db_err:
+        logger.warning(f"[DB] Table creation skipped (database unreachable: {_db_err})")
 
     app.include_router(auth_router,        prefix="/api/auth",       tags=["auth"])
     app.include_router(investigator_router, prefix="/api/investigator", tags=["investigator"])
@@ -1094,16 +1140,12 @@ import backend.models  # noqa — register models
 
 @app.on_event("startup")
 def _create_tables():
-    print("[db] Creating tables...")
-    Base.metadata.create_all(bind=engine)
-    print("[db] tables created")
-
-app.include_router(auth_router,        prefix="/api/auth",        tags=["auth"])
-app.include_router(investigator_router,prefix="/api/investigator",tags=["investigator"])
-app.include_router(evidence_router,    prefix="/api/evidence",    tags=["evidence"])
-app.include_router(team_router,        prefix="/api/team",        tags=["team"])
-app.include_router(monitoring_router,  prefix="/api/monitoring",  tags=["monitoring"])
-app.include_router(analytics_router,   prefix="/api/analytics",   tags=["analytics"])
+    try:
+        print("[db] Creating tables...")
+        Base.metadata.create_all(bind=engine)
+        print("[db] Tables created / verified successfully")
+    except Exception as exc:
+        print(f"[db] Notice: Could not connect to PostgreSQL ({exc}). Operating without persistent DB.")
 
 
 # ================================================================

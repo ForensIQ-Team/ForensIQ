@@ -47,7 +47,6 @@ _INFERENCE_CANDIDATES = [
     _HERE / "ForensIQ-ML" / "inference",
     _HERE.parent / "inference",
     _HERE.parent / "ForensIQ-ML" / "inference",
-    Path(r"C:\Users\HARSHIL\Downloads\forensiq n\ForensIQ-ML\inference"),
 ]
 
 _INFERENCE_DIR = None

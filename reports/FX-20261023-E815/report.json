@@ -1,0 +1,118 @@
+{
+  "report_id": "FX-20261023-E815",
+  "generated_at": "2026-10-23T09:46:29.238687+00:00",
+  "version": "ForensIQ-Report-V1",
+  "show_gradcam": true,
+  "input": {
+    "media_type": "image",
+    "filename": "bean.jpeg",
+    "width": 554,
+    "height": 552
+  },
+  "verdict": {
+    "label": "FAKE",
+    "confidence": 0.7649708549040939,
+    "fake_score": 0.7649708549040939,
+    "headline": "Image appears to be digitally manipulated"
+  },
+  "visuals": {
+    "original_image": "assets/original.jpeg",
+    "original_ext": ".jpeg",
+    "original_size_bytes": 43537,
+    "gradcam_overlay": "assets/gradcam_overlay.jpg",
+    "gradcam_overlay_size": 88443,
+    "gradcam_error": null
+  },
+  "ai_analysis": {
+    "headline": "Image appears to be digitally manipulated",
+    "summary": "Our forensic scan found multiple signs of alteration in the central facial area. The evidence is fairly strong, giving a confidence of about 76%. We therefore conclude the image is likely fake.",
+    "analysis": {
+      "overview": "The image was first processed to locate any faces, then the detected face was aligned and cropped for detailed inspection. An attention map highlighted the region that contributed most to the decision. Based on visual artifacts within that region, the system assigned a fake label. No other areas showed comparable signs of tampering.",
+      "heatmap_interpretation": "The highlighted square corresponds to the subject's face, especially the eye and mouth region, where irregular lighting and texture patterns were observed. These patterns are typical of splicing or deep‑fake generation techniques.",
+      "region_focus": "The analysis concentrated on a square area starting at (124,26) spanning 309 × 309 pixels, covering the upper‑central portion of the image."
+    },
+    "observed_indicators": [
+      "unnatural lighting gradients around the eyes",
+      "blurred edges along the jawline",
+      "inconsistent skin texture near the mouth",
+      "color tone mismatches between forehead and cheeks",
+      "visible compression artifacts in the central face area"
+    ],
+    "confidence_statement": "We are reasonably confident in this assessment, with a confidence score of 0.76. While not absolute, the evidence strongly points to manipulation.",
+    "limitations": "The analysis is limited to visual cues and cannot assess the provenance of the original file. It cannot rule out subtle alterations that leave no detectable visual trace. Audio, metadata, or external context were not examined.",
+    "recommendation": "Consider obtaining the original source file and, if possible, run a complementary metadata and provenance check. Further expert review may be warranted for legal or investigative purposes."
+  },
+  "ai_analysis_error": null,
+  "metadata": {
+    "face_detected": true,
+    "detection_method": "mtcnn_strict",
+    "aligned": true,
+    "bbox": [
+      124,
+      26,
+      309,
+      309
+    ],
+    "bbox_fraction": 0.312225,
+    "bbox_center_pct": [
+      0.5027,
+      0.327
+    ]
+  },
+  "_pipeline_result": {
+    "final": {
+      "prediction": "FAKE",
+      "confidence": 0.7649708549040939,
+      "fake_score": 0.7649708549040939,
+      "real_score": 0.2350291450959061
+    },
+    "face_detection": {
+      "detected": true,
+      "num_faces": 2,
+      "confidence": 0.9999524354934692,
+      "crop_box": [
+        124,
+        26,
+        433,
+        335
+      ],
+      "raw_face_box": [
+        209.48370361328125,
+        89.3995132446289,
+        347.8643798828125,
+        248.0059051513672
+      ],
+      "fallback": false,
+      "detection_method": "mtcnn_strict",
+      "aligned": true,
+      "margin": {
+        "side": 0.35,
+        "top": 0.4,
+        "bottom": 0.55
+      },
+      "square_pad": true
+    },
+    "fusion": {
+      "xception_weight": 0.4,
+      "efficientnet_weight": 0.3,
+      "vit_weight": 0.3,
+      "xception_alert_threshold": 0.5,
+      "xception_max_pull_down": 0.2,
+      "normal_weighted_score": 0.7649708549040939,
+      "final_fake_score": 0.7649708549040939,
+      "final_real_score": 0.2350291450959061,
+      "fusion_mode": "SUPPORT_MAJORITY_FAKE",
+      "support_score": 0.7666030033647722,
+      "xception_alert": true,
+      "xception_priority_applied": false,
+      "xception_dissent": false,
+      "review_recommended": false,
+      "both_support_real": false,
+      "both_support_fake": true,
+      "strong_real": false,
+      "strong_fake": false,
+      "difference": 0.016578899073818487,
+      "disagreement_level": "LOW"
+    }
+  }
+}

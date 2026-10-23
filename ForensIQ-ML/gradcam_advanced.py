@@ -56,7 +56,6 @@ try:
         _HERE / "ForensIQ-ML" / "inference",              # script at project root
         _HERE.parent / "inference",                       # fallback
         _HERE.parent / "ForensIQ-ML" / "inference",       # fallback
-        _Path(r"C:\Users\HARSHIL\Downloads\forensiq n\ForensIQ-ML\inference"),  # absolute fallback
     ]
 
     _INFERENCE_DIR = None

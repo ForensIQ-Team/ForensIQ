@@ -113,3 +113,6 @@ test*.jpeg
 test*.png
 test*.webp
 ```
+
+# Large ML model checkpoints
+ForensIQ-ML/checkpoints/

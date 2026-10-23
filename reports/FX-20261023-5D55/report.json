@@ -1,0 +1,102 @@
+{
+  "report_id": "FX-20261023-5D55",
+  "generated_at": "2026-10-23T09:41:00.097324+00:00",
+  "version": "ForensIQ-Report-V1",
+  "show_gradcam": true,
+  "input": {
+    "media_type": "video",
+    "filename": "crash.mp4",
+    "width": 720,
+    "height": 1280
+  },
+  "verdict": {
+    "label": "FAKE",
+    "confidence": 0.9065149247646331,
+    "fake_score": 0.9065149247646331,
+    "headline": "Video is likely fabricated, based on strong forensic indicators"
+  },
+  "visuals": {
+    "original_image": "assets/original.jpg",
+    "original_ext": ".jpg",
+    "original_size_bytes": 548919,
+    "gradcam_overlay": null,
+    "gradcam_overlay_size": 0,
+    "gradcam_error": "Grad-CAM failed (exit 1):\nSTDOUT:\n\nSTDERR:\nTraceback (most recent call last):\n  File \"/home/apsit/forensiq/ForensIQ/ForensIQ-ML/gradcam_advanced.py\", line 40, in <module>\n    from pytorch_grad_cam import (\nModuleNotFoundError: No module named 'pytorch_grad_cam'\n"
+  },
+  "ai_analysis": {
+    "headline": "Video is likely fabricated, based on strong forensic indicators",
+    "summary": "Our analysis of the video flagged manipulation signs in every examined frame. With a confidence of about 90%, we conclude the content is fake.",
+    "analysis": {
+      "overview": "The system examined 32 frames, applying detection algorithms to look for visual inconsistencies. Each frame was scored for signs of synthetic generation. All frames received high fake scores, and a temporal escalation flag was triggered. No faces were detected, so the model evaluated other visual cues across the frames.",
+      "heatmap_interpretation": "The attention map did not isolate a specific area; instead, the model evaluated the entire frame uniformly. This suggests that manipulation cues are spread across the image rather than confined to a localized patch.",
+      "region_focus": "No particular region was singled out; the analysis considered the full frame."
+    },
+    "observed_indicators": [
+      "Consistently high manipulation scores across all 32 frames",
+      "Uniform temporal pattern typical of synthetic generation",
+      "Peak‑frame escalation flag triggered, indicating deepfake artifacts",
+      "Absence of natural facial features or detection",
+      "Statistical scores well above typical authenticity thresholds"
+    ],
+    "confidence_statement": "The analysis indicates a high level of certainty (≈90%) that the video is fabricated.",
+    "limitations": "The tool cannot determine the source of the manipulation or verify content beyond visual cues. It cannot assess audio or external metadata.",
+    "recommendation": "Consider a manual review by an expert and cross‑reference with original sources."
+  },
+  "ai_analysis_error": null,
+  "metadata": {
+    "face_detected": false,
+    "detection_method": "none",
+    "aligned": false,
+    "bbox": null,
+    "bbox_fraction": null,
+    "bbox_center_pct": null,
+    "peak_frame_index": 104
+  },
+  "video_stats": {
+    "frames_analyzed": 32,
+    "fake_frames": 32,
+    "fake_frame_ratio": 1.0,
+    "mean_fake": 0.8999897241592407,
+    "median_fake": 0.9013570547103882,
+    "p75_fake": 0.9057981967926025,
+    "p90_fake": 0.9121596813201904,
+    "peak_escalated": true,
+    "segment_pattern": "UNIFORM"
+  },
+  "_pipeline_result": {
+    "final": {
+      "prediction": "FAKE",
+      "confidence": 0.9065149247646331,
+      "fake_score": 0.9065149247646331,
+      "real_score": 0.09348507523536687
+    },
+    "aggregation": {
+      "mean_fake": 0.8999897241592407,
+      "median_fake": 0.9013570547103882,
+      "p75_fake": 0.9057981967926025,
+      "p90_fake": 0.9121596813201904,
+      "weights": {
+        "mean": 0.2,
+        "median": 0.15,
+        "p75": 0.25,
+        "p90": 0.4
+      },
+      "base_score": 0.9065149247646331,
+      "peak_frame_ratio": 1.0,
+      "peak_escalated": true,
+      "peak_fake_level": 0.55,
+      "peak_frame_ratio_threshold": 0.2,
+      "support_consensus_real": false,
+      "support_consensus_real_max": 0.1,
+      "support_consensus_real_ceiling": 0.4,
+      "efficientnet_mean": 0.8956313133239746,
+      "vit_mean": 0.8986515402793884,
+      "video_fake_score": 0.9065149247646331,
+      "video_real_score": 0.09348507523536687,
+      "thresholds": {
+        "fake": 0.4,
+        "suspicious": 0.32
+      }
+    }
+  }
+}
