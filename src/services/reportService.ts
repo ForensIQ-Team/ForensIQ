@@ -12,9 +12,18 @@ const API_BASE_URL = 'http://localhost:8000';
 /**
  * Upload an image or video file to generate a Groq-powered ForensIQ Forensic Report.
  */
-export async function generateForensicReport(file: File): Promise<GenerateReportResponse> {
+export async function generateForensicReport(file: File, originPath?: string): Promise<GenerateReportResponse> {
   const formData = new FormData();
   formData.append('file', file);
+  if (typeof file.size === 'number') {
+    formData.append('file_size', String(file.size));
+  }
+  if (typeof file.lastModified === 'number') {
+    formData.append('file_last_modified', String(file.lastModified));
+  }
+  if (originPath) {
+    formData.append('origin_path', originPath);
+  }
 
   const response = await fetch(`${API_BASE_URL}/api/v1/report`, {
     method: 'POST',

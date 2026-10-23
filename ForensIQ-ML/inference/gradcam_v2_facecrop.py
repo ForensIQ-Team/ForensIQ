@@ -352,10 +352,17 @@ def load_model(
         f"Loading {model_name} V2..."
     )
 
-    checkpoint = torch.load(
-        checkpoint_path,
-        map_location="cpu"
-    )
+    try:
+        checkpoint = torch.load(
+            checkpoint_path,
+            map_location="cpu",
+            weights_only=False
+        )
+    except TypeError:
+        checkpoint = torch.load(
+            checkpoint_path,
+            map_location="cpu"
+        )
 
     state_dict = extract_state_dict(
         checkpoint

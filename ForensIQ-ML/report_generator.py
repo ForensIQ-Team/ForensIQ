@@ -47,7 +47,6 @@ _INFERENCE_CANDIDATES = [
     _HERE / "ForensIQ-ML" / "inference",
     _HERE.parent / "inference",
     _HERE.parent / "ForensIQ-ML" / "inference",
-    Path(r"C:\Users\HARSHIL\Downloads\forensiq n\ForensIQ-ML\inference"),
 ]
 
 _INFERENCE_DIR = None
@@ -125,7 +124,7 @@ Write a report in EXACTLY this JSON structure (no extra keys, no missing keys):
 Rules:
 - Never claim 100% certainty.
 - Never name model architectures (Xception, EfficientNet, ViT, CNN, Transformer).
-- If verdict is REAL, describe the heatmap honestly.
+- If verdict is REAL, there is NO heatmap or suspicious-region image in this report. Write 'analysis.overview' as a short explanation of why the model classified the image/media as authentic. Set 'analysis.heatmap_interpretation' to a sentence explaining that no manipulation indicators were identified. Set 'analysis.region_focus' to an empty string ("").
 - If confidence < 0.55, say the evidence is weak or borderline.
 - If verdict is INCONCLUSIVE, say a firm determination could not be made.
 - Output ONLY the JSON object. No text before or after.
@@ -142,20 +141,31 @@ def _build_user_prompt(evidence: dict) -> str:
     aligned          = evidence.get("aligned", False)
     face_detected    = evidence.get("face_detected", False)
 
-    bbox = evidence.get("bbox")
-    if bbox:
-        bx, by, bw, bh = bbox
-        bbox_fraction = (bw * bh) / max(width * height, 1)
-        bbox_cx_pct   = (bx + bw / 2) / max(width, 1)
-        bbox_cy_pct   = (by + bh / 2) / max(height, 1)
-        bbox_section = (
-            f"  Position: x={bx}, y={by}, width={bw}, height={bh}\n"
-            f"  Region covers {bbox_fraction:.1%} of the image\n"
-            f"  Region center: {bbox_cx_pct:.0%} horizontally, {bbox_cy_pct:.0%} vertically\n"
-            f"  (0% = top/left, 100% = bottom/right)"
+    if verdict == "REAL":
+        bbox_section = "  None (The input was verified as authentic; no manipulation artifacts or suspicious regions detected)."
+        real_instruction = (
+            "\nSPECIAL INSTRUCTIONS FOR REAL VERDICT:\n"
+            "The verdict is REAL. There is no heatmap or suspicious-region image in this report.\n"
+            "- Write 'analysis.overview' as a short explanation of why the model classified the input as authentic.\n"
+            "- Set 'analysis.heatmap_interpretation' to a sentence explaining that no manipulation indicators were identified.\n"
+            "- Set 'analysis.region_focus' to an empty string (\"\").\n"
         )
     else:
-        bbox_section = "  No suspicious region bounding box available."
+        real_instruction = ""
+        bbox = evidence.get("bbox")
+        if bbox:
+            bx, by, bw, bh = bbox
+            bbox_fraction = (bw * bh) / max(width * height, 1)
+            bbox_cx_pct   = (bx + bw / 2) / max(width, 1)
+            bbox_cy_pct   = (by + bh / 2) / max(height, 1)
+            bbox_section = (
+                f"  Position: x={bx}, y={by}, width={bw}, height={bh}\n"
+                f"  Region covers {bbox_fraction:.1%} of the image\n"
+                f"  Region center: {bbox_cx_pct:.0%} horizontally, {bbox_cy_pct:.0%} vertically\n"
+                f"  (0% = top/left, 100% = bottom/right)"
+            )
+        else:
+            bbox_section = "  No suspicious region bounding box available."
 
     video_extra = ""
     if media_type == "video":
@@ -194,7 +204,8 @@ def _build_user_prompt(evidence: dict) -> str:
         f"Face crop used for analysis: {face_detected}\n\n"
         f"Suspicious region (from attention map):\n"
         f"{bbox_section}\n"
-        f"{video_extra}\n"
+        f"{video_extra}"
+        f"{real_instruction}\n"
         f"Write the report now, as a single JSON object."
     )
 
@@ -267,6 +278,8 @@ class ForensicReportGenerator:
                 )
                 raw_text = completion.choices[0].message.content.strip()
                 parsed = json.loads(raw_text)
+                if evidence.get("verdict") == "REAL" and isinstance(parsed.get("analysis"), dict):
+                    parsed["analysis"]["region_focus"] = ""
                 print(f"[ReportGenerator] Groq OK from '{model_name}'.")
                 return parsed
             except json.JSONDecodeError as e:
@@ -419,25 +432,29 @@ class ForensicReportGenerator:
         gradcam_error = None
         overlay_path  = None
         overlay_size  = 0
+        show_gradcam  = (verdict != "REAL")
 
-        try:
-            if precomputed_overlay is not None:
-                precomputed_overlay = Path(precomputed_overlay).resolve()
-                if not precomputed_overlay.exists():
-                    raise FileNotFoundError(
-                        f"precomputed_overlay not found: {precomputed_overlay}"
-                    )
-                overlay_path = precomputed_overlay
-                print(f"[ReportGenerator] Using precomputed Grad-CAM: {overlay_path}")
-            else:
-                overlay_path = self._run_gradcam(image_path)
+        if not show_gradcam:
+            print("[ReportGenerator] Verdict is REAL — skipping Grad-CAM subprocess and overlay generation.")
+        else:
+            try:
+                if precomputed_overlay is not None:
+                    precomputed_overlay = Path(precomputed_overlay).resolve()
+                    if not precomputed_overlay.exists():
+                        raise FileNotFoundError(
+                            f"precomputed_overlay not found: {precomputed_overlay}"
+                        )
+                    overlay_path = precomputed_overlay
+                    print(f"[ReportGenerator] Using precomputed Grad-CAM: {overlay_path}")
+                else:
+                    overlay_path = self._run_gradcam(image_path)
 
-            overlay_asset = assets_dir / "gradcam_overlay.jpg"
-            overlay_size  = _copy_asset(overlay_path, overlay_asset)
-            _sanity_check_asset(overlay_asset, "Grad-CAM overlay", min_bytes=1000)
-        except Exception as e:
-            gradcam_error = str(e)
-            print(f"[ReportGenerator][error] Grad-CAM failed: {e}")
+                overlay_asset = assets_dir / "gradcam_overlay.jpg"
+                overlay_size  = _copy_asset(overlay_path, overlay_asset)
+                _sanity_check_asset(overlay_asset, "Grad-CAM overlay", min_bytes=1000)
+            except Exception as e:
+                gradcam_error = str(e)
+                print(f"[ReportGenerator][error] Grad-CAM failed: {e}")
 
         # ---- 5. Call Groq for narrative analysis ------------------------
         evidence = {
@@ -449,7 +466,7 @@ class ForensicReportGenerator:
             "face_detected":    face_detected,
             "detection_method": detection_method,
             "aligned":          aligned,
-            "bbox":             bbox,
+            "bbox":             None if not show_gradcam else bbox,
         }
 
         ai_analysis       = self._call_groq(evidence)
@@ -462,6 +479,7 @@ class ForensicReportGenerator:
             "report_id":    report_id,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "version":      "ForensIQ-Report-V1",
+            "show_gradcam": show_gradcam,
             "input": {
                 "media_type": "image",
                 "filename":   original_filename or image_path.name,
@@ -489,9 +507,9 @@ class ForensicReportGenerator:
                 "face_detected":    face_detected,
                 "detection_method": detection_method,
                 "aligned":          aligned,
-                "bbox":             bbox,
-                "bbox_fraction":    bbox_fraction,
-                "bbox_center_pct":  bbox_center_pct,
+                "bbox":             None if not show_gradcam else bbox,
+                "bbox_fraction":    None if not show_gradcam else bbox_fraction,
+                "bbox_center_pct":  None if not show_gradcam else bbox_center_pct,
             },
             "_pipeline_result": {
                 "final":          result.get("final"),
@@ -585,14 +603,19 @@ class ForensicReportGenerator:
         gradcam_error = None
         overlay_path  = None
         overlay_size  = 0
-        try:
-            overlay_path = self._run_gradcam(frame_png)
-            overlay_asset = assets_dir / "gradcam_overlay.jpg"
-            overlay_size  = _copy_asset(overlay_path, overlay_asset)
-            _sanity_check_asset(overlay_asset, "Grad-CAM overlay", min_bytes=1000)
-        except Exception as e:
-            gradcam_error = str(e)
-            print(f"[ReportGenerator][error] Grad-CAM failed: {e}")
+        show_gradcam  = (verdict != "REAL")
+
+        if not show_gradcam:
+            print("[ReportGenerator] Video verdict is REAL — skipping Grad-CAM subprocess and overlay generation.")
+        else:
+            try:
+                overlay_path = self._run_gradcam(frame_png)
+                overlay_asset = assets_dir / "gradcam_overlay.jpg"
+                overlay_size  = _copy_asset(overlay_path, overlay_asset)
+                _sanity_check_asset(overlay_asset, "Grad-CAM overlay", min_bytes=1000)
+            except Exception as e:
+                gradcam_error = str(e)
+                print(f"[ReportGenerator][error] Grad-CAM failed: {e}")
 
         # ---- Face info from peak frame ----------------------------------
         bbox             = None
@@ -635,7 +658,7 @@ class ForensicReportGenerator:
             "face_detected":    face_detected,
             "detection_method": detection_method,
             "aligned":          aligned,
-            "bbox":             bbox,
+            "bbox":             None if not show_gradcam else bbox,
             "frames_analyzed":  frames_analyzed,
             "fake_frames":      frame_stats.get("fake_frames"),
             "fake_frame_ratio": frame_stats.get("fake_frame_ratio"),
@@ -656,6 +679,7 @@ class ForensicReportGenerator:
             "report_id":    report_id,
             "generated_at": datetime.now(timezone.utc).isoformat(),
             "version":      "ForensIQ-Report-V1",
+            "show_gradcam": show_gradcam,
             "input": {
                 "media_type": "video",
                 "filename":   original_filename or video_path.name,
@@ -682,9 +706,9 @@ class ForensicReportGenerator:
                 "face_detected":    face_detected,
                 "detection_method": detection_method,
                 "aligned":          aligned,
-                "bbox":             bbox,
-                "bbox_fraction":    bbox_fraction,
-                "bbox_center_pct":  bbox_center_pct,
+                "bbox":             None if not show_gradcam else bbox,
+                "bbox_fraction":    None if not show_gradcam else bbox_fraction,
+                "bbox_center_pct":  None if not show_gradcam else bbox_center_pct,
                 "peak_frame_index": peak_fake_idx,
             },
             "video_stats": {

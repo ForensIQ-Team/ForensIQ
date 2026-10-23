@@ -11,6 +11,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     func,
+    JSON,
 )
 from sqlalchemy.dialects.postgresql import UUID, JSONB, INET, ARRAY
 from sqlalchemy.orm import relationship
@@ -94,7 +95,7 @@ class Case(Base):
     description = Column(Text, nullable=True)
     status = Column(Text, nullable=False, default="open")  # open | in_progress | closed | escalated | archived
     severity = Column(Text, nullable=False, default="medium")  # low | medium | high | critical
-    tags = Column(ARRAY(Text), nullable=True, default=list)
+    tags = Column(ARRAY(Text).with_variant(JSON, "sqlite"), nullable=True, default=list)
     closed_at = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -143,7 +144,7 @@ class CaseFinding(Base):
 class CaseTimeline(Base):
     __tablename__ = "case_timeline"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
     case_id = Column(UUID(as_uuid=True), ForeignKey("cases.id", ondelete="CASCADE"), nullable=False)
     actor_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     action = Column(Text, nullable=False)  # create | update | upload | analysis | note | share | freeze | unfreeze | export | assign | status_change
@@ -265,7 +266,7 @@ class SourceReputation(Base):
 class AuditLog(Base):
     __tablename__ = "audit_log"
 
-    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    id = Column(BigInteger().with_variant(Integer, "sqlite"), primary_key=True, autoincrement=True)
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="SET NULL"), nullable=True)
     org_id = Column(UUID(as_uuid=True), ForeignKey("organizations.id", ondelete="SET NULL"), nullable=True)
     action = Column(Text, nullable=False)

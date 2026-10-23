@@ -43,6 +43,7 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
   const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || !e.target.files[0]) return;
     const file = e.target.files[0];
+    e.target.value = '';
     await generateNewReport(file);
   };
 
@@ -122,6 +123,7 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
           <input
             type="file"
             ref={fileInputRef}
+            onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
             onChange={handleFileUpload}
             accept="image/jpeg,image/png,image/webp,image/bmp,video/mp4,video/quicktime,video/avi,video/webm"
             className="hidden"

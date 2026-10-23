@@ -1,0 +1,109 @@
+{
+  "report_id": "FX-20261023-F9E0",
+  "generated_at": "2026-10-23T08:20:33.269213+00:00",
+  "version": "ForensIQ-Report-V1",
+  "show_gradcam": false,
+  "input": {
+    "media_type": "image",
+    "filename": "modi.jpeg",
+    "width": 604,
+    "height": 507
+  },
+  "verdict": {
+    "label": "REAL",
+    "confidence": 0.9046542653899766,
+    "fake_score": 0.09534573461002337,
+    "headline": "Image appears authentic with high confidence"
+  },
+  "visuals": {
+    "original_image": "assets/original.jpeg",
+    "original_ext": ".jpeg",
+    "original_size_bytes": 19595,
+    "gradcam_overlay": null,
+    "gradcam_overlay_size": 0,
+    "gradcam_error": null
+  },
+  "ai_analysis": {
+    "headline": "Image appears authentic with high confidence",
+    "summary": "The analysis found no signs of alteration and the visual content matches expected natural patterns. We are quite sure the image is genuine, with a confidence level of 90.5%.",
+    "analysis": {
+      "overview": "The system first detected a face using a strict detector, then aligned and cropped it for detailed inspection. The cropped face and surrounding area were examined for inconsistencies in texture, lighting, and compression artifacts. All examined features fell within normal ranges for an unaltered photograph. No anomalies triggered any suspicion.",
+      "heatmap_interpretation": "No manipulation indicators were identified anywhere in the image.",
+      "region_focus": ""
+    },
+    "observed_indicators": [
+      "Consistent lighting across the face and background",
+      "Natural skin texture without irregular pixel patterns",
+      "Sharp edges and smooth gradients typical of original captures",
+      "Absence of compression artifacts or cloning traces"
+    ],
+    "confidence_statement": "The model reports a high confidence (0.905) that the image is authentic, though absolute certainty is never possible.",
+    "limitations": "This analysis cannot verify the provenance of the image or rule out sophisticated forgeries that leave no detectable trace. It also does not assess the truthfulness of the scene depicted, only the technical integrity of the file.",
+    "recommendation": "Proceed with using the image as authentic, but consider additional contextual verification if the content’s truthfulness is critical."
+  },
+  "ai_analysis_error": null,
+  "metadata": {
+    "face_detected": true,
+    "detection_method": "mtcnn_strict",
+    "aligned": true,
+    "bbox": null,
+    "bbox_fraction": null,
+    "bbox_center_pct": null
+  },
+  "_pipeline_result": {
+    "final": {
+      "prediction": "REAL",
+      "confidence": 0.9046542653899766,
+      "fake_score": 0.09534573461002337,
+      "real_score": 0.9046542653899766
+    },
+    "face_detection": {
+      "detected": true,
+      "num_faces": 1,
+      "confidence": 0.9997732043266296,
+      "crop_box": [
+        163,
+        12,
+        450,
+        299
+      ],
+      "raw_face_box": [
+        247.55824279785156,
+        71.28292083740234,
+        365.4091491699219,
+        218.34878540039062
+      ],
+      "fallback": false,
+      "detection_method": "mtcnn_strict",
+      "aligned": true,
+      "margin": {
+        "side": 0.35,
+        "top": 0.4,
+        "bottom": 0.55
+      },
+      "square_pad": true
+    },
+    "fusion": {
+      "xception_weight": 0.4,
+      "efficientnet_weight": 0.3,
+      "vit_weight": 0.3,
+      "xception_alert_threshold": 0.5,
+      "xception_max_pull_down": 0.2,
+      "normal_weighted_score": 0.09534573461002337,
+      "final_fake_score": 0.09534573461002337,
+      "final_real_score": 0.9046542653899766,
+      "fusion_mode": "SUPPORT_CONSENSUS_VETO",
+      "support_score": 0.059517222057807094,
+      "xception_alert": false,
+      "xception_priority_applied": false,
+      "xception_dissent": false,
+      "review_recommended": false,
+      "both_support_real": true,
+      "both_support_fake": false,
+      "strong_real": true,
+      "strong_fake": false,
+      "difference": 0.1099883575861585,
+      "disagreement_level": "LOW"
+    }
+  }
+}

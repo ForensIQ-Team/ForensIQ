@@ -52,24 +52,12 @@ def _validate_image(filename: str, size: int) -> None:
 @router.post("/api/propagation/search")
 async def propagation_search(file: UploadFile = File(...)) -> JSONResponse:
     """
-    Accepts an uploaded image and runs a Google Lens reverse image
-    search via SerpApi to discover where the image appears publicly.
+    Accepts an uploaded image and runs parallel discovery (Google Lens + Yandex)
+    followed by pHash and facial embedding verification.
 
-    Returns structured propagation results:
-        {
-            "status": "success" | "no_results" | "error",
-            "total": int,
-            "exact_matches": [...],
-            "visual_matches": [...],
-            "all_results": [...],
-            "error": str | null,
-        }
-
-    IMPORTANT: No pHash or CLIP verification is performed here.
-    Returned results are DISCOVERED CANDIDATES, not verified matches.
+    Returns verified identity matches and filtered candidate statistics.
     """
-    # ---- Import service here so startup doesn't fail if key is missing ----
-    from propagation.serpapi_service import search_google_lens
+    from propagation.verification_pipeline import run_verified_search
 
     filename = file.filename or "upload.jpg"
     file_bytes = await file.read()
@@ -90,30 +78,75 @@ async def propagation_search(file: UploadFile = File(...)) -> JSONResponse:
 
         logger.info(
             f"[Propagation] Received {filename} "
-            f"({len(file_bytes) / 1024:.1f} KB) — starting Google Lens search"
+            f"({len(file_bytes) / 1024:.1f} KB) — starting verified search pipeline"
         )
 
-        results = search_google_lens(tmp_path)
-
-        if results["total"] == 0:
-            return JSONResponse(content={
-                "status": "no_results",
-                "total": 0,
-                "exact_matches": [],
-                "visual_matches": [],
-                "all_results": [],
-                "error": None,
-                "message": "No matching images were found on the public web.",
-            })
-
-        return JSONResponse(content={
-            "status": "success",
-            "total": results["total"],
-            "exact_matches": results["exact_matches"],
-            "visual_matches": results["visual_matches"],
-            "all_results": results["all_results"],
-            "error": None,
+        pipeline_res = run_verified_search(tmp_path)
+        engine_stats = pipeline_res.get("engine_stats", {
+            "google": 0,
+            "yandex": 0,
+            "google_error": None,
+            "yandex_error": None,
         })
+
+        _empty_tiers: dict[str, int] = {
+            "critical": 0, "high": 0, "medium": 0, "low": 0, "unlikely": 0,
+        }
+
+        # When both engines fail and there are no candidates -> status "error" with HTTP 503
+        if (
+            pipeline_res.get("total_candidates", 0) == 0
+            and engine_stats.get("google_error")
+            and engine_stats.get("yandex_error")
+        ):
+            err_msg = (
+                f"All search engines failed: Google: {engine_stats.get('google_error')}; "
+                f"Yandex: {engine_stats.get('yandex_error')}"
+            )
+            return JSONResponse(
+                status_code=503,
+                content={
+                    "status": "error",
+                    "ranked_results": [],
+                    "notable_count": 0,
+                    "tier_counts": _empty_tiers,
+                    "total_candidates": 0,
+                    "query_had_face": pipeline_res.get("query_had_face", False),
+                    "engine_stats": engine_stats,
+                    "error": err_msg,
+                },
+            )
+
+        ranked_results = pipeline_res.get("ranked_results", [])
+
+        # When ranked_results is empty -> status "no_results"
+        if not ranked_results:
+            return JSONResponse(
+                content={
+                    "status": "no_results",
+                    "ranked_results": [],
+                    "notable_count": 0,
+                    "tier_counts": _empty_tiers,
+                    "total_candidates": pipeline_res.get("total_candidates", 0),
+                    "query_had_face": pipeline_res.get("query_had_face", False),
+                    "engine_stats": engine_stats,
+                    "error": None,
+                    "message": "No results could be retrieved from the public web.",
+                }
+            )
+
+        return JSONResponse(
+            content={
+                "status": "success",
+                "ranked_results": ranked_results,
+                "notable_count": pipeline_res.get("notable_count", 0),
+                "tier_counts": pipeline_res.get("tier_counts", _empty_tiers),
+                "total_candidates": pipeline_res.get("total_candidates", 0),
+                "query_had_face": pipeline_res.get("query_had_face", False),
+                "engine_stats": engine_stats,
+                "error": None,
+            }
+        )
 
     except HTTPException:
         raise
@@ -126,10 +159,17 @@ async def propagation_search(file: UploadFile = File(...)) -> JSONResponse:
             status_code=503,
             content={
                 "status": "error",
-                "total": 0,
-                "exact_matches": [],
-                "visual_matches": [],
-                "all_results": [],
+                "ranked_results": [],
+                "notable_count": 0,
+                "tier_counts": {"critical": 0, "high": 0, "medium": 0, "low": 0, "unlikely": 0},
+                "total_candidates": 0,
+                "query_had_face": False,
+                "engine_stats": {
+                    "google": 0,
+                    "yandex": 0,
+                    "google_error": msg,
+                    "yandex_error": None,
+                },
                 "error": msg,
             },
         )
@@ -140,10 +180,17 @@ async def propagation_search(file: UploadFile = File(...)) -> JSONResponse:
             status_code=500,
             content={
                 "status": "error",
-                "total": 0,
-                "exact_matches": [],
-                "visual_matches": [],
-                "all_results": [],
+                "ranked_results": [],
+                "notable_count": 0,
+                "tier_counts": {"critical": 0, "high": 0, "medium": 0, "low": 0, "unlikely": 0},
+                "total_candidates": 0,
+                "query_had_face": False,
+                "engine_stats": {
+                    "google": 0,
+                    "yandex": 0,
+                    "google_error": str(exc),
+                    "yandex_error": None,
+                },
                 "error": "Propagation search failed due to an unexpected error.",
             },
         )
